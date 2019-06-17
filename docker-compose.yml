@@ -1,7 +1,7 @@
 version: "3"
 
 services:
-  web:
+  frontend:
     image: nginx:1.15-alpine
     volumes:
       - "./develop/nginx/sites:/etc/nginx/conf.d"
