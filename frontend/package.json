@@ -2,7 +2,11 @@
   "name": "bla-frontend",
   "version": "1.0.0",
   "description": "frontend for our awesome bucketlist application bla bla bla",
-  "scripts": {},
+  "scripts": {
+    "build": "encore production --progress",
+    "dev": "encore dev",
+    "watch": "encore dev --watch"
+  },
   "dependencies": {
     "@babel/core": "^7.4.4",
     "@babel/preset-react": "^7.0.0",
