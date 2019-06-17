@@ -3,6 +3,9 @@ package de.uniks.webengineering2019.bla;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
+/**
+ * Bucket List Application - BLA. pun intended.
+ */
 @SpringBootApplication
 public class BLAApplication {
 
