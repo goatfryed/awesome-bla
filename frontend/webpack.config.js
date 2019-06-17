@@ -39,7 +39,7 @@ module.exports = Encore
 
     // as we build a single-page-application, we'll generated only one chunk prob. maybe split libraries later on
     // .splitEntryChunks()
-    // .enableSingleRuntimeChunk()
+    .disableSingleRuntimeChunk()
 
     .enableSourceMaps(!Encore.isProduction())
     // some cache busting mechanism for older browsers
