@@ -2,7 +2,15 @@
   "name": "bla-frontend",
   "version": "1.0.0",
   "description": "frontend for our awesome bucketlist application bla bla bla",
-  "scripts": {
-  },
-  "author": ""
+  "scripts": {},
+  "dependencies": {
+    "@babel/core": "^7.4.4",
+    "@babel/preset-react": "^7.0.0",
+    "@symfony/webpack-encore": "^0.27.0",
+    "html-webpack-plugin": "^3.2.0",
+    "react": "^16.8.6",
+    "react-dom": "^16.8.6",
+    "webpack": "^4.31.0",
+    "webpack-notifier": "^1.7.0"
+  }
 }
