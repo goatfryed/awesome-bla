@@ -3,6 +3,7 @@ import * as React from "react";
 import {render} from "react-dom";
 import {BrowserRouter as Router, Route} from "react-router-dom";
 import {Switch} from "react-router";
+import {Header} from "./Header";
 
 function Page404() {
     return <span>These are not the pages you're looking for ¯\_(ツ)_/¯</span>
@@ -14,6 +15,7 @@ function LandingPage() {
 
 function App() {
     return <Router>
+        <Header/>
         <Switch>
             <Route path="/" exact component={LandingPage}/>
             <Route path="/" component={Page404}/>

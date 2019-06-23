@@ -4,6 +4,6 @@ import de.uniks.webengineering2019.bla.de.uniks.webengineering2019.model.User;
 import org.springframework.data.repository.CrudRepository;
 
 public interface UserRepository extends CrudRepository<User, Long>{
-    User findOne(int id);
+    User findOneById(int id);
     User findUserByUserName(String name);
 }

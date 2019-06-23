@@ -17,6 +17,7 @@
     "react-router": "^5.0.1",
     "react-router-dom": "^5.0.1",
     "webpack": "^4.31.0",
-    "webpack-notifier": "^1.7.0"
+    "webpack-notifier": "^1.7.0",
+    "core-js": "^3.1.4"
   }
 }
