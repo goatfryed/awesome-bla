@@ -13,6 +13,12 @@ export function BucketListEntries() {
         []
     );
     return <ul>
-            {entries && entries.map( entry =>  <li>{entry.title}</li>)}
+            {entries && entries.map( entry => <BucketListEntry key={entry.id} entry={entry}/>)}
     </ul>;
+}
+
+
+
+function BucketListEntry({entry}) {
+    return <li><input type="checkbox" checked={entry.completed} />{entry.title}</li>;
 }
