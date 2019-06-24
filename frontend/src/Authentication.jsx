@@ -1,12 +1,14 @@
 
 import React from "react";
+import backend from "./Configuration";
 
 export class Authentication {
     constructor(){
+        console.log(backend);
     }
 
     getAuthenticationURL(callback) {
-        fetch("http://localhost:8080/api/authentication/url")
+        fetch(backend)
             .then((response) => {
                 return response.json()
             })
