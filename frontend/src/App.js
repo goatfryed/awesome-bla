@@ -11,10 +11,15 @@ function LandingPage() {
   return <span>What do you want to do before you die?</span>;
 }
 
+function BucketListEntries() {
+  return <span>Under construction</span>;
+}
+
 function App() {
   return <Router>
     <Switch>
       <Route path="/" exact component={LandingPage}/>
+      <Route path="/bucketlist/:id/entries" component={BucketListEntries} />
       <Route path="/" component={Page404}/>
     </Switch>
   </Router>
