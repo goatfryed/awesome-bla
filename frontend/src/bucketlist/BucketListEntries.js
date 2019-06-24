@@ -2,14 +2,17 @@ import React, {useEffect, useState} from "react";
 import {backendUrl} from "../config";
 
 export function BucketListEntries() {
+    let [entries, setEntries] = useState(null);
     useEffect(() => {
             (async () => {
                 const response = await fetch( backendUrl + "/bucketlists/1/entries/");
                 const json = await response.json();
-                console.log(json);
+                setEntries(json);
             })();
         },
         []
     );
-    return <span>Under construction</span>;
+    return <ul>
+            {entries && entries.map( entry =>  <li>{entry.title}</li>)}
+    </ul>;
 }
