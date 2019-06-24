@@ -1,0 +1,45 @@
+version: "3"
+
+services:
+  database:
+    image: "postgres:11.4"
+    container_name: "prod-bucketlist-db"
+    environment:
+      POSTGRES_DB: 'bucket'
+      POSTGRES_USER: 'bucket_user'
+      POSTGRES_PASSWORD: 'bucket_pw'
+    volumes:
+      - /home/lukas/workspace/awesome-bucket-list/deploy/database:/var/lib/postgresql/data
+    networks:
+      gps_net:
+        ipv4_address: 10.5.6.2
+  frontend:
+    image: nginx:1.15-alpine
+    container_name: "prod-bucketlist-frontend"
+    volumes:
+      - "/home/lukas/workspace/awesome-bucket-list/develop/nginx/sites:/etc/nginx/conf.d"
+      - "/home/lukas/workspace/awesome-bucket-list/frontend/public:/frontend"
+    ports:
+      - 10030:80
+    networks:
+      gps_net:
+        ipv4_address: 10.5.6.3
+  backend:
+    container_name: "prod-bucketlist-backend"
+    image: openjdk:11
+    volumes:
+      - "/home/lukas/workspace/awesome-bucket-list/backend/build/libs:/dist"
+      - "/home/lukas/workspace/awesome-bucket-list/backend/docker/res:/res"
+    command: bash -c 'sleep 5 && java -jar /dist/bla-0.0.1-SNAPSHOT.jar --spring.datasource.url=jdbc:postgresql://prod-bucketlist-db:5432/bucket'
+    working_dir: /res
+    ports:
+      - "10031:8080"
+    networks:
+      gps_net:
+        ipv4_address: 10.5.6.4
+networks:
+ gps_net:
+  ipam:
+   driver: default
+   config:
+   - subnet: 10.5.6.0/24
