@@ -6,10 +6,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 import java.util.Date;
 import java.util.List;
 
@@ -32,6 +29,9 @@ public class BucketList{
 
     private Date createnDate;
     private Date lastUpdated;
+
+    @OneToMany(fetch = FetchType.EAGER, mappedBy = "bucketList")
+    private List<BucketListEntry> entries;
 
     public BucketList(){
 

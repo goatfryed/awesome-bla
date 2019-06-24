@@ -6,9 +6,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
+import javax.persistence.*;
 import java.util.Date;
 
 @Setter
@@ -28,6 +26,9 @@ public class BucketListEntry{
     private Date created;
     private Date updated;
     private Date completed;
+
+    @ManyToOne(fetch = FetchType.EAGER)
+    private BucketList bucketList;
 
     public BucketListEntry()
     {
