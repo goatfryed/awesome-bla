@@ -27,6 +27,9 @@ public class BucketListEntry{
     private Date updated;
     private Date completed;
 
+    /*
+        avoid infinite recursion in generated json of bidirectional relationships by using JsonIdentityInfo
+     */
     @ManyToOne(fetch = FetchType.EAGER)
     @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
     @JsonIdentityReference(alwaysAsId = true)
