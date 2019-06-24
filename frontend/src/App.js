@@ -1,26 +1,23 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+
+import * as React from "react";
+import {BrowserRouter as Router, Route} from "react-router-dom";
+import {Switch} from "react-router";
+
+function Page404() {
+  return <span>These are not the pages you're looking for ¯\_(ツ)_/¯</span>
+}
+
+function LandingPage() {
+  return <span>What do you want to do before you die?</span>;
+}
 
 function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+  return <Router>
+    <Switch>
+      <Route path="/" exact component={LandingPage}/>
+      <Route path="/" component={Page404}/>
+    </Switch>
+  </Router>
 }
 
 export default App;
