@@ -28,4 +28,9 @@ public class BucketListEntry{
     private Date created;
     private Date updated;
     private Date completed;
+
+    public BucketListEntry()
+    {
+
+    }
 }
