@@ -1,7 +1,7 @@
-
 import * as React from "react";
 import {BrowserRouter as Router, Route} from "react-router-dom";
 import {Switch} from "react-router";
+import {BucketListEntries} from "./bucketlist/BucketListEntries";
 
 function Page404() {
   return <span>These are not the pages you're looking for ¯\_(ツ)_/¯</span>
@@ -9,10 +9,6 @@ function Page404() {
 
 function LandingPage() {
   return <span>What do you want to do before you die?</span>;
-}
-
-function BucketListEntries() {
-  return <span>Under construction</span>;
 }
 
 function App() {
