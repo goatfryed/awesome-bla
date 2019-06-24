@@ -1,6 +1,6 @@
 package de.uniks.webengineering2019.bla.de.uniks.webengineering2019.model;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -28,6 +28,8 @@ public class BucketListEntry{
     private Date completed;
 
     @ManyToOne(fetch = FetchType.EAGER)
+    @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
+    @JsonIdentityReference(alwaysAsId = true)
     private BucketList bucketList;
 
     public BucketListEntry()
