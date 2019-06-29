@@ -11,7 +11,7 @@ services:
     volumes:
       - /home/lukas/workspace/awesome-bucket-list/deploy/database:/var/lib/postgresql/data
     networks:
-      gps_net:
+      bucket-net:
         ipv4_address: 10.5.6.2
   frontend:
     image: nginx:1.15-alpine
@@ -20,9 +20,9 @@ services:
       - "/home/lukas/workspace/awesome-bucket-list/develop/nginx/sites:/etc/nginx/conf.d"
       - "/home/lukas/workspace/awesome-bucket-list/frontend/public:/frontend"
     ports:
-      - 10030:80
+      - 127.0.0.1:20083:80
     networks:
-      gps_net:
+      bucket-net:
         ipv4_address: 10.5.6.3
   backend:
     container_name: "prod-bucketlist-backend"
@@ -35,10 +35,10 @@ services:
     ports:
       - "10031:8080"
     networks:
-      gps_net:
+      bucket-net:
         ipv4_address: 10.5.6.4
 networks:
- gps_net:
+ bucket-net:
   ipam:
    driver: default
    config:
