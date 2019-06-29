@@ -8,7 +8,7 @@ export class Authentication {
     }
 
     getAuthenticationURL(callback) {
-        fetch(backend)
+        fetch(backend + "/api/authentication/url")
             .then((response) => {
                 return response.json()
             })
