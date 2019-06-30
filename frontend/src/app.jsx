@@ -1,8 +1,7 @@
 
-import * as React from "react";
+import React from "react";
 import {render} from "react-dom";
-import {BrowserRouter as Router, Route} from "react-router-dom";
-import {Switch} from "react-router";
+import {BrowserRouter as Router, Route,Switch} from "react-router-dom";
 import {Header} from "./Header";
 import {AuthenticationCallback} from "./AuthenticationCallback";
 
@@ -14,13 +13,14 @@ function LandingPage() {
     return <span>What do you want to do before you die?</span>;
 }
 
+
 function App() {
     return <Router>
         <Header/>
         <Switch>
+            <Route path="/callback" component={AuthenticationCallback}/>
             <Route path="/" exact component={LandingPage}/>
             <Route path="/" component={Page404}/>
-            <Route path="/callback" component={AuthenticationCallback}/>
         </Switch>
     </Router>
 }
