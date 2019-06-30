@@ -1,8 +1,7 @@
 
 import * as React from "react";
 import {render} from "react-dom";
-import {BrowserRouter as Router, Route} from "react-router-dom";
-import {Switch} from "react-router";
+import {BrowserRouter as Router, Route,Switch} from "react-router-dom";
 import {Header} from "./Header";
 
 function Page404() {
