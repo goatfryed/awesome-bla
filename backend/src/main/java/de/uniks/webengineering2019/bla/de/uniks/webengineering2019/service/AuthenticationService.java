@@ -59,13 +59,17 @@ public class AuthenticationService{
     public String retrieveJWTToken(String code) {
         OAuth2AccessToken token = getAccessToken(code);
         if (token == null) {
+            LOG.error("Accec token os null for code: "+code);
             return null;
         }
+        LOG.info("New token is: "+token.getAccessToken()+" with code_ "+code);
 
         User user = retrieveUserInformation(token);
         if (user == null) {
+            LOG.error("Could not retrive User Data");
             return null;
         }
+        LOG.info("Retrived userdata are: "+user.toString());
 
         return createJWT(user);
     }
@@ -100,8 +104,8 @@ public class AuthenticationService{
 
         // Store user in database (if not already done) to have a full user object including id.
         User u = userRepository.findUserByUserName(user.getUserName());
-        if (u != null) {
-            userRepository.save(user);
+        if (u == null) {
+            u = userRepository.save(user);
         }
         user = u;
         return user;
