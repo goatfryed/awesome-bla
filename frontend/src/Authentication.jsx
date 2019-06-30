@@ -2,10 +2,35 @@
 import React from "react";
 import backend from "./Configuration";
 
+// If set to true, a JWT payload is accepted as it is in the cookie.
+const isDebugAuthentication = false;
+
 export class Authentication {
     constructor(){
-        console.log(backend);
+        this.listener = [];
+        this.token = null;
+        this.jwt = null;
+
+        this.logout = this.logout.bind(this);
+        this.loadStoredToken();
     }
+
+    loadStoredToken() {
+        let token = this.getCookie("token");
+        this.jwt = token;
+        if (token !== "") {
+            let decoded = undefined;
+            if (isDebugAuthentication) {
+                decoded = {
+                    sub: token
+                };
+            } else {
+                decoded = jwt_decode(token);
+            }
+            this.token = decoded;
+        }
+    }
+
 
     getAuthenticationURL(callback) {
         fetch(backend + "/api/authentication/url")
@@ -18,10 +43,71 @@ export class Authentication {
     }
 
     isAuthenticated() {
-        return false;
+        return this.token != undefined;
+    }
+
+    getToken() {
+        return this.jwt;
+    }
+
+    getUser() {
+        return this.token;
+    }
+
+
+    parseToken(token) {
+        this.setCookie("token", token, 90);
+        let decoded = undefined;
+        if (isDebugAuthentication) {
+            decoded = {
+                sub: token
+            };
+        } else {
+            decoded = jwt_decode(token);
+        }
+        this.token = decoded;
+        this.jwt = token;
+        this.listener.forEach(l => l.authenticated());
+    }
+
+    addAuthenticationListener(l) {
+        this.listener.push(l);
     }
 
     logout() {
+        this.token = null;
+        this.eraseCookie("token");
+        this.listener.forEach(l => l.authenticated());
+
+        // We are logged out, go back to the main page.
+        document.location.href = "/";
+    }
+
+    setCookie(cname, cvalue, exdays) {
+        let d = new Date();
+        d.setTime(d.getTime() + (exdays * 24 * 60 * 60 * 1000));
+        let expires = "expires=" + d.toUTCString();
+        document.cookie = cname + "=" + cvalue + ";" + expires + ";path=/";
+    }
+
+    getCookie(cname) {
+        let name = cname + "=";
+        let decodedCookie = decodeURIComponent(document.cookie);
+        let ca = decodedCookie.split(';');
+        for (let i = 0; i < ca.length; i++) {
+            let c = ca[i];
+            while (c.charAt(0) == ' ') {
+                c = c.substring(1);
+            }
+            if (c.indexOf(name) == 0) {
+                return c.substring(name.length, c.length);
+            }
+        }
+        return "";
+    }
+
+    eraseCookie(name) {
+        document.cookie = name + '=; Max-Age=-99999999;';
     }
 
 }
