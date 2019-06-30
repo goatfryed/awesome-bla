@@ -29,12 +29,12 @@ export class Header extends React.Component {
                 {
                     Authentication.isAuthenticated() &&
                     <a className='header-link user-info' onClick={Authentication.logout}>logout</a>
-                }
+                } - 
                 {
                     !Authentication.isAuthenticated() &&
                     <a href={this.state.url}
                        className='header-link'>login</a>
-                }
+                } - 
                 {
                     Authentication.isAuthenticated() &&
                     <span className='user-info'>{Authentication.getUser().sub}</span>
