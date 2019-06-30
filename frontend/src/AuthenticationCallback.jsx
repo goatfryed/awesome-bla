@@ -7,6 +7,8 @@ export class AuthenticationCallback extends React.Component {
     constructor(props) {
         super(props);
 
+        console.log("created callback");
+
         const urlParams = new URLSearchParams(window.location.search);
         const code = urlParams.get('code');
         this.state = {
@@ -16,7 +18,7 @@ export class AuthenticationCallback extends React.Component {
 
     componentDidMount() {
         // Call backend using submitted code.
-        fetch(backend+"api/authentication/callback?code=" + this.state.code)
+        fetch( backend+"api/authentication/callback?code=" + this.state.code)
             .then((response) => {
                 return response.json()
             })
@@ -28,6 +30,7 @@ export class AuthenticationCallback extends React.Component {
 
     render() {
         // You could add a list of authentication providers here.
-        return null;
+        return <span>Authentication Callback</span>;
+       // return null;
     }
 }
