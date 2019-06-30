@@ -6,7 +6,7 @@ services:
     container_name: bucketlist-frontend
     volumes:
       - "./develop/nginx/sites:/etc/nginx/conf.d"
-      - "./frontend/public:/frontend"
+      - "./frontend/build:/frontend"
     ports:
       - 81:80
     restart: always
