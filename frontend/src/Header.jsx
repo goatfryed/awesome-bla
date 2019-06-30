@@ -6,7 +6,7 @@ export class Header extends React.Component {
     constructor(props) {
         super(props);
         this.authenticated = this.authenticated.bind(this);
-        //Authentication.addAuthenticationListener(this);
+        Authentication.addAuthenticationListener(this);
 
         this.state = {url: ''}
     }
@@ -34,6 +34,10 @@ export class Header extends React.Component {
                     !Authentication.isAuthenticated() &&
                     <a href={this.state.url}
                        className='header-link'>login</a>
+                }
+                {
+                    Authentication.isAuthenticated() &&
+                    <span className='user-info'>{Authentication.getUser().sub}</span>
                 }
                  ---
             </div>
