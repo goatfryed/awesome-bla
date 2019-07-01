@@ -27,7 +27,7 @@ public class BucketList{
     private String title;
 
     @OneToMany(fetch = FetchType.EAGER, mappedBy = "bucketList")
-    @OrderBy("createnDate DESC")
+    @OrderBy("created DESC")
     private List<BucketListEntry> entries;
     private int numEntries;
 
