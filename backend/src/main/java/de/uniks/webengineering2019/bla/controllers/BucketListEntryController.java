@@ -3,6 +3,7 @@ package de.uniks.webengineering2019.bla.controllers;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import de.uniks.webengineering2019.bla.model.BucketList;
 import de.uniks.webengineering2019.bla.model.BucketListEntry;
+import de.uniks.webengineering2019.bla.model.Comment;
 import de.uniks.webengineering2019.bla.repositories.BucketListEntryRepository;
 import de.uniks.webengineering2019.bla.repositories.CommentRepository;
 import org.springframework.lang.NonNull;
