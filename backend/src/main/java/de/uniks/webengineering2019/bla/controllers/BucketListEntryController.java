@@ -13,6 +13,7 @@ import org.springframework.lang.NonNull;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 @CrossOrigin
@@ -43,12 +44,11 @@ public class BucketListEntryController {
     }
 
     @GetMapping("/")
-    public List<BucketListEntry> list(@PathVariable BucketList bucketList, ObjectMapper mapper)
+    public List<BucketListEntry> list(@PathVariable BucketList bucketList)
     {
-        final List<BucketListEntry> entries = entryRepository.findBucketListEntriesByBucketList(bucketList);
-        entries.forEach(p -> p.getComments().clear());
+        bucketList.getEntries().forEach(p -> p.getComments().clear());
 
-        return entries;
+        return new ArrayList<>(bucketList.getEntries());
     }
 
     @GetMapping("/{entry}/")
