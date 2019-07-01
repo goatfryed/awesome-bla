@@ -4,7 +4,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import de.uniks.webengineering2019.bla.model.BucketList;
 import de.uniks.webengineering2019.bla.model.BucketListEntry;
 import de.uniks.webengineering2019.bla.model.Comment;
-import de.uniks.webengineering2019.bla.model.Commentable;
 import de.uniks.webengineering2019.bla.repositories.BucketListEntryRepository;
 import de.uniks.webengineering2019.bla.repositories.BucketListRepository;
 import de.uniks.webengineering2019.bla.repositories.CommentRepository;
@@ -13,6 +12,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.lang.NonNull;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.IOException;
 import java.util.List;
 
 @CrossOrigin
@@ -60,6 +60,10 @@ public class BucketListEntryController {
     @PostMapping("/{entry}/comments/")
     public void addComment(@RequestBody Comment comment, @PathVariable BucketListEntry entry)
     {
+        if (entry == null) {
+            throw new ResourceNotFoundException("requested entry unknown");
+        }
+
         entry.getComments().add(comment);
         commentRepository.save(comment);
         entryRepository.save(entry);
