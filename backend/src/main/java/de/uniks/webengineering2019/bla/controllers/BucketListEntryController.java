@@ -67,10 +67,11 @@ public class BucketListEntryController {
     @RequestMapping(value = "/add", method = RequestMethod.POST)
     public ResponseEntity<String> addEntry(@RequestBody BucketListEntry newEntry, @PathVariable("bucketList") Long id) {
         if (bucketListRepository.existsById(id)) {
-            entryRepository.save(newEntry);
             // save entry into list
             BucketList updatedBucketList = bucketListRepository.findById(id).get();
             updatedBucketList.addEntry(newEntry);
+
+            entryRepository.save(newEntry);
             bucketListRepository.save(updatedBucketList);
             return ResponseEntity.status(HttpStatus.OK).build();
         }

@@ -39,6 +39,7 @@ public class BucketList{
 
     public void addEntry(BucketListEntry newEntry){
         this.entries.add(newEntry);
+        newEntry.setBucketList(this);
         this.numEntries = this.entries.size();
     }
 
