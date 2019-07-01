@@ -2,6 +2,7 @@ package de.uniks.webengineering2019.bla.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import lombok.*;
 
 import javax.persistence.*;
 import java.util.List;
@@ -27,6 +28,10 @@ import java.util.List;
  * and add a 1:1 relationship from the other entities to this comment container, thus doing something like composition over
  * inheritance
  */
+@Setter
+@Getter
+@NoArgsConstructor
+@AllArgsConstructor
 @Entity
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 @Table(name="comment")
@@ -35,7 +40,7 @@ public class Commentable {
     @Id
     @GeneratedValue
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
-    private Long id;
+    public Long id;
 
     @OneToMany(mappedBy = "parent")
     public List<Comment> comments;
