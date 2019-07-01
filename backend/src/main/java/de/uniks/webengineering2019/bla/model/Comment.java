@@ -19,7 +19,6 @@ import java.util.Date;
  */
 @Setter
 @Getter
-@Builder
 @AllArgsConstructor
 @Entity
 public class Comment extends Commentable {
@@ -32,11 +31,13 @@ public class Comment extends Commentable {
     @ManyToOne
     @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
     @JsonIdentityReference(alwaysAsId = true)
+    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private Commentable master;
 
     @ManyToOne
     @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
     @JsonIdentityReference(alwaysAsId = true)
+    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private Commentable parent;
 
     @PrePersist
