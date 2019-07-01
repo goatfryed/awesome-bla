@@ -45,7 +45,6 @@ function BucketListEntry({entry, pagePath, forceUpdate}) {
             },
             body: JSON.stringify(nextEntryState)
         });
-        await response.json();
         forceUpdate();
     }
 
