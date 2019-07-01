@@ -23,14 +23,19 @@ public class BucketListEntry{
     @JsonProperty(access = JsonProperty.Access.READ_ONLY) // See JavaDoc for explanation.
     private Long id;
 
-    private String title;
-
-    private Date created;
-    private Date updated;
-    private Date completed;
+    public String title;
+    public String description;
+    public Date created;
+    //private Date updated;
+    //private Date completed;
 
     public BucketListEntry()
     {
-
+        this.created = new Date();
     }
+
+	/*public static boolean isValid(BucketListEntry addedEntry) {
+        //TODO Add check
+        return true;
+    }*/
 }

@@ -1,17 +1,15 @@
 package de.uniks.webengineering2019.bla.controllers;
 
-import de.uniks.webengineering2019.bla.model.BucketList;
-import de.uniks.webengineering2019.bla.model.BucketListEntry;
-import de.uniks.webengineering2019.bla.repositories.BucketListRepository;
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import de.uniks.webengineering2019.bla.model.BucketList;
+import de.uniks.webengineering2019.bla.repositories.BucketListRepository;
 
 @CrossOrigin
 @RequestMapping("/bucketlists/**")
