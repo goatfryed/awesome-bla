@@ -1,8 +1,8 @@
-package de.uniks.webengineering2019.bla.de.uniks.webengineering2019.controllers;
+package de.uniks.webengineering2019.bla.controllers;
 
-import de.uniks.webengineering2019.bla.de.uniks.webengineering2019.model.BucketList;
-import de.uniks.webengineering2019.bla.de.uniks.webengineering2019.model.BucketListEntry;
-import de.uniks.webengineering2019.bla.de.uniks.webengineering2019.repositories.BucketListRepository;
+import de.uniks.webengineering2019.bla.model.BucketList;
+import de.uniks.webengineering2019.bla.model.BucketListEntry;
+import de.uniks.webengineering2019.bla.repositories.BucketListRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;

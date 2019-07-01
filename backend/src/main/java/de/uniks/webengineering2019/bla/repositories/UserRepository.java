@@ -1,6 +1,6 @@
-package de.uniks.webengineering2019.bla.de.uniks.webengineering2019.repositories;
+package de.uniks.webengineering2019.bla.repositories;
 
-import de.uniks.webengineering2019.bla.de.uniks.webengineering2019.model.User;
+import de.uniks.webengineering2019.bla.model.User;
 import org.springframework.data.repository.CrudRepository;
 
 public interface UserRepository extends CrudRepository<User, Long>{

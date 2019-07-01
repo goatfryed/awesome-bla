@@ -1,6 +1,6 @@
-package de.uniks.webengineering2019.bla.de.uniks.webengineering2019.controllers;
+package de.uniks.webengineering2019.bla.controllers;
 
-import de.uniks.webengineering2019.bla.de.uniks.webengineering2019.service.AuthenticationService;
+import de.uniks.webengineering2019.bla.service.AuthenticationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

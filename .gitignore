@@ -2,3 +2,4 @@
 database
 var/
 frontend/build/*
+.vscode/
