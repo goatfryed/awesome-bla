@@ -48,21 +48,29 @@ function ExtendedEntry({entry, pagePath}) {
         [entry]
     );
 
-    console.log(details);
+    function onCommentCreation(comment) {
+        console.log(comment);
+    }
 
-    return <div>
-        {
-            details == null ? "loading"
-                : [<CommentInput />, <Comments comments={details.comments}/>]
-        }
-    </div>
+
+
+    return details == null
+        ? <div>"loading"</div>
+        : <div>
+            <CommentInput onCommentCreation={onCommentCreation}/>
+            <Comments comments={details.comments}/>
+        </div>
 }
 
 function Comment({comment}) {
+    function onCommentCreation(comment) {
+        console.log(comment);
+    }
+
     return <div>
         <span>{comment.created.substr(0,19)}: </span><span>{comment.comment}</span>
         <Comments comments={comment.comments} />
-        <CommentInput />
+        <CommentInput onCommentCreation={onCommentCreation}/>
     </div>
 }
 
@@ -72,6 +80,19 @@ function Comments({comments}) {
     </ul>
 }
 
-function CommentInput() {
-    return <input type="text" placeholder="Comment something" />
+function CommentInput({onCommentCreation}) {
+    let [comment, setComment] = useState('');
+
+    function onSubmit(e) {
+        e.preventDefault();
+
+        if(comment.trim() === '') return;
+
+        onCommentCreation && onCommentCreation({comment});
+    }
+
+    return <form onSubmit={onSubmit}>
+        <input type="text" value={comment} placeholder="Comment something" onChange={e => setComment(e.target.value)} />
+        <button type="submit">submit</button>
+    </form>
 }
