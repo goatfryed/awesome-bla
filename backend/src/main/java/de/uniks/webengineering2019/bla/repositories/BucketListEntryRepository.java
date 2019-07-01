@@ -1,7 +1,7 @@
-package de.uniks.webengineering2019.bla.de.uniks.webengineering2019.repositories;
+package de.uniks.webengineering2019.bla.repositories;
 
-import de.uniks.webengineering2019.bla.de.uniks.webengineering2019.model.BucketList;
-import de.uniks.webengineering2019.bla.de.uniks.webengineering2019.model.BucketListEntry;
+import de.uniks.webengineering2019.bla.model.BucketList;
+import de.uniks.webengineering2019.bla.model.BucketListEntry;
 import org.springframework.data.repository.CrudRepository;
 
 import java.util.List;
