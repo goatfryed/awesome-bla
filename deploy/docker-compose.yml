@@ -43,3 +43,5 @@ networks:
    driver: default
    config:
    - subnet: 10.5.6.0/24
+  driver_opts:
+   com.docker.network.bridge.name: br-buck
