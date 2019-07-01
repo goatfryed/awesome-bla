@@ -36,7 +36,7 @@ public class BucketListEntry {
     @JsonIdentityReference(alwaysAsId = true)
     private BucketList bucketList;
 
-    @OneToOne
+    @OneToOne(fetch = FetchType.EAGER)
     @JsonIgnore
     @Builder.Default
     private Commentable commentBoard = new Commentable();
