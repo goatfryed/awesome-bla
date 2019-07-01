@@ -1,6 +1,8 @@
 import React, {useEffect, useState} from "react";
 import {backendUrl} from "../config";
 
+const commentsUrl = backendUrl + "/comments";
+
 export function BucketListEntries({match}) {
     let {id} = match.params;
     let pagePath = backendUrl + "/bucketlists/"+id+"/entries";
@@ -59,25 +61,27 @@ function ExtendedEntry({entry, pagePath}) {
         ? <div>"loading"</div>
         : <div>
             <CommentInput onCommentCreation={onCommentCreation}/>
-            <Comments comments={details.comments}/>
+            <Comments comments={details.comments} forceUpdate={update}/>
         </div>
 }
 
-function Comment({comment}) {
-    function onCommentCreation(comment) {
-        console.log(comment);
+function Comment({comment, forceUpdate}) {
+    async function onCommentCreation(newComment) {
+
+        await createComment(newComment, commentsUrl + "/" + comment.id +"/");
+        forceUpdate();
     }
 
     return <div>
         <span>{comment.created.substr(0,19)}: </span><span>{comment.comment}</span>
-        <Comments comments={comment.comments} />
+        <Comments comments={comment.comments} forceUpdate={forceUpdate}/>
         <CommentInput onCommentCreation={onCommentCreation}/>
     </div>
 }
 
-function Comments({comments}) {
+function Comments({comments, forceUpdate}) {
     return <ul>
-        {comments.map(comment => <Comment key={comment.id} comment={comment}/>)}
+        {comments.map(comment => <Comment key={comment.id} comment={comment} forceUpdate={forceUpdate}/>)}
     </ul>
 }
 
