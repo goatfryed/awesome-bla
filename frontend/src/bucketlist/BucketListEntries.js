@@ -74,8 +74,8 @@ function Comment({comment, forceUpdate}) {
 
     return <div>
         <span>{comment.created.substr(0,19)}: </span><span>{comment.comment}</span>
-        <Comments comments={comment.comments} forceUpdate={forceUpdate}/>
         <CommentInput onCommentCreation={onCommentCreation}/>
+        <Comments comments={comment.comments} forceUpdate={forceUpdate}/>
     </div>
 }
 
@@ -93,7 +93,8 @@ function CommentInput({onCommentCreation}) {
 
         if(comment.trim() === '') return;
 
-        onCommentCreation && onCommentCreation({comment});
+        setComment('');
+        onCommentCreation({comment});
     }
 
     return <form onSubmit={onSubmit}>
