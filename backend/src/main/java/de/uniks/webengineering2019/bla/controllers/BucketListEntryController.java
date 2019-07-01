@@ -83,4 +83,18 @@ public class BucketListEntryController {
         System.out.println("ListID does not exitst!");
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
     }
+
+    @PutMapping("/{entry}/")
+    public void comments(
+            @RequestBody String updateJson,
+            @PathVariable BucketListEntry entry,
+            ObjectMapper mapper
+    ) throws IOException {
+        if (entry == null) {
+            throw new ResourceNotFoundException("requested entry unknown");
+        }
+
+        mapper.readerForUpdating(entry).readValue(updateJson);
+        entryRepository.save(entry);
+    }
 }
