@@ -15,7 +15,7 @@ import java.util.List;
 @Builder
 @AllArgsConstructor
 @Entity
-public class BucketListEntry{
+public class BucketListEntry {
 
     @Id
     @GeneratedValue
@@ -36,11 +36,18 @@ public class BucketListEntry{
     @JsonIdentityReference(alwaysAsId = true)
     private BucketList bucketList;
 
-    @OneToMany(mappedBy = "master")
-    private List<Comment> comments;
+    @OneToOne
+    @JsonIgnore
+    @Builder.Default
+    private Commentable commentBoard = new Commentable();
 
     public BucketListEntry()
     {
 
+    }
+
+    @JsonProperty
+    public List<Comment> getComments() {
+        return commentBoard.comments;
     }
 }

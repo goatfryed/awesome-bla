@@ -22,12 +22,7 @@ import java.util.Date;
 @Builder
 @AllArgsConstructor
 @Entity
-public class Comment {
-
-    @Id
-    @GeneratedValue
-    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
-    private Long id;
+public class Comment extends Commentable {
 
     private Date created;
 
@@ -37,12 +32,12 @@ public class Comment {
     @ManyToOne
     @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
     @JsonIdentityReference(alwaysAsId = true)
-    private BucketListEntry master;
+    private Commentable master;
 
-    @ManyToOne()
+    @ManyToOne
     @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
     @JsonIdentityReference(alwaysAsId = true)
-    private Comment parent;
+    private Commentable parent;
 
     @PrePersist
     public void init() {
