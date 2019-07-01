@@ -16,10 +16,10 @@ public class Commentable {
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private Long id;
 
-    @OneToMany(mappedBy = "parent", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "parent")
     public List<Comment> comments;
 
-    @OneToMany(mappedBy = "master", fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "master")
     @JsonIgnore
     public List<Comment> nestedComments;
 }

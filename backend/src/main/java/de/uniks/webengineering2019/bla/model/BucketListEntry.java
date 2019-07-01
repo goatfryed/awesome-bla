@@ -31,7 +31,7 @@ public class BucketListEntry {
     /*
         avoid infinite recursion in generated json of bidirectional relationships by using JsonIdentityInfo
      */
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
     @JsonIdentityReference(alwaysAsId = true)
     private BucketList bucketList;
@@ -47,7 +47,12 @@ public class BucketListEntry {
     }
 
     @JsonProperty
-    public List<Comment> getComments() {
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    public List<Comment> getComments()
+    {
+        if (commentBoard == null) {
+            return null;
+        }
         return commentBoard.comments;
     }
 }

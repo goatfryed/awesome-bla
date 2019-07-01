@@ -1,5 +1,6 @@
 package de.uniks.webengineering2019.bla.controllers;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import de.uniks.webengineering2019.bla.model.BucketList;
 import de.uniks.webengineering2019.bla.model.BucketListEntry;
 import de.uniks.webengineering2019.bla.repositories.BucketListEntryRepository;
@@ -28,13 +29,16 @@ public class BucketListEntryController {
     }
 
     @GetMapping("/")
-    public List<BucketListEntry> list(@PathVariable BucketList bucketList)
+    public List<BucketListEntry> list(@PathVariable BucketList bucketList, ObjectMapper mapper)
     {
-        return entryRepository.findBucketListEntriesByBucketList(bucketList);
+        final List<BucketListEntry> entries = entryRepository.findBucketListEntriesByBucketList(bucketList);
+        entries.forEach(p -> p.setCommentBoard(null));
+
+        return entries;
     }
 
     @GetMapping("/{entry}/")
-    public BucketListEntry list(@PathVariable BucketListEntry entry)
+    public BucketListEntry comments(@PathVariable BucketListEntry entry)
     {
         return entry;
     }
