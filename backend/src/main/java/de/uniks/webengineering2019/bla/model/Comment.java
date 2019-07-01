@@ -1,16 +1,12 @@
 package de.uniks.webengineering2019.bla.model;
 
 import com.fasterxml.jackson.annotation.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.ManyToOne;
-import javax.persistence.PrePersist;
+import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 /**
  * For now, I'd like to try to store a reference to the master topic, e.g. bucketlist or bucketlistentry so
@@ -21,24 +17,21 @@ import java.util.Date;
 @Getter
 @AllArgsConstructor
 @Entity
-public class Comment extends Commentable {
+public class Comment implements Commentable {
+
+    @Id
+    @GeneratedValue
+    @JsonProperty(access = JsonProperty.Access.READ_ONLY) // See JavaDoc for explanation.
+    private Long id;
 
     private Date created;
 
     @Column(length = 4096)
     private String comment;
 
-    @ManyToOne
-    @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
-    @JsonIdentityReference(alwaysAsId = true)
-    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
-    private Commentable master;
-
-    @ManyToOne
-    @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
-    @JsonIdentityReference(alwaysAsId = true)
-    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
-    private Commentable parent;
+    @OneToMany
+    @OrderBy("created DESC")
+    private List<Comment> comments;
 
     @PrePersist
     public void init() {
@@ -49,5 +42,13 @@ public class Comment extends Commentable {
 
     public Comment () {
 
+    }
+
+    @Override
+    public List<Comment> getComments() {
+        if (comments == null) {
+            comments = new ArrayList<>();
+        }
+        return comments;
     }
 }

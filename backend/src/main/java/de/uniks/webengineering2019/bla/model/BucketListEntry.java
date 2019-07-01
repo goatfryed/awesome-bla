@@ -38,10 +38,10 @@ public class BucketListEntry {
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private BucketList bucketList;
 
-    @OneToOne(fetch = FetchType.EAGER)
-    @JsonIgnore
-    @Builder.Default
-    private Commentable commentBoard = new Commentable();
+    @OneToMany
+    @OrderBy("created DESC")
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    private List<Comment> comments;
 
     public BucketListEntry()
     {
@@ -49,12 +49,8 @@ public class BucketListEntry {
     }
 
     @JsonProperty
-    @JsonInclude(JsonInclude.Include.NON_NULL)
     public List<Comment> getComments()
     {
-        if (commentBoard == null) {
-            return null;
-        }
-        return commentBoard.comments;
+        return comments;
     }
 }

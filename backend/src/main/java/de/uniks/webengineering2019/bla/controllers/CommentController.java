@@ -23,8 +23,9 @@ public class CommentController {
     @PostMapping("/")
     public void addComment(@RequestBody Comment comment, @PathVariable Comment parent)
     {
-        comment.setParent(parent);
-        comment.setMaster(parent.getMaster());
+        parent.getComments().add(comment);
         commentRepository.save(comment);
+        commentRepository.save(comment);
+
     }
 }

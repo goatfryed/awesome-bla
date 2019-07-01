@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import de.uniks.webengineering2019.bla.model.BucketList;
 import de.uniks.webengineering2019.bla.model.BucketListEntry;
 import de.uniks.webengineering2019.bla.model.Comment;
+import de.uniks.webengineering2019.bla.model.Commentable;
 import de.uniks.webengineering2019.bla.repositories.BucketListEntryRepository;
 import de.uniks.webengineering2019.bla.repositories.BucketListRepository;
 import de.uniks.webengineering2019.bla.repositories.CommentRepository;
@@ -45,7 +46,7 @@ public class BucketListEntryController {
     public List<BucketListEntry> list(@PathVariable BucketList bucketList, ObjectMapper mapper)
     {
         final List<BucketListEntry> entries = entryRepository.findBucketListEntriesByBucketList(bucketList);
-        entries.forEach(p -> p.setCommentBoard(null));
+        entries.forEach(p -> p.getComments().clear());
 
         return entries;
     }
@@ -59,9 +60,9 @@ public class BucketListEntryController {
     @PostMapping("/{entry}/comments/")
     public void addComment(@RequestBody Comment comment, @PathVariable BucketListEntry entry)
     {
-        comment.setParent(entry.getCommentBoard());
-        comment.setMaster(entry.getCommentBoard());
+        entry.getComments().add(comment);
         commentRepository.save(comment);
+        entryRepository.save(entry);
     }
 
     @RequestMapping(value = "/add", method = RequestMethod.POST)
