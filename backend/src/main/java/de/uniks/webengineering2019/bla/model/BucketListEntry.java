@@ -35,6 +35,7 @@ public class BucketListEntry {
     @ManyToOne(fetch = FetchType.LAZY)
     @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
     @JsonIdentityReference(alwaysAsId = true)
+    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private BucketList bucketList;
 
     @OneToOne(fetch = FetchType.EAGER)
