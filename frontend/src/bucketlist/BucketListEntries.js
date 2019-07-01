@@ -14,7 +14,7 @@ export function BucketListEntries({match}) {
                 setEntries(json);
             })();
         },
-        [id]
+        [pagePath]
     );
     return <ul>
             {entries && entries.map( entry => <BucketListEntry key={entry.id} entry={entry} pagePath={pagePath}/>)}
@@ -55,7 +55,20 @@ function ExtendedEntry({entry, pagePath}) {
     return <div>
         {
             details == null ? "loading"
-                : "You like comments, dont you?"
+                : <Comments comments={details.comments}/>
         }
     </div>
+}
+
+function Comment({comment}) {
+    return <div>
+        <span>{comment.created.substr(0,19)}:</span><span>{comment.comment}</span>
+        <Comments comments={comment.comments} />
+    </div>
+}
+
+function Comments({comments}) {
+    return <ul>
+        {comments.map(comment => <Comment key={comment.id} comment={comment}/>)}
+    </ul>
 }
