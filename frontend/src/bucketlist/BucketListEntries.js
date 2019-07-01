@@ -37,22 +37,23 @@ function BucketListEntry({entry, pagePath}) {
 function ExtendedEntry({entry, pagePath}) {
     let [details, setDetails] = useState(null);
 
-    useEffect(
-        function () {
-            (async function() {
-                const response = await fetch( pagePath+"/"+entry.id+"/");
-                const json = await response.json();
-                setDetails(json);
-            })();
-        },
-        [entry]
-    );
+    let entryPath = pagePath+"/"+entry.id+"/";
 
-    function onCommentCreation(comment) {
-        console.log(comment);
+    async function update() {
+        const response = await fetch( entryPath);
+        const json = await response.json();
+        setDetails(json);
     }
 
+    useEffect(
+        function () {update();},
+        [entryPath]
+    );
 
+    async function onCommentCreation(comment) {
+        await createComment(comment, entryPath + "comments/");
+        update();
+    }
 
     return details == null
         ? <div>"loading"</div>
@@ -95,4 +96,16 @@ function CommentInput({onCommentCreation}) {
         <input type="text" value={comment} placeholder="Comment something" onChange={e => setComment(e.target.value)} />
         <button type="submit">submit</button>
     </form>
+}
+
+function createComment(comment, url) {
+    return fetch(
+        url,{
+        method: 'post',
+        headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(comment)
+    });
 }
