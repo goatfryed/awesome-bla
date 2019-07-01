@@ -2,7 +2,6 @@ package de.uniks.webengineering2019.bla.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import org.hibernate.annotations.Fetch;
 
 import javax.persistence.*;
 import java.util.List;
