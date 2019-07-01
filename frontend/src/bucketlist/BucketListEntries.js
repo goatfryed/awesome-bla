@@ -81,7 +81,7 @@ function Comment({comment, forceUpdate}) {
 
 function Comments({comments, forceUpdate}) {
     return <ul>
-        {comments.map(comment => <Comment key={comment.id} comment={comment} forceUpdate={forceUpdate}/>)}
+        {comments && comments.map(comment => <Comment key={comment.id} comment={comment} forceUpdate={forceUpdate}/>)}
     </ul>
 }
 
