@@ -55,7 +55,7 @@ function ExtendedEntry({entry, pagePath}) {
     return <div>
         {
             details == null ? "loading"
-                : <Comments comments={details.comments}/>
+                : [<CommentInput />, <Comments comments={details.comments}/>]
         }
     </div>
 }
@@ -64,6 +64,7 @@ function Comment({comment}) {
     return <div>
         <span>{comment.created.substr(0,19)}:</span><span>{comment.comment}</span>
         <Comments comments={comment.comments} />
+        <CommentInput />
     </div>
 }
 
@@ -71,4 +72,8 @@ function Comments({comments}) {
     return <ul>
         {comments.map(comment => <Comment key={comment.id} comment={comment}/>)}
     </ul>
+}
+
+function CommentInput() {
+    return <input type="text" placeholder="Comment something" />
 }
