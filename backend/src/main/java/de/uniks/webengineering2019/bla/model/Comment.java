@@ -35,12 +35,13 @@ public class Comment {
     private String comment;
 
     @ManyToOne
-    @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class)
+    @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
     @JsonIdentityReference(alwaysAsId = true)
     private BucketListEntry master;
 
-    @ManyToOne
-    @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class)
+    @ManyToOne()
+    @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
+    @JsonIdentityReference(alwaysAsId = true)
     private Comment parent;
 
     @PrePersist
@@ -48,5 +49,9 @@ public class Comment {
         if (created == null) {
             created = new Date();
         }
+    }
+
+    public Comment () {
+
     }
 }

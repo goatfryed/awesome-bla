@@ -8,6 +8,7 @@ import lombok.Setter;
 
 import javax.persistence.*;
 import java.util.Date;
+import java.util.List;
 
 @Setter
 @Getter
@@ -34,6 +35,9 @@ public class BucketListEntry{
     @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
     @JsonIdentityReference(alwaysAsId = true)
     private BucketList bucketList;
+
+    @OneToMany(mappedBy = "master")
+    private List<Comment> comments;
 
     public BucketListEntry()
     {
