@@ -27,11 +27,9 @@ function BucketListEntry({entry, pagePath}) {
     let [showDetails, setShowDetails] = useState(false);
 
 
-    return <li
-        onClick={() => setShowDetails(!showDetails)}
-    >
+    return <li>
         <input type="checkbox" defaultChecked={entry.completed} />
-        <span>{entry.title}</span>
+        <span onClick={() => setShowDetails(!showDetails)}>{entry.title}</span>
         {showDetails && <ExtendedEntry entry={entry} pagePath={pagePath}/>}
     </li>;
 }
@@ -62,7 +60,7 @@ function ExtendedEntry({entry, pagePath}) {
 
 function Comment({comment}) {
     return <div>
-        <span>{comment.created.substr(0,19)}:</span><span>{comment.comment}</span>
+        <span>{comment.created.substr(0,19)}: </span><span>{comment.comment}</span>
         <Comments comments={comment.comments} />
         <CommentInput />
     </div>
