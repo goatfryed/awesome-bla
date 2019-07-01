@@ -1,7 +1,7 @@
 package de.uniks.webengineering2019.bla;
 
-import de.uniks.webengineering2019.bla.de.uniks.webengineering2019.model.BucketList;
-import de.uniks.webengineering2019.bla.de.uniks.webengineering2019.repositories.BucketListRepository;
+import de.uniks.webengineering2019.bla.model.BucketList;
+import de.uniks.webengineering2019.bla.repositories.BucketListRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;

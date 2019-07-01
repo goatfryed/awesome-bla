@@ -1,4 +1,4 @@
-package de.uniks.webengineering2019.bla.de.uniks.webengineering2019.service;
+package de.uniks.webengineering2019.bla.service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.scribejava.apis.GitHubApi;
@@ -8,8 +8,8 @@ import com.github.scribejava.core.model.OAuthRequest;
 import com.github.scribejava.core.model.Response;
 import com.github.scribejava.core.model.Verb;
 import com.github.scribejava.core.oauth.OAuth20Service;
-import de.uniks.webengineering2019.bla.de.uniks.webengineering2019.model.User;
-import de.uniks.webengineering2019.bla.de.uniks.webengineering2019.repositories.UserRepository;
+import de.uniks.webengineering2019.bla.model.User;
+import de.uniks.webengineering2019.bla.repositories.UserRepository;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
 import org.slf4j.Logger;
