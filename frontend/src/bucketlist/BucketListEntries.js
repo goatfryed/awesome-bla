@@ -9,28 +9,48 @@ export function BucketListEntries({match}) {
 
     let [entries, setEntries] = useState(null);
 
+    let update = async () => {
+        const response = await fetch(pagePath + "/");
+        const json = await response.json();
+        setEntries(json);
+    };
+
     useEffect(() => {
-            (async () => {
-                const response = await fetch( pagePath+"/");
-                const json = await response.json();
-                setEntries(json);
-            })();
+            update();
         },
         [pagePath]
     );
     return <ul>
-            {entries && entries.map( entry => <BucketListEntry key={entry.id} entry={entry} pagePath={pagePath}/>)}
+            {entries && entries.map( entry => <BucketListEntry key={entry.id} entry={entry} pagePath={pagePath} forceUpdate={update}/>)}
     </ul>;
 }
 
 
 
-function BucketListEntry({entry, pagePath}) {
+function BucketListEntry({entry, pagePath, forceUpdate}) {
     let [showDetails, setShowDetails] = useState(false);
 
 
+    async function toggleCompletionState(wasCompleted) {
+        let nextEntryState = {
+            completed: wasCompleted ? null : Date.now()
+        };
+
+        const response = await fetch(
+            pagePath + "/" + entry.id + "/", {
+            method: "put",
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(nextEntryState)
+        });
+        await response.json();
+        forceUpdate();
+    }
+
     return <li>
-        <input type="checkbox" defaultChecked={entry.completed} />
+        <input type="checkbox" checked={entry.completed || false} onChange={() => toggleCompletionState(entry.completed)}/>
         <span onClick={() => setShowDetails(!showDetails)}>{entry.title}</span>
         {showDetails && <ExtendedEntry entry={entry} pagePath={pagePath}/>}
     </li>;
