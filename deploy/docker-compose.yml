@@ -18,7 +18,7 @@ services:
     container_name: "prod-bucketlist-frontend"
     volumes:
       - "/home/lukas/workspace/awesome-bucket-list/develop/nginx/sites:/etc/nginx/conf.d"
-      - "/home/lukas/workspace/awesome-bucket-list/frontend/public:/frontend"
+      - "/home/lukas/workspace/awesome-bucket-list/frontend/build:/frontend"
     ports:
       - 127.0.0.1:20083:80
     networks:
