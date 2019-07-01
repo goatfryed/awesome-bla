@@ -1,14 +1,16 @@
 package de.uniks.webengineering2019.bla.model;
 
+import java.util.Date;
+import java.util.List;
+
 import com.fasterxml.jackson.annotation.JsonProperty;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 
 import javax.persistence.*;
-import java.util.Date;
-import java.util.List;
 
 @Setter
 @Getter
@@ -24,16 +26,20 @@ public class BucketList{
     private Long id;
     private String title;
 
-    //private List<BucketListEntry> entries;
+    @OneToMany(fetch = FetchType.EAGER, mappedBy = "bucketList")
+    @OrderBy("createnDate DESC")
+    private List<BucketListEntry> entries;
     private int numEntries;
 
     private Date createnDate;
     private Date lastUpdated;
 
-    @OneToMany(fetch = FetchType.EAGER, mappedBy = "bucketList")
-    private List<BucketListEntry> entries;
-
     public BucketList(){
-
     }
+
+    public void addEntry(BucketListEntry newEntry){
+        this.entries.add(newEntry);
+        this.numEntries = this.entries.size();
+    }
+
 }

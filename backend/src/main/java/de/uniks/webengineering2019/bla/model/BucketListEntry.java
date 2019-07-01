@@ -23,6 +23,7 @@ public class BucketListEntry {
     private Long id;
 
     private String title;
+    private String description;
 
     private Date created;
     private Date updated;
@@ -43,7 +44,7 @@ public class BucketListEntry {
 
     public BucketListEntry()
     {
-
+        this.created = new Date();
     }
 
     @JsonProperty
