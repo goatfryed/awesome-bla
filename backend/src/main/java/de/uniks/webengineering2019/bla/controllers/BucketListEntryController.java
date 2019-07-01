@@ -43,4 +43,12 @@ public class BucketListEntryController {
     {
         return entry;
     }
+
+    @PostMapping("/{entry}/comments/")
+    public void addComment(@RequestBody Comment comment, @PathVariable BucketListEntry entry)
+    {
+        comment.setParent(entry.getCommentBoard());
+        comment.setMaster(entry.getCommentBoard());
+        commentRepository.save(comment);
+    }
 }
