@@ -1,7 +1,7 @@
-
-import * as React from "react";
-import {BrowserRouter as Router, Route} from "react-router-dom";
-import {Switch} from "react-router";
+import React from "react";
+import {BrowserRouter as Router, Route,Switch} from "react-router-dom";
+import {Header} from "./Header";
+import {AuthenticationCallback} from "./AuthenticationCallback";
 
 function Page404() {
   return <span>These are not the pages you're looking for ¯\_(ツ)_/¯</span>
@@ -13,7 +13,9 @@ function LandingPage() {
 
 function App() {
   return <Router>
+    <Header/>
     <Switch>
+      <Route path="/callback" component={AuthenticationCallback}/>
       <Route path="/" exact component={LandingPage}/>
       <Route path="/" component={Page404}/>
     </Switch>
