@@ -5,15 +5,8 @@ class LandingPage extends Component {
 		const bucketLists = null;
 
 		return (
-			<div>
-				<nav className="nav-wrapper grey darken-3">
-					<div className="container">
-						<div className="brand-logo white-text">Awesome Bucket List</div>
-					</div>
-				</nav>
-				<div className="container white">
-					{ bucketLists }
-				</div>
+			<div className="container white">
+				{ bucketLists }
 			</div>
 		);
 	}
