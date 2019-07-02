@@ -54,6 +54,7 @@ export class Authentication {
 
     fakeLogin(user){
         console.log("Fake Login user: "+user);
+        this.parseToken(user);
     }
 
     handleChangeFakeUser(e) {
@@ -114,7 +115,6 @@ export class Authentication {
     eraseCookie(name) {
         document.cookie = name + '=; Max-Age=-99999999;';
     }
-
 }
 
 const instance = new Authentication();
