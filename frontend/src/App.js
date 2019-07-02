@@ -1,9 +1,11 @@
-import * as React from "react";
-import {BrowserRouter as Router, Route} from "react-router-dom";
-import {Switch} from "react-router";
+import React from "react";
+import {BrowserRouter as Router, Route,Switch} from "react-router-dom";
+
+import {Header} from "./Header";
+
+import {AuthenticationCallback} from "./AuthenticationCallback";
 import {BucketListEntries} from "./bucketlist/BucketListEntries";
 
-//Pages
 import {ListEntryNew} from "./pages/ListEntryNew";
 
 function Page404() {
@@ -16,10 +18,12 @@ function LandingPage() {
 
 function App() {
   return <Router>
+    <Header/>
     <Switch>
+      <Route path="/callback" component={AuthenticationCallback}/>
       <Route exact path="/listentry/new" component={ListEntryNew}/>
-      <Route path="/" exact component={LandingPage}/>
       <Route path="/bucketlist/:id/entries" component={BucketListEntries} />
+      <Route path="/" exact component={LandingPage}/>
       <Route path="/" component={Page404}/>
     </Switch>
   </Router>
