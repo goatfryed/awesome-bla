@@ -1,7 +1,7 @@
 import React from "react";
 import {Link} from "react-router-dom";
 import Authentication from "./Authentication";
-import {isDebug} from "./Configuration";
+import {isDebug,backend} from "./Configuration";
 
 export class Header extends React.Component {
     constructor(props) {
@@ -28,6 +28,22 @@ export class Header extends React.Component {
         Authentication.fakeLogin(this.state.fakeUser);
     }
 
+    testAcces(evt){
+        fetch(backend+"/api/test",{
+            method: 'post',
+            headers:{
+                'Authorization': 'Bearer ' + Authentication.getToken(),
+            },
+                //'Accept': 'application/json'
+        }).then((response) => {
+            console.log(response);
+        }).then(res=>{
+            console.log("Error: "+res.status);
+        }).then((err=>{
+            console.log("Error: "+err.status);
+        }))
+    }
+
     render() {
         return (
             <div className="header">
@@ -37,18 +53,19 @@ export class Header extends React.Component {
                     <a className='header-link user-info' onClick={Authentication.logout}>logout</a>
                 } -
                 {
-                    isDebug ?
+                    !Authentication.isAuthenticated()?
+                        isDebug ?
                         <div><input type="text" defaultValue={this.state.fakeUser} onChange={e=>this.state.fakeUser=e.target.value}/><button onClick={this.fakeLogin}>Login</button></div>
-                    :
-                        !Authentication.isAuthenticated() &&
-                        <a href={this.state.url}
-                           className='header-link'>login</a>
+                        :
+                            <a href={this.state.url} className='header-link'>login</a>
+                    :""
                 } -
                 {
                     Authentication.isAuthenticated() &&
                     <span className='user-info'>{Authentication.getUser().sub}</span>
                 }
                  ---
+                <button onClick={this.testAcces}>test</button>
             </div>
         )
     }
