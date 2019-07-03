@@ -1,15 +1,25 @@
 import React, { Component } from 'react';
+import Axios from 'axios';
 
 class LandingPage extends Component {
+	state = {
+		bucketLists: []
+	};
+
+	componentDidMount() {
+		Axios.get('http://localhost:8080/bucketlists/all').then(response => {
+			this.setState({
+				bucketLists: response.data
+			});
+		});
+	}
+
 	render() {
-		const bucketLists = (
-			<div>
-				<div className="collection-item grey lighten-3">Alpha</div>
-				<div className="collection-item grey lighten-3">Beta</div>
-				<div className="collection-item grey lighten-3">Gamma</div>
-				<div className="collection-item grey lighten-3">Delta</div>
-			</div>
-		);
+		const bucketLists = this.state.bucketLists.map(bucketList => {
+			return (
+				<div className="collection-item grey lighten-3">{bucketList.title}</div>
+			);
+		});
 
 		return (
 			<div className="container left">
