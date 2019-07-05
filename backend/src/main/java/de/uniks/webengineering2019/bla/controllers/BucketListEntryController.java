@@ -43,13 +43,13 @@ public class BucketListEntryController {
         return entryRepository.findAll();
     }
 
-    @GetMapping("/")
+    /*@GetMapping("/")
     public List<BucketListEntry> list(@PathVariable BucketList bucketList)
     {
         bucketList.getEntries().forEach(p -> p.getComments().clear());
 
         return new ArrayList<>(bucketList.getEntries());
-    }
+    }*/
 
     @GetMapping("/{entry}/")
     public BucketListEntry comments(@PathVariable BucketListEntry entry)
