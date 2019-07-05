@@ -1,13 +1,14 @@
 package de.uniks.webengineering2019.bla;
 
-import de.uniks.webengineering2019.bla.model.BucketList;
-import de.uniks.webengineering2019.bla.repositories.BucketListRepository;
+import java.util.Date;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
-import java.util.Date;
+import de.uniks.webengineering2019.bla.model.BucketList;
+import de.uniks.webengineering2019.bla.repositories.BucketListRepository;
 
 /**
  * Bucket List Application - BLA. pun intended.
