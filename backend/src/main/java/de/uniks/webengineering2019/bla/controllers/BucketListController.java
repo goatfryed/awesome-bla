@@ -3,15 +3,12 @@ package de.uniks.webengineering2019.bla.controllers;
 import de.uniks.webengineering2019.bla.model.BucketList;
 import de.uniks.webengineering2019.bla.repositories.BucketListRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @CrossOrigin
-@RequestMapping("/bucketlists/**")
+@RequestMapping("/bucketlists/")
 @RestController
 public class BucketListController{
 
@@ -34,5 +31,11 @@ public class BucketListController{
     @GetMapping("/all")
     public List<BucketList> getAllLists(){
         return bucketListRepository.findAll();
+    }
+
+    @GetMapping("/{bucketList}/")
+    public BucketList get(@PathVariable BucketList bucketList) {
+        bucketList.getEntries().clear();
+        return bucketList;
     }
 }
