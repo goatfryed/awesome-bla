@@ -2,7 +2,7 @@ import React from "react";
 import {BucketListEntries} from "./BucketListEntries";
 import {NavLink, Redirect} from "react-router-dom";
 import {Route, Switch} from "react-router";
-import {backendFetch} from "../api";
+import {backendFetch} from "../../api";
 import {CommentInput, Comments} from "./Comments";
 
 export function BucketList({id, match}) {

@@ -15,3 +15,14 @@ body {
 code {
 	font-family: "source-code-pro", "Menlo", "Monaco", "Consolas", "Courier New", "monospace";
 }
+
+
+nav {
+  background-color: #8c99ff;
+}
+nav ul a {
+  font-size: 1.4rem;
+}
+.activeLink{
+  color:black;
+}

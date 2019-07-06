@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from "react";
-import {backendUrl} from "../config";
+import {backendUrl} from "../../config";
 import {CommentInput, Comments} from "./Comments";
 
 const commentsUrl = backendUrl + "/comments";
