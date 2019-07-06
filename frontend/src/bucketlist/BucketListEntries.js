@@ -20,7 +20,7 @@ export function BucketListEntries({id}) {
         },
         [pagePath]
     );
-    return <ul>
+    return <ul className="collection">
         {entries && entries.map( entry => <BucketListEntry key={entry.id} entry={entry} pagePath={pagePath} forceUpdate={update}/>)}
     </ul>;
 }
@@ -46,9 +46,11 @@ function BucketListEntry({entry, pagePath, forceUpdate}) {
         forceUpdate();
     }
 
-    return <li>
-        <input type="checkbox" checked={entry.completed || false} onChange={() => toggleCompletionState(entry.completed)}/>
-        <span onClick={() => setShowDetails(!showDetails)}>{entry.title}</span>
+    return <li className="collection-item">
+        <label>
+            <input type="checkbox" checked={entry.completed || false} onChange={() => toggleCompletionState(entry.completed)}/>
+            <span onClick={() => setShowDetails(!showDetails)}>{entry.title}</span>
+        </label>
         {showDetails && <ExtendedEntry entry={entry} pagePath={pagePath}/>}
     </li>;
 }

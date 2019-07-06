@@ -2,15 +2,15 @@ import React, {useState} from "react";
 
 function Comment({comment, onCommentCreation}) {
 
-    return <div>
+    return <li className="collection-item">
         <span>{comment.created.substr(0, 19)}: </span><span>{comment.comment}</span>
-        <CommentInput onCommentCreation={(newComment) => onCommentCreation(newComment, comment)}/>
+        <CommentInput onCommentCreation={onCommentCreation && ((newComment) => onCommentCreation(newComment, comment))}/>
         <Comments comments={comment.comments} onCommentCreation={onCommentCreation}/>
-    </div>
+    </li>
 }
 
 export function Comments({comments, onCommentCreation}) {
-    return <ul>
+    return <ul className="collection">
         {comments && comments.map(comment => <Comment key={comment.id} comment={comment}
                                                       onCommentCreation={onCommentCreation}/>)}
     </ul>
@@ -25,7 +25,7 @@ export function CommentInput({onCommentCreation}) {
         if (comment.trim() === '') return;
 
         setComment('');
-        onCommentCreation({comment});
+        onCommentCreation && onCommentCreation({comment});
     }
 
     return <form onSubmit={onSubmit}>
