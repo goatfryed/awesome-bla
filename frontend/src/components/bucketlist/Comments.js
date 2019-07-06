@@ -1,18 +1,24 @@
 import React, {useState} from "react";
+import {addCommentReply} from "../../api";
 
-function Comment({comment, onCommentCreation}) {
+function Comment({comment, onCommentReplyCreated}) {
+
+    async function onCommentCreation(reply) {
+        await addCommentReply(reply, comment.id);
+        onCommentReplyCreated && onCommentReplyCreated(reply, comment);
+    };
 
     return <li className="collection-item">
         <span>{comment.created.substr(0, 19)}: </span><span>{comment.comment}</span>
-        <CommentInput onCommentCreation={onCommentCreation && ((newComment) => onCommentCreation(newComment, comment))}/>
-        <Comments comments={comment.comments} onCommentCreation={onCommentCreation}/>
+        <CommentInput onCommentCreation={onCommentCreation}/>
+        <Comments comments={comment.comments} onCommentReplyCreated={onCommentReplyCreated}/>
     </li>
 }
 
-export function Comments({comments, onCommentCreation}) {
+export function Comments({comments, onCommentReplyCreated}) {
     return <ul className="collection">
         {comments && comments.map(comment => <Comment key={comment.id} comment={comment}
-                                                      onCommentCreation={onCommentCreation}/>)}
+                                                      onCommentReplyCreated={onCommentReplyCreated}/>)}
     </ul>
 }
 

@@ -1,6 +1,7 @@
 import React, {useEffect, useState} from "react";
 import {backendUrl} from "../../config";
 import {CommentInput, Comments} from "./Comments";
+import {addCommentReply} from "../../api";
 
 const commentsUrl = backendUrl + "/comments";
 
@@ -73,22 +74,18 @@ function ExtendedEntry({entry, pagePath}) {
 
     async function onCommentCreation(comment, url) {
         await createComment(comment, url);
-        update();
+        return await update();
     }
 
     function onCommentToEntry(comment) {
         return onCommentCreation(comment, entryPath + "comments/");
     }
 
-    function onCommentToComment(comment, parent) {
-        return onCommentCreation(comment, commentsUrl + "/" + parent.id +"/");
-    }
-
     return details == null
         ? <div>"loading"</div>
         : <div>
             <CommentInput onCommentCreation={onCommentToEntry}/>
-            <Comments comments={details.comments} onCommentCreation={onCommentToComment}/>
+            <Comments comments={details.comments} onCommentReplyCreated={update}/>
         </div>
 }
 

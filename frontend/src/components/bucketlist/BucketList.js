@@ -39,8 +39,9 @@ export function BucketList({id, match}) {
 }
 
 function BucketListComments({bucketList}) {
+
     return <div>
         <CommentInput />
-        <Comments comments={bucketList.comments || null} />
+        <Comments comments={bucketList.comments || null} onCommentCreation={} />
     </div>
 }

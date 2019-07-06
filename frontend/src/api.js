@@ -28,3 +28,7 @@ backendFetch.post = (url, config) => backendFetch(url, { ...config, method: "POS
 backendFetch.get = (url, config) => backendFetch(url, { ...config, method: "GET"});
 backendFetch.put = (url, config) => backendFetch(url, { ...config, method: "PUT"});
 backendFetch.delete = (url, config) => backendFetch(url, { ...config, method: "DELETE"});
+
+export function addCommentReply(comment, parentId) {
+    return backendFetch.post("/comments/" + parentId + "/", {body: JSON.stringify(comment)})
+}
