@@ -30,6 +30,7 @@ public class BucketList{
     private List<BucketListEntry> entries;
     private int numEntries;
 
+    @JsonProperty("created")
     private Date createnDate;
     private Date lastUpdated;
 

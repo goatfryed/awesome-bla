@@ -24,7 +24,10 @@ export function BucketList({id, match}) {
     }
 
     return <div>
-        <span>{bucketList.title}({bucketList.id})</span>
+        <div>
+            <span>{bucketList.title}({bucketList.id})</span><br/>
+            <span>{bucketList.created}</span>
+        </div>
         <ul>
             {/* i'd actually prefer to just provide relative routes, but than activeClassName won't match
                 see https://github.com/ReactTraining/react-router/issues/6201#issuecomment-403291934
