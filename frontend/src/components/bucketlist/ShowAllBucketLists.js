@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import Axios from 'axios';
+import {Link} from "react-router-dom";
 
 export class AllBucketLists extends Component {
 	state = {
@@ -17,7 +18,7 @@ export class AllBucketLists extends Component {
 	render() {
 		const bucketLists = this.state.bucketLists.map(bucketList => {
 			return (
-				<div className="collection-item grey lighten-3">{bucketList.title}</div>
+				<Link  to={"/bucketlist/" + bucketList.id} className="collection-item grey lighten-3">{bucketList.title}</Link>
 			);
 		});
 
