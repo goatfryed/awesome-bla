@@ -33,3 +33,19 @@ INSERT INTO comment_comments (comment_id, comments_id)
     (301, 30101),
     (30101, 301011)
 ;
+
+INSERT INTO comment (id, created, comment)
+    VALUES
+    (42100, NOW(), 'I should buy a boat and quit my job'),
+    (42200, NOW(), 'Web Engineering is dead. We should focus on desktop applications!'),
+    (42300, NOW(), 'We should definetliy learn Reason instead of Typescript'),
+    (42400, NOW(), 'I hope, i get to know nice people')
+;
+
+INSERT INTO bucket_list_comments (bucket_list_id, comments_id)
+    VALUES
+    (42, 42100),
+    (42, 42200),
+    (42, 42300),
+    (42, 42400)
+;
