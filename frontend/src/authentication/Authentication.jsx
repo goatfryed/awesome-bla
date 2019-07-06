@@ -1,6 +1,6 @@
 
 import React from "react";
-import backend from "./Configuration";
+import backend from "../Configuration";
 import jwt_decode from 'jwt-decode';
 
 // If set to true, a JWT payload is accepted as it is in the cookie.
