@@ -13,8 +13,13 @@ export function BucketList({id, match}) {
             <li><NavLink to={match.url+"/comments"} activeClassName="selected">comments</NavLink></li>
         </ul>
         <Switch>
+            <Route path={match.path+"entries"} render={() => <BucketListComments id={id}/>} />
             <Route path={match.path+"comments"}  render={() => <BucketListEntries id={id}/>} />
             <Redirect to={match.url+"/entries"} />
         </Switch>
     </div>
+}
+
+function BucketListComments({id}) {
+    return <span>Bucketlist {id}</span>
 }

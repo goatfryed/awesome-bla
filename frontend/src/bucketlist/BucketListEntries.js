@@ -3,9 +3,8 @@ import {backendUrl} from "../config";
 
 const commentsUrl = backendUrl + "/comments";
 
-export function BucketListEntries(props) {
-    console.log(props);
-    let pagePath = backendUrl + "/bucketlists/"+props.id+"/entries";
+export function BucketListEntries({id}) {
+    let pagePath = backendUrl + "/bucketlists/"+id+"/entries";
 
     let [entries, setEntries] = useState(null);
 
