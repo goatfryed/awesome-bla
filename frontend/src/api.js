@@ -21,7 +21,11 @@ export async function backendFetch(url, config) {
         }
     );
 
-    return await response.json();
+    if (response.status === 200) {
+        return await response.json();
+    } else {
+        return response;
+    }
 };
 
 backendFetch.post = (url, config) => backendFetch(url, { ...config, method: "POST"});

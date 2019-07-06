@@ -42,6 +42,6 @@ function BucketListComments({bucketList}) {
 
     return <div>
         <CommentInput />
-        <Comments comments={bucketList.comments || null} onCommentCreation={} />
+        <Comments comments={bucketList.comments || null} />
     </div>
 }
