@@ -1,8 +1,10 @@
 package de.uniks.webengineering2019.bla.controllers;
 
 import de.uniks.webengineering2019.bla.model.BucketList;
+import de.uniks.webengineering2019.bla.model.Comment;
 import de.uniks.webengineering2019.bla.repositories.BucketListRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+import de.uniks.webengineering2019.bla.repositories.CommentRepository;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -12,21 +14,16 @@ import java.util.List;
 @RestController
 public class BucketListController{
 
-    /*@GetMapping("/all")
-    public List<BucketList> getAllLists(){
-        List<BucketList> list = new ArrayList<>();
-        for(int i=0;i<10;i++){
-            BucketList it = BucketList.builder().title("Testliste "+i).createnDate(new Date()).lastUpdated(new Date()).entries(new ArrayList<>()).build();
-            for(int j = 0; j<i%5;i++){
-                it.getEntries().add(BucketListEntry.builder().title("Title "+(j+i)).build());
-            }
-            list.add(it);
-        }
-        return list;
-    }*/
+    private final BucketListRepository bucketListRepository;
+    private final CommentRepository commentRepository;
 
-    @Autowired
-    BucketListRepository bucketListRepository;
+    public BucketListController(
+        BucketListRepository bucketListRepository,
+        CommentRepository commentRepository
+    ) {
+        this.bucketListRepository = bucketListRepository;
+        this.commentRepository = commentRepository;
+    }
 
     @GetMapping("/all")
     public List<BucketList> getAllLists(){
@@ -37,5 +34,20 @@ public class BucketListController{
     public BucketList get(@PathVariable BucketList bucketList) {
         bucketList.getEntries().clear();
         return bucketList;
+    }
+
+    @PostMapping("/{bucketList}/comments/")
+    @ResponseStatus(HttpStatus.CREATED)
+    public void addComment(
+            @RequestBody Comment comment,
+            @PathVariable BucketList bucketList
+    ) {
+        if (bucketList == null) {
+            throw new ResourceNotFoundException("requested entry unknown");
+        }
+
+        bucketList.getComments().add(comment);
+        commentRepository.save(comment);
+        bucketListRepository.save(bucketList);
     }
 }

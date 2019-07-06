@@ -22,7 +22,7 @@ public class CommentController {
     }
 
     @PostMapping("/")
-    @ResponseStatus(HttpStatus.ACCEPTED)
+    @ResponseStatus(HttpStatus.CREATED)
     public void addComment(@RequestBody Comment comment, @PathVariable Comment parent)
     {
         parent.getComments().add(comment);

@@ -58,6 +58,7 @@ public class BucketListEntryController {
     }
 
     @PostMapping("/{entry}/comments/")
+    @ResponseStatus(HttpStatus.CREATED)
     public void addComment(@RequestBody Comment comment, @PathVariable BucketListEntry entry)
     {
         if (entry == null) {
