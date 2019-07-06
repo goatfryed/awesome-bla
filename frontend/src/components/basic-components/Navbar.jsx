@@ -1,5 +1,5 @@
 import React from "react";
-import Authentication from "../authentication/Authentication";
+import Authentication from "../../authentication/Authentication";
 import { NavLink } from 'react-router-dom'
 
 export class Navbar extends React.Component {

@@ -1,5 +1,5 @@
 import React from "react";
-import {backendUrl} from "../config";
+import {backendUrl} from "../../config";
 
 export class ListEntryNew extends React.Component {
     constructor(props) {

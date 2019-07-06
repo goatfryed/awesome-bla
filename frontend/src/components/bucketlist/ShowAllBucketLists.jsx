@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import Axios from 'axios';
 
-class LandingPage extends Component {
+export class AllBucketLists extends Component {
 	state = {
 		bucketLists: []
 	};
@@ -31,5 +31,3 @@ class LandingPage extends Component {
 		);
 	}
 }
-
-export default LandingPage;

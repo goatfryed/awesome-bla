@@ -2,20 +2,18 @@ import React from "react";
 import {BrowserRouter as Router, Route,Switch} from "react-router-dom";
 
 //Basic Components
-import {Navbar} from "./components/Navbar";
-
-//Components
-import {BucketListEntries} from "./components/BucketListEntries";
-import {ListEntryNew} from "./pages/ListEntryNew";
+import {Navbar} from "./components/basic-components/Navbar";
 import {AuthenticationCallback} from "./authentication/AuthenticationCallback";
 
-//Pages
-import {frontpage} from "./pages/frontpage"
-import {friends} from "./pages/friends"
+//Components
+import {BucketListEntries} from "./components/bucketlist/BucketListEntries";
+import {ListEntryNew} from "./components/bucketlist/ListEntryNew";
+import {AllBucketLists} from "./components/bucketlist/ShowAllBucketLists"
 
-function Page404() {
-  return <span>These are not the pages you're looking for ¯\_(ツ)_/¯</span>
-}
+//Pages
+import {frontpage} from "./components/pages/frontpage"
+import {friends} from "./components/pages/friends"
+import page404 from "./components/pages/Page404"
 
 function App() {
   return <Router>
@@ -24,10 +22,10 @@ function App() {
       <Route path="/callback" component={AuthenticationCallback}/>
       <Route exact path="/listentry/new" component={ListEntryNew}/>
       <Route path="/bucketlist/:id/entries" component={BucketListEntries} />
-      {/*<Route path="/" exact component={LandingPage}/>*/}
+      <Route path="/bucketlists/all" exact component={AllBucketLists}/>
       <Route path="/friends" component={friends}/>
       <Route path="/" exact component={frontpage}/>
-      <Route path="/" component={Page404}/>
+      <Route path="/" component={page404}/>
     </Switch>
   </Router>
 }
