@@ -21,7 +21,7 @@ function App() {
       <Navbar/>
       <Switch>
         <Route path="/callback" component={AuthenticationCallback}/>
-        <Route exact path="/listentry/new" component={ListEntryNew}/>
+        <Route path="/listentry/new" component={ListEntryNew}/>
         <Route path="/bucketlist/:id/entries" component={BucketListEntries} />
         <Route path="/bucketlists/all" exact component={AllBucketLists}/>
         <Route path="/friends" component={friends}/>
