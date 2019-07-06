@@ -3,8 +3,7 @@ import {backendUrl} from "../config";
 
 const commentsUrl = backendUrl + "/comments";
 
-export function BucketListEntries({match}) {
-    let {id} = match.params;
+export function BucketListEntries({id}) {
     let pagePath = backendUrl + "/bucketlists/"+id+"/entries";
 
     let [entries, setEntries] = useState(null);
@@ -24,8 +23,6 @@ export function BucketListEntries({match}) {
             {entries && entries.map( entry => <BucketListEntry key={entry.id} entry={entry} pagePath={pagePath} forceUpdate={update}/>)}
     </ul>;
 }
-
-
 
 function BucketListEntry({entry, pagePath, forceUpdate}) {
     let [showDetails, setShowDetails] = useState(false);

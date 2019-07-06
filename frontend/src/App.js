@@ -17,7 +17,8 @@ const App = () => {
 				<Switch>
 					<Route path="/callback" component={AuthenticationCallback}/>
 					<Route exact path="/listentry/new" component={ListEntryNew}/>
-					<Route path="/bucketlist/:id/entries" component={BucketListEntries} />
+					{/* https://reacttraining.com/react-router/web/api/Route/render-func */}
+					<Route path="/bucketlist/:id/entries" render={({match}) => <BucketListEntries id={match.id} />} />
 					<Route path="/" exact component={LandingPage} />
 					<Route path="/" component={Page404} />
 				</Switch>
