@@ -40,8 +40,15 @@ export function BucketList({id, match}) {
 
 function BucketListComments({bucketList}) {
 
+    async function addCommentToBucketList(comment) {
+        await backendFetch.post(
+            "/bucketlists/" + bucketList.id + "/comments/",
+            {body: JSON.stringify(comment)}
+        );
+    }
+
     return <div>
-        <CommentInput />
+        <CommentInput onCommentCreation={addCommentToBucketList} />
         <Comments comments={bucketList.comments || null} />
     </div>
 }
