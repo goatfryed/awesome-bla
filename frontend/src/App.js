@@ -5,8 +5,8 @@ import { AuthenticationCallback } from "./AuthenticationCallback";
 import NavigationBar from './components/NavigationBar';
 import LandingPage from './components/LandingPage';
 import {ListEntryNew} from "./pages/ListEntryNew";
-import {BucketListEntries} from "./bucketlist/BucketListEntries";
 import {Header} from "./Header";
+import {BucketList} from "./bucketlist/BucketList";
 
 const App = () => {
 	return (
@@ -18,7 +18,7 @@ const App = () => {
 					<Route path="/callback" component={AuthenticationCallback}/>
 					<Route exact path="/listentry/new" component={ListEntryNew}/>
 					{/* https://reacttraining.com/react-router/web/api/Route/render-func */}
-					<Route path="/bucketlist/:id/entries" render={({match}) => <BucketListEntries id={match.id} />} />
+					<Route path="/bucketlist/:id/" render={({match}) => <BucketList match={match} id={match.params.id} />} />
 					<Route path="/" exact component={LandingPage} />
 					<Route path="/" component={Page404} />
 				</Switch>

@@ -3,8 +3,9 @@ import {backendUrl} from "../config";
 
 const commentsUrl = backendUrl + "/comments";
 
-export function BucketListEntries({id}) {
-    let pagePath = backendUrl + "/bucketlists/"+id+"/entries";
+export function BucketListEntries(props) {
+    console.log(props);
+    let pagePath = backendUrl + "/bucketlists/"+props.id+"/entries";
 
     let [entries, setEntries] = useState(null);
 
@@ -20,7 +21,7 @@ export function BucketListEntries({id}) {
         [pagePath]
     );
     return <ul>
-            {entries && entries.map( entry => <BucketListEntry key={entry.id} entry={entry} pagePath={pagePath} forceUpdate={update}/>)}
+        {entries && entries.map( entry => <BucketListEntry key={entry.id} entry={entry} pagePath={pagePath} forceUpdate={update}/>)}
     </ul>;
 }
 
