@@ -17,16 +17,18 @@ import page404 from "./components/pages/Page404"
 
 function App() {
   return <Router>
-    <Navbar/>
-    <Switch>
-      <Route path="/callback" component={AuthenticationCallback}/>
-      <Route exact path="/listentry/new" component={ListEntryNew}/>
-      <Route path="/bucketlist/:id/entries" component={BucketListEntries} />
-      <Route path="/bucketlists/all" exact component={AllBucketLists}/>
-      <Route path="/friends" component={friends}/>
-      <Route path="/" exact component={frontpage}/>
-      <Route path="/" component={page404}/>
-    </Switch>
+    <div id="app">
+      <Navbar/>
+      <Switch>
+        <Route path="/callback" component={AuthenticationCallback}/>
+        <Route exact path="/listentry/new" component={ListEntryNew}/>
+        <Route path="/bucketlist/:id/entries" component={BucketListEntries} />
+        <Route path="/bucketlists/all" exact component={AllBucketLists}/>
+        <Route path="/friends" component={friends}/>
+        <Route path="/" exact component={frontpage}/>
+        <Route path="/" component={page404}/>
+      </Switch>
+    </div>
   </Router>
 }
 
