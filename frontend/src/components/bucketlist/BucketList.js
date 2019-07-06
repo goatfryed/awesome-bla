@@ -8,11 +8,13 @@ import {CommentInput, Comments} from "./Comments";
 export function BucketList({id, match}) {
     const [bucketList, setBucketList] = React.useState(null);
 
+    function update() {
+        backendFetch("/bucketlists/" + id + "/").then(data => setBucketList(data));
+    }
+
     React.useEffect(
         () => {
-            (async () => {
-                setBucketList(await backendFetch("/bucketlists/" + id + "/"));
-            })();
+            update();
         },
         [id]
     );
@@ -32,23 +34,24 @@ export function BucketList({id, match}) {
         </ul>
         <Switch>
             <Route path={match.path+"entries"}  render={() => <BucketListEntries id={id}/>} />
-            <Route path={match.path+"comments"} render={() => <BucketListComments bucketList={bucketList}/>} />
+            <Route path={match.path+"comments"} render={() => <BucketListComments bucketList={bucketList} update={update}/>} />
             <Redirect to={match.url+"/entries"} />
         </Switch>
     </div>
 }
 
-function BucketListComments({bucketList}) {
+function BucketListComments({bucketList, update}) {
 
     async function addCommentToBucketList(comment) {
         await backendFetch.post(
             "/bucketlists/" + bucketList.id + "/comments/",
             {body: JSON.stringify(comment)}
         );
+        update();
     }
 
     return <div>
         <CommentInput onCommentCreation={addCommentToBucketList} />
-        <Comments comments={bucketList.comments || null} />
+        <Comments comments={bucketList.comments || null} onCommentReplyCreated={update}/>
     </div>
 }
