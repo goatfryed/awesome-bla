@@ -29,8 +29,8 @@ import java.util.Optional;
 public class AuthenticationFilter implements Filter {
     private static final Logger LOG = LoggerFactory.getLogger(AuthenticationFilter.class);
 
-    //@Resource
-    //private User user;
+    @Resource
+    private User user;
 
     private UserRepository userRepository;
 
@@ -79,7 +79,6 @@ public class AuthenticationFilter implements Filter {
         Optional<Claims> claims = decodeRequest(request);
         if (claims.isPresent()) {
             Claims c = claims.get();
-            User user = new User();
             user.setId((long) c.get("id", Integer.class));
             user.setUserName(c.getSubject());
             user.setFullName(c.get("name", String.class));
