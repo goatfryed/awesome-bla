@@ -15,6 +15,7 @@ import java.util.List;
  */
 @Setter
 @Getter
+@NoArgsConstructor
 @AllArgsConstructor
 @Entity
 public class Comment implements Commentable {
@@ -33,15 +34,15 @@ public class Comment implements Commentable {
     @OrderBy("created DESC")
     private List<Comment> comments;
 
+    @ManyToOne
+    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
+    private User user;
+
     @PrePersist
     public void init() {
         if (created == null) {
             created = new Date();
         }
-    }
-
-    public Comment () {
-
     }
 
     @Override
