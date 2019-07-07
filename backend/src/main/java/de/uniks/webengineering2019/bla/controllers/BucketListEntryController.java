@@ -86,6 +86,7 @@ public class BucketListEntryController {
     }
 
     @PutMapping("/{entry}/")
+    @ResponseStatus(HttpStatus.ACCEPTED)
     public void comments(
             @RequestBody String updateJson,
             @PathVariable BucketListEntry entry,

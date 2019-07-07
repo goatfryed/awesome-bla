@@ -1,15 +1,14 @@
 import React, {useEffect, useState} from "react";
-import {backendUrl} from "../../config";
 import {CommentInput, Comments} from "./Comments";
+import {backendFetch} from "../../api";
 
 export function BucketListEntries({id}) {
-    let pagePath = backendUrl + "/bucketlists/"+id+"/entries";
+    let pagePath = "/bucketlists/"+id+"/entries";
 
     let [entries, setEntries] = useState(null);
 
     let update = async () => {
-        const response = await fetch(pagePath + "/");
-        const json = await response.json();
+        const json = await backendFetch(pagePath + "/");
         setEntries(json);
     };
 
@@ -32,13 +31,8 @@ function BucketListEntry({entry, pagePath, forceUpdate}) {
             completed: wasCompleted ? null : Date.now()
         };
 
-        const response = await fetch(
+        const response = await backendFetch.put(
             pagePath + "/" + entry.id + "/", {
-            method: "put",
-            headers: {
-                'Accept': 'application/json',
-                'Content-Type': 'application/json',
-            },
             body: JSON.stringify(nextEntryState)
         });
         forceUpdate();
@@ -59,8 +53,7 @@ function ExtendedEntry({entry, pagePath}) {
     let entryPath = pagePath+"/"+entry.id+"/";
 
     async function update() {
-        const response = await fetch( entryPath);
-        const json = await response.json();
+        const json = await backendFetch( entryPath);
         setDetails(json);
     }
 
@@ -87,13 +80,8 @@ function ExtendedEntry({entry, pagePath}) {
 }
 
 function createComment(comment, url) {
-    return fetch(
+    return backendFetch.post(
         url,{
-        method: 'post',
-        headers: {
-            'Accept': 'application/json',
-            'Content-Type': 'application/json',
-        },
         body: JSON.stringify(comment)
     });
 }
