@@ -23,7 +23,7 @@ export function BucketList({id, match}) {
         return <span>Loading</span>;
     }
 
-    return <div>
+    return <div className="content">
         <div>
             <span>{bucketList.title}({bucketList.id})</span><br/>
             <span>{bucketList.created}</span>
