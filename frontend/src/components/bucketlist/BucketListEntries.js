@@ -44,14 +44,18 @@ function BucketListEntry({entry, pagePath, forceUpdate}) {
         toggleCompletionState(entry.completed);
     };
 
-    return <li className="collection-item" onClick={() => setShowDetails(!showDetails)}>
-            <input type="checkbox"
-                   checked={entry.completed || false}
-                   onChange={onToggleDone}
-                   // don't let the onClick handler for expander fire, if this checkbox is toggled
-                   onClick={event => event.stopPropagation()}
-            />
-        <span >{entry.title}</span>
+    return <li className="collection-item">
+        <div  onClick={() => setShowDetails(!showDetails)}>
+            <label>
+                <input type="checkbox"
+                       checked={entry.completed || false}
+                       onChange={onToggleDone}
+                       // don't let the onClick handler for expander fire, if this checkbox is toggled
+                       onClick={event => event.stopPropagation()}
+                />
+                <span>{entry.title}</span>
+            </label>
+        </div>
         {showDetails && <ExtendedEntry entry={entry} pagePath={pagePath}/>}
     </li>;
 }
