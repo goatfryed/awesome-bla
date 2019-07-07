@@ -1,10 +1,7 @@
 
 import React from "react";
-import backend from "../Configuration";
+import {isDebug,backend} from "../Configuration";
 import jwt_decode from 'jwt-decode';
-
-// If set to true, a JWT payload is accepted as it is in the cookie.
-const isDebugAuthentication = false;
 
 export class Authentication {
     constructor(){
@@ -21,7 +18,7 @@ export class Authentication {
         this.jwt = token;
         if (token !== "") {
             let decoded = undefined;
-            if (isDebugAuthentication) {
+            if (isDebug) {
                 decoded = {
                     sub: token
                 };
@@ -55,11 +52,19 @@ export class Authentication {
         return this.token;
     }
 
+    fakeLogin(user){
+        console.log("Fake Login user: "+user);
+        this.parseToken(user);
+    }
+
+    handleChangeFakeUser(e) {
+        this.setState({ fakeUser: e.target.value });
+    }
 
     parseToken(token) {
         this.setCookie("token", token, 90);
         let decoded = undefined;
-        if (isDebugAuthentication) {
+        if (isDebug) {
             decoded = {
                 sub: token
             };
@@ -110,7 +115,6 @@ export class Authentication {
     eraseCookie(name) {
         document.cookie = name + '=; Max-Age=-99999999;';
     }
-
 }
 
 const instance = new Authentication();

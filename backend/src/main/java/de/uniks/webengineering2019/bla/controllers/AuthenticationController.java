@@ -4,10 +4,7 @@ import de.uniks.webengineering2019.bla.service.AuthenticationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -15,6 +12,8 @@ import java.util.Map;
 @CrossOrigin
 @RestController
 public class AuthenticationController {
+
+
 
     private AuthenticationService authenticationService;
 
@@ -40,5 +39,11 @@ public class AuthenticationController {
         Map<String, String> map = new HashMap<>();
         map.put("url", authenticationService.getAuthenticationURL());
         return map;
+    }
+
+    @CrossOrigin
+    @PostMapping("/api/test")
+    public ResponseEntity test(){
+        return ResponseEntity.ok("Access granted");
     }
 }
