@@ -18,12 +18,12 @@ export class AllBucketLists extends Component {
 	render() {
 		const bucketLists = this.state.bucketLists.map(bucketList => {
 			return (
-				<Link  to={"/bucketlist/" + bucketList.id} className="collection-item grey lighten-3">{bucketList.title}</Link>
+                <div><Link  to={"/bucketlist/" + bucketList.id} className="collection-item grey lighten-3">{bucketList.title}</Link></div>
 			);
 		});
 
 		return (
-			<div className="container left">
+			<div className="container left content">
 				<h5>Bucket Lists</h5>
 				<div className="collection grey lighten-1">
 					{ bucketLists }
