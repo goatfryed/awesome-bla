@@ -14,6 +14,8 @@ import {AllBucketLists} from "./components/bucketlist/ShowAllBucketLists"
 import {frontpage} from "./components/pages/frontpage"
 import {friends} from "./components/pages/friends"
 import page404 from "./components/pages/Page404"
+import {users} from "./components/pages/users.js"
+
 
 function App() {
   return <Router>
@@ -25,6 +27,7 @@ function App() {
         <Route path="/bucketlist/:id/entries" component={BucketListEntries} />
         <Route path="/bucketlists/all" exact component={AllBucketLists}/>
         <Route path="/friends" component={friends}/>
+        <Route path="/users" component={users}/>
         <Route path="/" exact component={frontpage}/>
         <Route path="/" component={page404}/>
       </Switch>
