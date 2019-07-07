@@ -8,8 +8,11 @@ function Comment({comment, onCommentReplyCreated}) {
         onCommentReplyCreated && onCommentReplyCreated(reply, comment);
     };
 
+    let user = comment.user == null ? "anonymous" : comment.user.userName;
+
     return <li className="collection-item">
-        <span>{comment.created.substr(0, 19)}: </span><span>{comment.comment}</span>
+        <div>{comment.comment}</div>
+        <div>{user}, {comment.created.substr(0, 19)}</div>
         <CommentInput onCommentCreation={onCommentCreation}/>
         <Comments comments={comment.comments} onCommentReplyCreated={onCommentReplyCreated}/>
     </li>
