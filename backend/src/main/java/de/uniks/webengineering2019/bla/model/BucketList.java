@@ -17,7 +17,7 @@ import javax.persistence.*;
 @Builder
 @Entity
 @Table(catalog="bucketlist")
-public class BucketList{
+public class BucketList implements Commentable {
 
     @Id
     @GeneratedValue
