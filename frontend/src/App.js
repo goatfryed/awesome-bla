@@ -1,5 +1,5 @@
 import React from "react";
-import {BrowserRouter as Router, Route,Switch} from "react-router-dom";
+import {Route, Switch, BrowserRouter as Router} from "react-router-dom";
 
 //CSS
 import './styles.scss';
@@ -9,9 +9,9 @@ import {Navbar} from "./components/basic-components/Navbar";
 import {AuthenticationCallback} from "./authentication/AuthenticationCallback";
 
 //Components
-import {BucketListEntries} from "./components/bucketlist/BucketListEntries";
 import {ListEntryNew} from "./components/bucketlist/ListEntryNew";
 import {AllBucketLists} from "./components/bucketlist/ShowAllBucketLists"
+import {BucketList} from "./components/bucketlist/BucketList";
 
 //Pages
 import {frontpage} from "./components/pages/frontpage"
@@ -25,7 +25,8 @@ function App() {
       <Switch>
         <Route path="/callback" component={AuthenticationCallback}/>
         <Route path="/listentry/new" component={ListEntryNew}/>
-        <Route path="/bucketlist/:id/entries" component={BucketListEntries} />
+        {/* https://reacttraining.com/react-router/web/api/Route/render-func */}
+        <Route path="/bucketlist/:id/" render={({match}) => <BucketList match={match} id={match.params.id} />} />
         <Route path="/bucketlists/all" exact component={AllBucketLists}/>
         <Route path="/friends" component={friends}/>
         <Route path="/" exact component={frontpage}/>

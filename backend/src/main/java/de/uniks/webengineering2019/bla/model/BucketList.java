@@ -3,17 +3,16 @@ package de.uniks.webengineering2019.bla.model;
 import java.util.Date;
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 import javax.persistence.*;
 
 @Setter
 @Getter
+@NoArgsConstructor
 @AllArgsConstructor
 @Builder
 @Entity
@@ -31,11 +30,9 @@ public class BucketList{
     private List<BucketListEntry> entries;
     private int numEntries;
 
+    @JsonProperty("created")
     private Date createnDate;
     private Date lastUpdated;
-
-    public BucketList(){
-    }
 
     public void addEntry(BucketListEntry newEntry){
         this.entries.add(newEntry);
@@ -43,4 +40,14 @@ public class BucketList{
         this.numEntries = this.entries.size();
     }
 
+    @OneToMany
+    @OrderBy("created DESC")
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    private List<Comment> comments;
+
+    @JsonProperty
+    public List<Comment> getComments()
+    {
+        return comments;
+    }
 }

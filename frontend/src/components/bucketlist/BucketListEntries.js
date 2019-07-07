@@ -1,10 +1,8 @@
 import React, {useEffect, useState} from "react";
 import {backendUrl} from "../../config";
+import {CommentInput, Comments} from "./Comments";
 
-const commentsUrl = backendUrl + "/comments";
-
-export function BucketListEntries({match}) {
-    let {id} = match.params;
+export function BucketListEntries({id}) {
     let pagePath = backendUrl + "/bucketlists/"+id+"/entries";
 
     let [entries, setEntries] = useState(null);
@@ -20,12 +18,10 @@ export function BucketListEntries({match}) {
         },
         [pagePath]
     );
-    return <div  className="content"><ul>
-            {entries && entries.map( entry => <BucketListEntry key={entry.id} entry={entry} pagePath={pagePath} forceUpdate={update}/>)}
+    return <div  className="content"><ul className="collection">
+        {entries && entries.map( entry => <BucketListEntry key={entry.id} entry={entry} pagePath={pagePath} forceUpdate={update}/>)}
     </ul></div>;
 }
-
-
 
 function BucketListEntry({entry, pagePath, forceUpdate}) {
     let [showDetails, setShowDetails] = useState(false);
@@ -48,9 +44,11 @@ function BucketListEntry({entry, pagePath, forceUpdate}) {
         forceUpdate();
     }
 
-    return <li>
-        <input type="checkbox" checked={entry.completed || false} onChange={() => toggleCompletionState(entry.completed)}/>
-        <span onClick={() => setShowDetails(!showDetails)}>{entry.title}</span>
+    return <li className="collection-item">
+        <label>
+            <input type="checkbox" checked={entry.completed || false} onChange={() => toggleCompletionState(entry.completed)}/>
+            <span onClick={() => setShowDetails(!showDetails)}>{entry.title}</span>
+        </label>
         {showDetails && <ExtendedEntry entry={entry} pagePath={pagePath}/>}
     </li>;
 }
@@ -71,55 +69,21 @@ function ExtendedEntry({entry, pagePath}) {
         [entryPath]
     );
 
-    async function onCommentCreation(comment) {
-        await createComment(comment, entryPath + "comments/");
-        update();
+    async function onCommentCreation(comment, url) {
+        await createComment(comment, url);
+        return await update();
+    }
+
+    function onCommentToEntry(comment) {
+        return onCommentCreation(comment, entryPath + "comments/");
     }
 
     return details == null
         ? <div>"loading"</div>
         : <div>
-            <CommentInput onCommentCreation={onCommentCreation}/>
-            <Comments comments={details.comments} forceUpdate={update}/>
+            <CommentInput onCommentCreation={onCommentToEntry}/>
+            <Comments comments={details.comments} onCommentReplyCreated={update}/>
         </div>
-}
-
-function Comment({comment, forceUpdate}) {
-    async function onCommentCreation(newComment) {
-
-        await createComment(newComment, commentsUrl + "/" + comment.id +"/");
-        forceUpdate();
-    }
-
-    return <div>
-        <span>{comment.created.substr(0,19)}: </span><span>{comment.comment}</span>
-        <CommentInput onCommentCreation={onCommentCreation}/>
-        <Comments comments={comment.comments} forceUpdate={forceUpdate}/>
-    </div>
-}
-
-function Comments({comments, forceUpdate}) {
-    return <ul>
-        {comments && comments.map(comment => <Comment key={comment.id} comment={comment} forceUpdate={forceUpdate}/>)}
-    </ul>
-}
-
-function CommentInput({onCommentCreation}) {
-    let [comment, setComment] = useState('');
-
-    function onSubmit(e) {
-        e.preventDefault();
-
-        if(comment.trim() === '') return;
-
-        setComment('');
-        onCommentCreation({comment});
-    }
-
-    return <form onSubmit={onSubmit}>
-        <input type="text" value={comment} placeholder="Comment something" onChange={e => setComment(e.target.value)} />
-        <button type="submit">submit</button>
-    </form>
 }
 
 function createComment(comment, url) {
