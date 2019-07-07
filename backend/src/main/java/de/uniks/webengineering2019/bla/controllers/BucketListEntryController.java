@@ -1,6 +1,7 @@
 package de.uniks.webengineering2019.bla.controllers;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import de.uniks.webengineering2019.bla.comments.CommentCreationService;
 import de.uniks.webengineering2019.bla.model.BucketList;
 import de.uniks.webengineering2019.bla.model.BucketListEntry;
 import de.uniks.webengineering2019.bla.model.Comment;
@@ -24,18 +25,18 @@ public class BucketListEntryController {
     @NonNull
     private final BucketListEntryRepository entryRepository;
     @NonNull
-    private final CommentRepository commentRepository;
-    @NonNull
     private final BucketListRepository bucketListRepository;
+    @NonNull
+    private final CommentCreationService commentCreationService;
 
     public BucketListEntryController(
             @NonNull BucketListEntryRepository entryRepository,
             @NonNull BucketListRepository bucketListRepository,
-            @NonNull CommentRepository commentRepository
+            @NonNull CommentCreationService commentCreationService
     ) {
         this.entryRepository = entryRepository;
-        this.commentRepository = commentRepository;
         this.bucketListRepository = bucketListRepository;
+        this.commentCreationService = commentCreationService;
     }
 
     @GetMapping("/api/bucketlists/entries")
@@ -64,10 +65,7 @@ public class BucketListEntryController {
         if (entry == null) {
             throw new ResourceNotFoundException("requested entry unknown");
         }
-
-        entry.getComments().add(comment);
-        commentRepository.save(comment);
-        entryRepository.save(entry);
+        commentCreationService.addComment(comment, entry);
     }
 
     @RequestMapping(value = "/add", method = RequestMethod.POST)
