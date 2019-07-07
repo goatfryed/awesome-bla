@@ -34,13 +34,10 @@ export class Navbar extends React.Component {
                 'Authorization': 'Bearer ' + Authentication.getToken(),
             },
             //'Accept': 'application/json'
-        }).then((response) => {
-            console.log(response);
-        }).then(res=>{
-            console.log("Error: "+res.status);
-        }).then((err=>{
-            console.log("Error: "+err.status);
-        }))
+        }).then((response) => console.log(response)
+        ).catch(err=>{
+            console.log("Error: "+err);
+        })
     }
 
     //------------------
