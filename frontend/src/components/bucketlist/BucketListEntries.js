@@ -20,9 +20,9 @@ export function BucketListEntries({match}) {
         },
         [pagePath]
     );
-    return <ul>
+    return <div  className="content"><ul>
             {entries && entries.map( entry => <BucketListEntry key={entry.id} entry={entry} pagePath={pagePath} forceUpdate={update}/>)}
-    </ul>;
+    </ul></div>;
 }
 
 
