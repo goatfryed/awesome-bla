@@ -38,11 +38,19 @@ function BucketListEntry({entry, pagePath, forceUpdate}) {
         forceUpdate();
     }
 
-    return <li className="collection-item">
-        <label>
-            <input type="checkbox" checked={entry.completed || false} onChange={() => toggleCompletionState(entry.completed)}/>
-            <span onClick={() => setShowDetails(!showDetails)}>{entry.title}</span>
-        </label>
+    let onToggleDone = e => {
+        e.stopPropagation();
+        e.preventDefault();
+        toggleCompletionState(entry.completed);
+    };
+
+    return <li className="collection-item" onClick={() => setShowDetails(!showDetails)}>
+            <input type="checkbox"
+                   checked={entry.completed || false}
+                   onChange={onToggleDone}
+                   onClick={event => event.stopPropagation()}
+            />
+        <span >{entry.title}</span>
         {showDetails && <ExtendedEntry entry={entry} pagePath={pagePath}/>}
     </li>;
 }
