@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from "react";
-import {CommentInput, Comments} from "./Comments";
+import {CommentInput, Comments, CommentsBlock} from "./Comments";
 import {backendFetch} from "../../api";
 
 export function BucketListEntries({id}) {
@@ -46,15 +46,13 @@ function BucketListEntry({entry, pagePath, forceUpdate}) {
 
     return <li className="collection-item">
         <div  onClick={() => setShowDetails(!showDetails)}>
-            <label>
-                <input type="checkbox"
-                       checked={entry.completed || false}
-                       onChange={onToggleDone}
-                       // don't let the onClick handler for expander fire, if this checkbox is toggled
-                       onClick={event => event.stopPropagation()}
-                />
-                <span>{entry.title}</span>
-            </label>
+            <input type="checkbox"
+                   checked={entry.completed || false}
+                   onChange={onToggleDone}
+                   // don't let the onClick handler for expander fire, if this checkbox is toggled
+                   onClick={event => event.stopPropagation()}
+            />
+            <span>{entry.title}</span>
         </div>
         {showDetails && <ExtendedEntry entry={entry} pagePath={pagePath}/>}
     </li>;
@@ -86,11 +84,14 @@ function ExtendedEntry({entry, pagePath}) {
 
     return details == null
         ? <div>"loading"</div>
-        : <div>
-            <CommentInput onCommentCreation={onCommentToEntry}/>
-            <Comments comments={details.comments} onCommentReplyCreated={update}/>
-        </div>
+        : <CommentsBlock
+            comments={details.comments}
+            onRootCommentCreation={onCommentToEntry}
+            onReplyCreated={update}
+        />
 }
+
+
 
 function createComment(comment, url) {
     return backendFetch.post(
