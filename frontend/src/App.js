@@ -1,6 +1,9 @@
 import React from "react";
 import {Route, Switch, BrowserRouter as Router} from "react-router-dom";
 
+//CSS
+import './styles.scss';
+
 //Basic Components
 import {Navbar} from "./components/basic-components/Navbar";
 import {AuthenticationCallback} from "./authentication/AuthenticationCallback";

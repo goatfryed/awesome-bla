@@ -1,7 +1,7 @@
 import React from "react";
 
 import Authentication from "./Authentication";
-import backend from "../Configuration";
+import {backend} from "../Configuration";
 
 export class AuthenticationCallback extends React.Component {
     constructor(props) {
@@ -16,7 +16,7 @@ export class AuthenticationCallback extends React.Component {
         }
     }
 
-    componentDidMount() {
+    componentDidMount(){
         // Call backend using submitted code.
         fetch( backend+"/api/authentication/callback?code=" + this.state.code)
             .then((response) => {
