@@ -1,5 +1,6 @@
 package de.uniks.webengineering2019.bla.filters;
 
+import de.uniks.webengineering2019.bla.authentication.UserContext;
 import de.uniks.webengineering2019.bla.model.User;
 import de.uniks.webengineering2019.bla.repositories.UserRepository;
 import io.jsonwebtoken.Claims;
@@ -29,8 +30,8 @@ import java.util.Optional;
 public class AuthenticationFilter implements Filter {
     private static final Logger LOG = LoggerFactory.getLogger(AuthenticationFilter.class);
 
-    //@Resource
-    //private User user;
+
+    private UserContext userContext;
 
     private UserRepository userRepository;
 
@@ -41,8 +42,12 @@ public class AuthenticationFilter implements Filter {
     private boolean debugAuthentication;
 
     @Autowired
-    public AuthenticationFilter(UserRepository userRepository) {
+    public AuthenticationFilter(
+        UserRepository userRepository,
+        UserContext userContext
+    ) {
         this.userRepository = userRepository;
+        this.userContext = userContext;
     }
 
     @PostConstruct
@@ -79,10 +84,14 @@ public class AuthenticationFilter implements Filter {
         Optional<Claims> claims = decodeRequest(request);
         if (claims.isPresent()) {
             Claims c = claims.get();
+
             User user = new User();
             user.setId((long) c.get("id", Integer.class));
             user.setUserName(c.getSubject());
             user.setFullName(c.get("name", String.class));
+
+            userContext.setUser(user);
+
             LOG.info("claimUser={}", user);
             return true;
         }
