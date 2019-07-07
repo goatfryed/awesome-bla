@@ -48,6 +48,7 @@ function BucketListEntry({entry, pagePath, forceUpdate}) {
             <input type="checkbox"
                    checked={entry.completed || false}
                    onChange={onToggleDone}
+                   // don't let the onClick handler for expander fire, if this checkbox is toggled
                    onClick={event => event.stopPropagation()}
             />
         <span >{entry.title}</span>
