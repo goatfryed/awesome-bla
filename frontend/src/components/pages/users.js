@@ -41,7 +41,7 @@ export class users extends React.Component {
         });
 
         return (
-            <div className='postList'>
+            <div className='content'>
                 Benutzersuche: <input type="text" defaultValue="#Username" onChange={this.searchUserChanged}/>
                 {this.state.onLoading?"Loading...":""}
                 <ul>
