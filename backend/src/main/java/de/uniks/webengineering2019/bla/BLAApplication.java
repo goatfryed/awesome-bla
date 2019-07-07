@@ -20,14 +20,7 @@ public class BLAApplication implements CommandLineRunner{
 		SpringApplication.run(BLAApplication.class, args);
 	}
 
-
-	@Autowired
-	BucketListRepository bucketListRepository;
-
 	@Override
 	public void run(String... args){
-		BucketList bucketList = BucketList.builder().createnDate(new Date()).lastUpdated(new Date()).title("Test Bucketlist").numEntries(0).build();
-		bucketListRepository.save(bucketList);
-		//System.out.println("Config is: "+configname);
 	}
 }
