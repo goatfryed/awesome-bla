@@ -1,6 +1,11 @@
 # Awesome Bucket List
 
-## React Hooks
+## Backend
+### Debug Authentication
+Beim Starten der Application muss die Environment Variable `DEBUG_AUTHENTIFICATION=1` gesetzt sein, damit das backend unsignierte Anfragen zulässt.
+
+## Frontend
+### React Hooks
 Hooks are a new addition in React 16.8. They let you use state and other React features without writing a class.
 -- https://reactjs.org/docs/hooks-intro.html
 
