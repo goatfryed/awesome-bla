@@ -23,7 +23,7 @@ function Comment({comment, onCommentReplyCreated}) {
 
     return <li className="collection-item">
         <div>{comment.comment}</div>
-        <div>{user}, {comment.created.substr(0, 19)}</div>
+        <div>{user} · {comment.created.substr(0, 19)}</div>
         <CommentInput onCommentCreation={onCommentCreation}/>
         <Comments comments={comment.comments} onCommentReplyCreated={onCommentReplyCreated}/>
     </li>

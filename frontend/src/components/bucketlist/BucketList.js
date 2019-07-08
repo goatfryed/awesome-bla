@@ -24,18 +24,26 @@ export function BucketList({id, match}) {
     }
 
     return <div className="container">
-            <div>
-                <span>{bucketList.title}({bucketList.id})</span><br/>
-                <span>{bucketList.created}</span>
-        </div>
+        <article className="media">
+            <figure className="media-left">
+                <p className="image is-64x64">
+                    <img src="https://bulma.io/images/placeholders/128x128.png" />
+                </p>
+            </figure>
+            <div className="media-content">
+                <strong>{bucketList.title}({bucketList.id})</strong>
+                <br/>
+                <small><a>Like</a>  · <span>{bucketList.created.substr(0, 19)}</span></small>
+            </div>
+        </article>
         <div className="tabs">
             <ul>
                 {/* i'd actually prefer to just provide relative routes, but than activeClassName won't match
                     see https://github.com/ReactTraining/react-router/issues/6201#issuecomment-403291934
                 */}
-                <NavTab to={match.url+"/newlistentry"}>New Entry</NavTab>
                 <NavTab to={match.url+"/entries"}>Entries</NavTab>
                 <NavTab to={match.url+"/comments"}>Comments</NavTab>
+                <NavTab to={match.url+"/newlistentry"}>New Entry</NavTab>
             </ul>
         </div>
         <Switch>
