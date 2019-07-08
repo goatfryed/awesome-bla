@@ -3,7 +3,7 @@ import {BucketListEntries} from "./BucketListEntries";
 import {NavLink, Redirect} from "react-router-dom";
 import {Route, Switch} from "react-router";
 import {backendFetch} from "../../api";
-import {CommentInput, Comments} from "./Comments";
+import {CommentInput, Comments, CommentsBlock} from "./Comments";
 
 export function BucketList({id, match}) {
     const [bucketList, setBucketList] = React.useState(null);
@@ -23,7 +23,7 @@ export function BucketList({id, match}) {
         return <span>Loading</span>;
     }
 
-    return <div className="content">
+    return <div className="container">
         <div>
             <span>{bucketList.title}({bucketList.id})</span><br/>
             <span>{bucketList.created}</span>
@@ -54,8 +54,9 @@ function BucketListComments({bucketList, update}) {
         update();
     }
 
-    return <div>
-        <CommentInput onCommentCreation={addCommentToBucketList} />
-        <Comments comments={bucketList.comments || null} onCommentReplyCreated={update}/>
-    </div>
+    return <CommentsBlock
+        onRootCommentCreation={addCommentToBucketList}
+        onReplyCreated={update}
+        comments={bucketList.comments}
+    />
 }

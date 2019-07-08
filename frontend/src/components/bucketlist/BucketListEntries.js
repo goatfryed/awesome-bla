@@ -17,7 +17,7 @@ export function BucketListEntries({id}) {
         },
         [pagePath]
     );
-    return <div  className="content"><ul className="collection">
+    return <div  className=""><ul className="collection">
         {entries && entries.map( entry => <BucketListEntry key={entry.id} entry={entry} pagePath={pagePath} forceUpdate={update}/>)}
     </ul></div>;
 }

@@ -3,7 +3,7 @@ import {addCommentReply} from "../../api";
 import Authentication from "../../authentication/Authentication";
 
 export function CommentsBlock({onRootCommentCreation, onReplyCreated, comments}) {
-    return <div>
+    return <div className="content">
         <CommentInput onCommentCreation={onRootCommentCreation}/>
         {
             comments.length === 0 ? <span>No comments yet</span>
