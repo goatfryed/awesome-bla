@@ -17,8 +17,10 @@ body{
   .navbar-start {
     .navbar-item:hover {
       background-color: #e8e8e8;
-      transition: background-color 0.35s;
     }
+  }
+  .navbar-item{
+    transition: background-color 0.35s;
   }
   margin-bottom: 10px;
 }
