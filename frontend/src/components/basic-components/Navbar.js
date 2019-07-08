@@ -46,8 +46,8 @@ export class Navbar extends React.Component {
     return (
       <nav className="navbar has-shadow is-light" role="navigation" aria-label="main navigation">
         <div id="navbar" className="navbar-menu">
-          <div class="navbar-brand">
-            <a class="navbar-item" href="/">
+          <div className="navbar-brand">
+            <a className="navbar-item" href="/">
               <img src="/logo/Logo_transparent2.png" alt="logo"/>
               <span class="ml05">Awesome Bucket List</span>
             </a>
@@ -61,11 +61,6 @@ export class Navbar extends React.Component {
             <span className="navbar-item">
               <NavLink to="/friends" activeClassName="activeLink">
                 Friends
-              </NavLink>
-            </span>
-            <span className="navbar-item">
-              <NavLink to="/bucketlists/all" activeClassName="activeLink">
-                [WIP] DisplayAllBucketLists
               </NavLink>
             </span>
           </div>

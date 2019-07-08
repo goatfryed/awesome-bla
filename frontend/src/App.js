@@ -28,9 +28,8 @@ function App() {
           <Route path="/bucketlist/:id/newlistentry/" component={ListEntryNew}/>
           {/* https://reacttraining.com/react-router/web/api/Route/render-func */}
           <Route path="/bucketlist/:id/" render={({match}) => <BucketList match={match} id={match.params.id} />} />
-          <Route path="/bucketlists/all" exact component={AllBucketLists}/>
           <Route path="/friends" component={friends}/>
-          <Route path="/" exact component={frontpage}/>
+          <Route path="/" exact component={AllBucketLists}/>
           <Route path="/" component={page404}/>
         </Switch>
       </div>
