@@ -49,6 +49,7 @@ export class Navbar extends React.Component {
           <div class="navbar-brand">
             <a class="navbar-item" href="/">
               <img src="/logo/Logo_transparent2.png" alt="logo"/>
+              <span class="ml05">Awesome Bucket List</span>
             </a>
           </div>
           <div className="navbar-start">
