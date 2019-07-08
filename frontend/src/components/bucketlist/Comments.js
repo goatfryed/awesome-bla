@@ -5,7 +5,10 @@ import Authentication from "../../authentication/Authentication";
 export function CommentsBlock({onRootCommentCreation, onReplyCreated, comments}) {
     return <div>
         <CommentInput onCommentCreation={onRootCommentCreation}/>
-        <Comments comments={comments} onCommentReplyCreated={onReplyCreated}/>
+        {
+            comments.length === 0 ? <span>No comments yet</span>
+            : <Comments comments={comments} onCommentReplyCreated={onReplyCreated}/>
+        }
     </div>
 }
 
