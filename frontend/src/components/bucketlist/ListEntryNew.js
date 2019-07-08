@@ -1,5 +1,6 @@
 import React from "react";
 import { backendUrl } from "../../config";
+import {backendFetch} from "../../api";
 
 export class ListEntryNew extends React.Component {
   constructor(props) {
@@ -30,13 +31,7 @@ export class ListEntryNew extends React.Component {
 
   handleSubmit(event) {
     event.preventDefault();
-    fetch(backendUrl + "/bucketlists/" + this.state.listID + "/entries/add", {
-      method: "post",
-      headers: {
-        Accept: "application/json",
-        "Content-Type": "application/json"
-        //'Authorization': 'Bearer ' + Authentication.getToken()
-      },
+    backendFetch.post(backendUrl + "/bucketlists/" + this.state.listID + "/entries/add", {
       body: JSON.stringify({
         title: this.state.title,
         description: this.state.description
