@@ -49,6 +49,7 @@ public class AuthenticationController {
 
     @CrossOrigin
     @PostMapping("/api/test")
+    @GetMapping("/api/test")
     public ResponseEntity test(){
         return ResponseEntity.ok(userContext.getUser().toString());
     }
