@@ -28,7 +28,7 @@ export class Navbar extends React.Component {
   }
 
   testAcces(evt) {
-    fetch(backend + "/api/test", {
+    fetch(backend + "/test", {
       method: "post",
       headers: {
         Authorization: "Bearer " + Authentication.getToken()
