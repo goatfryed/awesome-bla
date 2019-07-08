@@ -1,14 +1,11 @@
 package de.uniks.webengineering2019.bla.authentication;
 
-import de.uniks.webengineering2019.bla.authentication.UserContext;
-import de.uniks.webengineering2019.bla.model.User;
 import de.uniks.webengineering2019.bla.service.AuthenticationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import javax.annotation.Resource;
 import java.util.HashMap;
 import java.util.Map;
 
