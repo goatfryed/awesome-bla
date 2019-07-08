@@ -22,8 +22,8 @@ function Comment({comment, onCommentReplyCreated}) {
     let user = comment.user == null ? "anonymous" : comment.user.userName;
 
     return <li className="collection-item">
+        <small>{user} · {comment.created.substr(0, 19)}</small>
         <div>{comment.comment}</div>
-        <div>{user} · {comment.created.substr(0, 19)}</div>
         <CommentInput onCommentCreation={onCommentCreation}/>
         <Comments comments={comment.comments} onCommentReplyCreated={onCommentReplyCreated}/>
     </li>
