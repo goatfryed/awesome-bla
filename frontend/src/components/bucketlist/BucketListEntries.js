@@ -1,18 +1,14 @@
 import React, {useEffect, useState} from "react";
-import {backendUrl} from "../../config";
-import {CommentInput, Comments} from "./Comments";
-import {addCommentReply} from "../../api";
-
-const commentsUrl = backendUrl + "/comments";
+import {CommentInput, Comments, CommentsBlock} from "./Comments";
+import {backendFetch} from "../../api";
 
 export function BucketListEntries({id}) {
-    let pagePath = backendUrl + "/bucketlists/"+id+"/entries";
+    let pagePath = "/bucketlists/"+id+"/entries";
 
     let [entries, setEntries] = useState(null);
 
     let update = async () => {
-        const response = await fetch(pagePath + "/");
-        const json = await response.json();
+        const json = await backendFetch(pagePath + "/");
         setEntries(json);
     };
 
@@ -21,9 +17,9 @@ export function BucketListEntries({id}) {
         },
         [pagePath]
     );
-    return <ul className="collection">
+    return <div  className="content"><ul className="collection">
         {entries && entries.map( entry => <BucketListEntry key={entry.id} entry={entry} pagePath={pagePath} forceUpdate={update}/>)}
-    </ul>;
+    </ul></div>;
 }
 
 function BucketListEntry({entry, pagePath, forceUpdate}) {
@@ -35,23 +31,29 @@ function BucketListEntry({entry, pagePath, forceUpdate}) {
             completed: wasCompleted ? null : Date.now()
         };
 
-        const response = await fetch(
+        const response = await backendFetch.put(
             pagePath + "/" + entry.id + "/", {
-            method: "put",
-            headers: {
-                'Accept': 'application/json',
-                'Content-Type': 'application/json',
-            },
             body: JSON.stringify(nextEntryState)
         });
         forceUpdate();
     }
 
+    let onToggleDone = e => {
+        e.stopPropagation();
+        e.preventDefault();
+        toggleCompletionState(entry.completed);
+    };
+
     return <li className="collection-item">
-        <label>
-            <input type="checkbox" checked={entry.completed || false} onChange={() => toggleCompletionState(entry.completed)}/>
-            <span onClick={() => setShowDetails(!showDetails)}>{entry.title}</span>
-        </label>
+        <div  onClick={() => setShowDetails(!showDetails)}>
+            <input type="checkbox"
+                   checked={entry.completed || false}
+                   onChange={onToggleDone}
+                   // don't let the onClick handler for expander fire, if this checkbox is toggled
+                   onClick={event => event.stopPropagation()}
+            />
+            <span>{entry.title}</span>
+        </div>
         {showDetails && <ExtendedEntry entry={entry} pagePath={pagePath}/>}
     </li>;
 }
@@ -62,8 +64,7 @@ function ExtendedEntry({entry, pagePath}) {
     let entryPath = pagePath+"/"+entry.id+"/";
 
     async function update() {
-        const response = await fetch( entryPath);
-        const json = await response.json();
+        const json = await backendFetch( entryPath);
         setDetails(json);
     }
 
@@ -83,20 +84,18 @@ function ExtendedEntry({entry, pagePath}) {
 
     return details == null
         ? <div>"loading"</div>
-        : <div>
-            <CommentInput onCommentCreation={onCommentToEntry}/>
-            <Comments comments={details.comments} onCommentReplyCreated={update}/>
-        </div>
+        : <CommentsBlock
+            comments={details.comments}
+            onRootCommentCreation={onCommentToEntry}
+            onReplyCreated={update}
+        />
 }
 
+
+
 function createComment(comment, url) {
-    return fetch(
+    return backendFetch.post(
         url,{
-        method: 'post',
-        headers: {
-            'Accept': 'application/json',
-            'Content-Type': 'application/json',
-        },
         body: JSON.stringify(comment)
     });
 }

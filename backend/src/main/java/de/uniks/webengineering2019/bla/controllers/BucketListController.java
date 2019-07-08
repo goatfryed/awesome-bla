@@ -1,5 +1,6 @@
 package de.uniks.webengineering2019.bla.controllers;
 
+import de.uniks.webengineering2019.bla.comments.CommentCreationService;
 import de.uniks.webengineering2019.bla.model.BucketList;
 import de.uniks.webengineering2019.bla.model.Comment;
 import de.uniks.webengineering2019.bla.repositories.BucketListRepository;
@@ -15,14 +16,14 @@ import java.util.List;
 public class BucketListController{
 
     private final BucketListRepository bucketListRepository;
-    private final CommentRepository commentRepository;
+    private final CommentCreationService commentCreationService;
 
     public BucketListController(
         BucketListRepository bucketListRepository,
-        CommentRepository commentRepository
+        CommentCreationService commentCreationService
     ) {
         this.bucketListRepository = bucketListRepository;
-        this.commentRepository = commentRepository;
+        this.commentCreationService = commentCreationService;
     }
 
     @GetMapping("/all")
@@ -45,9 +46,6 @@ public class BucketListController{
         if (bucketList == null) {
             throw new ResourceNotFoundException("requested entry unknown");
         }
-
-        bucketList.getComments().add(comment);
-        commentRepository.save(comment);
-        bucketListRepository.save(bucketList);
+        commentCreationService.addComment(comment, bucketList);
     }
 }

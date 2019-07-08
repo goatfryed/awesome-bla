@@ -1,5 +1,13 @@
 import React, {useState} from "react";
 import {addCommentReply} from "../../api";
+import Authentication from "../../authentication/Authentication";
+
+export function CommentsBlock({onRootCommentCreation, onReplyCreated, comments}) {
+    return <div>
+        <CommentInput onCommentCreation={onRootCommentCreation}/>
+        <Comments comments={comments} onCommentReplyCreated={onReplyCreated}/>
+    </div>
+}
 
 function Comment({comment, onCommentReplyCreated}) {
 
@@ -8,8 +16,11 @@ function Comment({comment, onCommentReplyCreated}) {
         onCommentReplyCreated && onCommentReplyCreated(reply, comment);
     };
 
+    let user = comment.user == null ? "anonymous" : comment.user.userName;
+
     return <li className="collection-item">
-        <span>{comment.created.substr(0, 19)}: </span><span>{comment.comment}</span>
+        <div>{comment.comment}</div>
+        <div>{user}, {comment.created.substr(0, 19)}</div>
         <CommentInput onCommentCreation={onCommentCreation}/>
         <Comments comments={comment.comments} onCommentReplyCreated={onCommentReplyCreated}/>
     </li>
@@ -24,6 +35,10 @@ export function Comments({comments, onCommentReplyCreated}) {
 
 export function CommentInput({onCommentCreation}) {
     let [comment, setComment] = useState('');
+
+    if (!Authentication.isAuthenticated()) {
+        return null;
+    }
 
     function onSubmit(e) {
         e.preventDefault();

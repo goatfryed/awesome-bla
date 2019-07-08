@@ -15,7 +15,7 @@ import java.util.List;
 @Builder
 @AllArgsConstructor
 @Entity
-public class BucketListEntry {
+public class BucketListEntry implements Commentable {
 
     @Id
     @GeneratedValue

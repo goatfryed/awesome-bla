@@ -1,4 +1,4 @@
-package de.uniks.webengineering2019.bla.filters;
+package de.uniks.webengineering2019.bla.authentication;
 
 import de.uniks.webengineering2019.bla.model.User;
 import de.uniks.webengineering2019.bla.repositories.UserRepository;
@@ -16,7 +16,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
-import javax.annotation.Resource;
 import javax.crypto.SecretKey;
 import javax.servlet.*;
 import javax.servlet.http.HttpServletRequest;
@@ -29,8 +28,8 @@ import java.util.Optional;
 public class AuthenticationFilter implements Filter {
     private static final Logger LOG = LoggerFactory.getLogger(AuthenticationFilter.class);
 
-    @Resource
-    private User user;
+
+    private UserContext userContext;
 
     private UserRepository userRepository;
 
@@ -41,8 +40,12 @@ public class AuthenticationFilter implements Filter {
     private boolean debugAuthentication;
 
     @Autowired
-    public AuthenticationFilter(UserRepository userRepository) {
+    public AuthenticationFilter(
+        UserRepository userRepository,
+        UserContext userContext
+    ) {
         this.userRepository = userRepository;
+        this.userContext = userContext;
     }
 
     @PostConstruct
@@ -79,9 +82,14 @@ public class AuthenticationFilter implements Filter {
         Optional<Claims> claims = decodeRequest(request);
         if (claims.isPresent()) {
             Claims c = claims.get();
+
+            User user = new User();
             user.setId((long) c.get("id", Integer.class));
             user.setUserName(c.getSubject());
             user.setFullName(c.get("name", String.class));
+
+            userContext.setUser(user);
+
             LOG.info("claimUser={}", user);
             return true;
         }
