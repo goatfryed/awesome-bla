@@ -63,6 +63,11 @@ export class Navbar extends React.Component {
                 Friends
               </NavLink>
             </span>
+            <span className="navbar-item">
+              <NavLink to="/users" activeClassName="activeLink">
+                Benutzersuche
+              </NavLink>
+            </span>
           </div>
         </div>
         <div className="navbar-end">
