@@ -19,9 +19,13 @@ export function BucketList({id, match}) {
         [id]
     );
 
+    const [counter, setCounter] = React.useState(66);
+    function incrementCounter() { setCounter(i => i+1);}
+
     if (bucketList == null) {
         return <span>Loading</span>;
     }
+
 
     return <div className="container">
         <article className="media">
@@ -33,7 +37,7 @@ export function BucketList({id, match}) {
             <div className="media-content">
                 <strong>{bucketList.title}({bucketList.id})</strong>
                 <br/>
-                <small><a>Like</a>  · <span>{bucketList.created.substr(0, 19)}</span></small>
+                <small>{counter} · <a onClick={incrementCounter}>Like</a> · <span>{bucketList.created.substr(0, 19)}</span></small>
             </div>
         </article>
         <div className="tabs">
