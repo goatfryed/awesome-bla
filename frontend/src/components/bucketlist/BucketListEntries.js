@@ -17,7 +17,7 @@ export function BucketListEntries({id}) {
         },
         [pagePath]
     );
-    return <div  className="content"><ul className="collection">
+    return <div  className=""><ul className="collection">
         {entries && entries.map( entry => <BucketListEntry key={entry.id} entry={entry} pagePath={pagePath} forceUpdate={update}/>)}
     </ul></div>;
 }
@@ -45,14 +45,13 @@ function BucketListEntry({entry, pagePath, forceUpdate}) {
     };
 
     return <li className="collection-item">
-        <div  onClick={() => setShowDetails(!showDetails)}>
+        <div>
             <input type="checkbox"
                    checked={entry.completed || false}
                    onChange={onToggleDone}
                    // don't let the onClick handler for expander fire, if this checkbox is toggled
                    onClick={event => event.stopPropagation()}
-            />
-            <span>{entry.title}</span>
+            />&nbsp;<a onClick={e => {e.preventDefault(); setShowDetails(!showDetails)}}>{entry.title}</a>
         </div>
         {showDetails && <ExtendedEntry entry={entry} pagePath={pagePath}/>}
     </li>;

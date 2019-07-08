@@ -3,9 +3,12 @@ import {addCommentReply} from "../../api";
 import Authentication from "../../authentication/Authentication";
 
 export function CommentsBlock({onRootCommentCreation, onReplyCreated, comments}) {
-    return <div>
+    return <div className="content">
         <CommentInput onCommentCreation={onRootCommentCreation}/>
-        <Comments comments={comments} onCommentReplyCreated={onReplyCreated}/>
+        {
+            comments.length === 0 ? <span>No comments yet</span>
+            : <Comments comments={comments} onCommentReplyCreated={onReplyCreated}/>
+        }
     </div>
 }
 
@@ -19,8 +22,8 @@ function Comment({comment, onCommentReplyCreated}) {
     let user = comment.user == null ? "anonymous" : comment.user.userName;
 
     return <li className="collection-item">
+        <small>{user} · {comment.created.substr(0, 19)}</small>
         <div>{comment.comment}</div>
-        <div>{user}, {comment.created.substr(0, 19)}</div>
         <CommentInput onCommentCreation={onCommentCreation}/>
         <Comments comments={comment.comments} onCommentReplyCreated={onCommentReplyCreated}/>
     </li>

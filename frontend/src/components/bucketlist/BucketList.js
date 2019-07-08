@@ -1,9 +1,9 @@
 import React from "react";
 import {BucketListEntries} from "./BucketListEntries";
-import {NavLink, Redirect} from "react-router-dom";
-import {Route, Switch} from "react-router";
+import {Link, NavLink, Redirect} from "react-router-dom";
+import {Route, Switch, withRouter} from "react-router";
 import {backendFetch} from "../../api";
-import {CommentInput, Comments} from "./Comments";
+import {CommentInput, Comments, CommentsBlock} from "./Comments";
 
 export function BucketList({id, match}) {
     const [bucketList, setBucketList] = React.useState(null);
@@ -19,22 +19,37 @@ export function BucketList({id, match}) {
         [id]
     );
 
+    const [counter, setCounter] = React.useState(66);
+    function incrementCounter() { setCounter(i => i+1);}
+
     if (bucketList == null) {
         return <span>Loading</span>;
     }
 
-    return <div className="content">
-        <div>
-            <span>{bucketList.title}({bucketList.id})</span><br/>
-            <span>{bucketList.created}</span>
+
+    return <div className="container">
+        <article className="media">
+            <figure className="media-left">
+                <p className="image is-64x64">
+                    <img src="https://bulma.io/images/placeholders/128x128.png" />
+                </p>
+            </figure>
+            <div className="media-content">
+                <strong>{bucketList.title}({bucketList.id})</strong>
+                <br/>
+                <small>{counter} · <a onClick={incrementCounter}>Like</a> · <span>{bucketList.created.substr(0, 19)}</span></small>
+            </div>
+        </article>
+        <div className="tabs">
+            <ul>
+                {/* i'd actually prefer to just provide relative routes, but than activeClassName won't match
+                    see https://github.com/ReactTraining/react-router/issues/6201#issuecomment-403291934
+                */}
+                <NavTab to={match.url+"/entries"}>Entries</NavTab>
+                <NavTab to={match.url+"/comments"}>Comments</NavTab>
+                <NavTab to={match.url+"/newlistentry"}>New Entry</NavTab>
+            </ul>
         </div>
-        <ul>
-            {/* i'd actually prefer to just provide relative routes, but than activeClassName won't match
-                see https://github.com/ReactTraining/react-router/issues/6201#issuecomment-403291934
-            */}
-            <li><NavLink to={match.url+"/entries"} activeClassName="selected">Entries</NavLink></li>
-            <li><NavLink to={match.url+"/comments"} activeClassName="selected">comments</NavLink></li>
-        </ul>
         <Switch>
             <Route path={match.path+"entries"}  render={() => <BucketListEntries id={id}/>} />
             <Route path={match.path+"comments"} render={() => <BucketListComments bucketList={bucketList} update={update}/>} />
@@ -53,8 +68,17 @@ function BucketListComments({bucketList, update}) {
         update();
     }
 
-    return <div>
-        <CommentInput onCommentCreation={addCommentToBucketList} />
-        <Comments comments={bucketList.comments || null} onCommentReplyCreated={update}/>
-    </div>
+    return <CommentsBlock
+        onRootCommentCreation={addCommentToBucketList}
+        onReplyCreated={update}
+        comments={bucketList.comments}
+    />
 }
+
+// with router provides route awareness to this component, so it can set a class to the li, if it's matching
+// using NavLink could do similiar things, but could only add a class to the <a> link
+const NavTab = withRouter(({to, location, children}) =>{
+    return <li className={location.pathname.startsWith(to) ? "is-active" : null}>
+        <Link to={to}>{children}</Link>
+    </li>
+});

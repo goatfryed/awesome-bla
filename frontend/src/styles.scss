@@ -10,8 +10,17 @@ body{
   font-family: 'Raleway', sans-serif;
 }
 
+.navbar{
+  &.has-shadow {
+    box-shadow: 0px 0px 4px 0 #000000a8;
+  }
+  margin-bottom: 10px;
+}
+
 .activeLink{
   color:black;
 }
 
 
+//Generic Classes
+.ml05 {margin-left: 5px} 

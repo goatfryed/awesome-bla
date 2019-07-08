@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.*;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @CrossOrigin
 @RequestMapping("/bucketlists/{bucketList}/entries")
@@ -68,19 +69,22 @@ public class BucketListEntryController {
         commentCreationService.addComment(comment, entry);
     }
 
-    @RequestMapping(value = "/add", method = RequestMethod.POST)
-    public ResponseEntity<String> addEntry(@RequestBody BucketListEntry newEntry, @PathVariable("bucketList") Long id) {
-        if (bucketListRepository.existsById(id)) {
-            // save entry into list
-            BucketList updatedBucketList = bucketListRepository.findById(id).get();
-            updatedBucketList.addEntry(newEntry);
+    @PostMapping("/add")
+    @ResponseStatus(HttpStatus.ACCEPTED)
+    public void addEntry(@RequestBody BucketListEntry newEntry, @PathVariable("bucketList") Long id) {
+        Optional<BucketList> updatedBucketList = bucketListRepository.findById(id);
 
-            entryRepository.save(newEntry);
-            bucketListRepository.save(updatedBucketList);
-            return ResponseEntity.status(HttpStatus.OK).build();
+        if (!updatedBucketList.isPresent()) {
+            throw new ResourceNotFoundException("requested bucketlist does not exist");
         }
-        System.out.println("ListID does not exitst!");
-        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+
+        final BucketList bucketList = updatedBucketList.get();
+        // save entry into list
+        bucketList.addEntry(newEntry);
+
+        entryRepository.save(newEntry);
+        bucketListRepository.save(bucketList);
+
     }
 
     @PutMapping("/{entry}/")
