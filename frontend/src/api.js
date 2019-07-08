@@ -1,4 +1,4 @@
-import {backendUrl} from "./config";
+import {backend} from "./Configuration";
 import Authentication from "./authentication/Authentication";
 
 
@@ -15,7 +15,7 @@ export async function backendFetch(url, config) {
     }
 
     const response = await fetch(
-        backendUrl + url,
+        backend + url,
         {
             ...config,
             headers: {
