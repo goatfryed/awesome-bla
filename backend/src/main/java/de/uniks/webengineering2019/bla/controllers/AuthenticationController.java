@@ -1,11 +1,14 @@
 package de.uniks.webengineering2019.bla.controllers;
 
+import de.uniks.webengineering2019.bla.authentication.UserContext;
+import de.uniks.webengineering2019.bla.model.User;
 import de.uniks.webengineering2019.bla.service.AuthenticationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.annotation.Resource;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -13,13 +16,16 @@ import java.util.Map;
 @RestController
 public class AuthenticationController {
 
-
-
     private AuthenticationService authenticationService;
+    private final UserContext userContext;
 
     @Autowired
-    public AuthenticationController(AuthenticationService authenticationService) {
+    public AuthenticationController(
+        AuthenticationService authenticationService,
+        UserContext userContext
+    ) {
         this.authenticationService = authenticationService;
+        this.userContext = userContext;
     }
 
     @GetMapping("/api/authentication/callback")
@@ -44,6 +50,6 @@ public class AuthenticationController {
     @CrossOrigin
     @PostMapping("/api/test")
     public ResponseEntity test(){
-        return ResponseEntity.ok("Access granted");
+        return ResponseEntity.ok(userContext.getUser().toString());
     }
 }

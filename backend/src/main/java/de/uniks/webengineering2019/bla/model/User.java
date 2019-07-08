@@ -21,10 +21,15 @@ public class User {
     @Id
     @GeneratedValue
     @JsonProperty(access = JsonProperty.Access.READ_ONLY) // See JavaDoc for explanation.
-    public Long id;
+    private Long id;
 
-    String userName;
-    String fullName;
+    private String userName;
+    private String fullName;
+
+    @Override
+    public String toString(){
+        return "id: "+id+" userName: "+userName+"fullName: "+fullName;
+    }
 
     public User(){
     }

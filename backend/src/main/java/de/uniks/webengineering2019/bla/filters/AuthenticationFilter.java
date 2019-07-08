@@ -17,7 +17,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
-import javax.annotation.Resource;
 import javax.crypto.SecretKey;
 import javax.servlet.*;
 import javax.servlet.http.HttpServletRequest;
