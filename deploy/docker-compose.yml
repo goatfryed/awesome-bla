@@ -9,7 +9,8 @@ services:
       POSTGRES_USER: 'bucket_user'
       POSTGRES_PASSWORD: 'bucket_pw'
     volumes:
-      - /home/lukas/workspace/awesome-bucket-list/deploy/database:/var/lib/postgresql/data
+#      - /home/lukas/workspace/awesome-bucket-list/deploy/database:/var/lib/postgresql/data
+#      - ./database:/var/lib/postgresql/data
     networks:
       bucket-net:
         ipv4_address: 10.5.6.2
@@ -17,8 +18,10 @@ services:
     image: nginx:1.15-alpine
     container_name: "prod-bucketlist-frontend"
     volumes:
-      - "/home/lukas/workspace/awesome-bucket-list/develop/nginx/sites:/etc/nginx/conf.d"
-      - "/home/lukas/workspace/awesome-bucket-list/frontend/build:/frontend"
+#      - "/home/lukas/workspace/awesome-bucket-list/develop/nginx/sites:/etc/nginx/conf.d"
+      - "../develop/nginx/sites:/etc/nginx/conf.d"
+#      - "/home/lukas/workspace/awesome-bucket-list/frontend/build:/frontend"
+      - "../frontend/build:/frontend"
     ports:
       - 127.0.0.1:20083:80
     networks:
@@ -28,9 +31,12 @@ services:
     container_name: "prod-bucketlist-backend"
     image: openjdk:11
     volumes:
-      - "/home/lukas/workspace/awesome-bucket-list/backend/build/libs:/dist"
-      - "/home/lukas/workspace/awesome-bucket-list/backend/docker/res:/res"
-    command: bash -c 'sleep 5 && java -jar /dist/bla-0.0.1-SNAPSHOT.jar --spring.datasource.url=jdbc:postgresql://prod-bucketlist-db:5432/bucket'
+#      - "/home/lukas/workspace/awesome-bucket-list/backend/build/libs:/dist"
+      - "../backend/build/libs:/dist"
+#      - "/home/lukas/workspace/awesome-bucket-list/backend/docker/res:/res"
+      - "./res:/res"
+    command: bash -c 'sleep 5 && java -jar /dist/bla-0.0.1-SNAPSHOT.jar --spring.datasource.url=jdbc:postgresql://prod-bucketlist-db:5432/bucket --spring.datasource.data=file:/res/sample-list-entries.sql --spring.datasource.initialization-mode=always'
+#    command: bash -c 'sleep 5 && java -jar /dist/bla-0.0.1-SNAPSHOT.jar --spring.datasource.url=jdbc:postgresql://prod-bucketlist-db:5432/bucket'
     working_dir: /res
     ports:
       - "10031:8080"
