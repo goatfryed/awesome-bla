@@ -22,16 +22,18 @@ function App() {
   return <Router>
     <div id="app">
       <Navbar/>
-      <Switch>
-        <Route path="/callback" component={AuthenticationCallback}/>
-        <Route path="/listentry/new" component={ListEntryNew}/>
-        {/* https://reacttraining.com/react-router/web/api/Route/render-func */}
-        <Route path="/bucketlist/:id/" render={({match}) => <BucketList match={match} id={match.params.id} />} />
-        <Route path="/bucketlists/all" exact component={AllBucketLists}/>
-        <Route path="/friends" component={friends}/>
-        <Route path="/" exact component={frontpage}/>
-        <Route path="/" component={page404}/>
-      </Switch>
+      <div class="container">
+        <Switch>
+          <Route path="/callback" component={AuthenticationCallback}/>
+          <Route path="/bucketlist/:id/newlistentry/" component={ListEntryNew}/>
+          {/* https://reacttraining.com/react-router/web/api/Route/render-func */}
+          <Route path="/bucketlist/:id/" render={({match}) => <BucketList match={match} id={match.params.id} />} />
+          <Route path="/bucketlists/all" exact component={AllBucketLists}/>
+          <Route path="/friends" component={friends}/>
+          <Route path="/" exact component={frontpage}/>
+          <Route path="/" component={page404}/>
+        </Switch>
+      </div>
     </div>
   </Router>
 }

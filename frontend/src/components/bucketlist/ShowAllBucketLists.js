@@ -23,7 +23,7 @@ export class AllBucketLists extends Component {
 		});
 
 		return (
-			<div className="container left content">
+			<div className="left content">
 				<h5>Bucket Lists</h5>
 				<div className="collection grey lighten-1">
 					{ bucketLists }

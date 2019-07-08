@@ -32,6 +32,7 @@ export function BucketList({id, match}) {
             {/* i'd actually prefer to just provide relative routes, but than activeClassName won't match
                 see https://github.com/ReactTraining/react-router/issues/6201#issuecomment-403291934
             */}
+            <li><NavLink to={match.url+"/newlistentry"} activeClassName="selected">New Entry</NavLink></li>
             <li><NavLink to={match.url+"/entries"} activeClassName="selected">Entries</NavLink></li>
             <li><NavLink to={match.url+"/comments"} activeClassName="selected">comments</NavLink></li>
         </ul>
