@@ -41,7 +41,7 @@ public class BucketList implements Commentable {
     }
 
     @OneToMany
-    @OrderBy("created DESC")
+    @OrderBy("created DESC, id ASC")
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private List<Comment> comments;
 
