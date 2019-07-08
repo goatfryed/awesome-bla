@@ -1,5 +1,4 @@
 import React from "react";
-import { backendUrl } from "../../config";
 import {backendFetch} from "../../api";
 
 export class ListEntryNew extends React.Component {
@@ -31,7 +30,7 @@ export class ListEntryNew extends React.Component {
 
   handleSubmit(event) {
     event.preventDefault();
-    backendFetch.post(backendUrl + "/bucketlists/" + this.state.listID + "/entries/add", {
+    backendFetch.post("/bucketlists/" + this.state.listID + "/entries/add", {
       body: JSON.stringify({
         title: this.state.title,
         description: this.state.description
