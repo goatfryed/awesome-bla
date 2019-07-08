@@ -44,17 +44,17 @@ export class ListEntryNew extends React.Component {
   render() {
     return (
       <form onSubmit={this.handleSubmit} className="new-post">
-        <div class="field">
-          <label class="label">Title</label>
-          <div class="control">
-            <input class="input" type="text" name="title" placeholder="Enter Title..." autoFocus={true} value={this.state.title} onChange={this.handleChange} maxLength={1024} />
+        <div className="field">
+          <label className="label">Title</label>
+          <div className="control">
+            <input className="input" type="text" name="title" placeholder="Enter Title..." autoFocus={true} value={this.state.title} onChange={this.handleChange} maxLength={1024} />
           </div>
         </div>
-        <div class="field">
-          <label class="label">Description</label>
-          <div class="control">
+        <div className="field">
+          <label className="label">Description</label>
+          <div className="control">
             <textarea
-              class="textarea"
+                className="textarea"
               name="description"
               value={this.state.description}
               onChange={this.handleChange}
@@ -78,12 +78,12 @@ export class ListEntryNew extends React.Component {
           </label>
         </div>
 
-        <div class="field is-grouped">
-          <div class="control">
-            <input type="submit" class="button is-link" value="Submit" />
+        <div className="field is-grouped">
+          <div className="control">
+            <input type="submit" className="button is-link" value="Submit" />
           </div>
-          <div class="control">
-            <button class="button is-text">Cancel</button>
+          <div className="control">
+            <button className="button is-text">Cancel</button>
           </div>
         </div>
       </form>
