@@ -1,6 +1,5 @@
-package de.uniks.webengineering2019.bla.filters;
+package de.uniks.webengineering2019.bla.authentication;
 
-import de.uniks.webengineering2019.bla.authentication.UserContext;
 import de.uniks.webengineering2019.bla.model.User;
 import de.uniks.webengineering2019.bla.repositories.UserRepository;
 import io.jsonwebtoken.Claims;
