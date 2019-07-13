@@ -18,7 +18,7 @@ export class AuthenticationCallback extends React.Component {
 
     componentDidMount(){
         // Call backend using submitted code.
-        fetch( backend+"/api/authentication/callback?code=" + this.state.code)
+        fetch( backend+"/authentication/callback?code=" + this.state.code)
             .then((response) => {
                 return response.json()
             })

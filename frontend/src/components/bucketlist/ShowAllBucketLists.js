@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import Axios from 'axios';
 import {Link} from "react-router-dom";
+import {backend} from "../../Configuration";
 
 export class AllBucketLists extends Component {
 	state = {
@@ -8,7 +9,7 @@ export class AllBucketLists extends Component {
 	};
 
 	componentDidMount() {
-		Axios.get('http://localhost:8080/bucketlists/all').then(response => {
+		Axios.get(backend+'/bucketlists/all').then(response => {
 			this.setState({
 				bucketLists: response.data
 			});

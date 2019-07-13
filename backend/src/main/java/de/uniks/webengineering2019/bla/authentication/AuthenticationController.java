@@ -25,7 +25,7 @@ public class AuthenticationController {
         this.userContext = userContext;
     }
 
-    @GetMapping("/api/authentication/callback")
+    @GetMapping("/authentication/callback")
     public ResponseEntity<Map<String, String>> getUserInfor(@RequestParam("code") String code) {
         Map<String, String> map = new HashMap<>();
 
@@ -37,7 +37,7 @@ public class AuthenticationController {
         return ResponseEntity.ok(map);
     }
 
-    @GetMapping("/api/authentication/url")
+    @GetMapping("/authentication/url")
     public Map<String, String> getAuthenticationURL() {
         Map<String, String> map = new HashMap<>();
         map.put("url", authenticationService.getAuthenticationURL());
@@ -45,8 +45,8 @@ public class AuthenticationController {
     }
 
     @CrossOrigin
-    @PostMapping("/api/test")
-    @GetMapping("/api/test")
+    @PostMapping("/test")
+    @GetMapping("/test")
     public ResponseEntity test(){
         return ResponseEntity.ok(userContext.getUser().toString());
     }

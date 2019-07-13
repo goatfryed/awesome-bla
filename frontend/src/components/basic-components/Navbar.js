@@ -28,7 +28,7 @@ export class Navbar extends React.Component {
   }
 
   testAcces(evt) {
-    fetch(backend + "/api/test", {
+    fetch(backend + "/test", {
       method: "post",
       headers: {
         Authorization: "Bearer " + Authentication.getToken()
@@ -61,6 +61,11 @@ export class Navbar extends React.Component {
             <span className="navbar-item">
               <NavLink to="/friends" activeClassName="activeLink">
                 Friends
+              </NavLink>
+            </span>
+            <span className="navbar-item">
+              <NavLink to="/users" activeClassName="activeLink">
+                Benutzersuche
               </NavLink>
             </span>
           </div>
