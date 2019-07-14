@@ -1,8 +1,7 @@
 import React, { Component } from 'react';
 import { Route, Switch, withRouter } from "react-router";
 import { Link, NavLink, Redirect } from "react-router-dom";
-import Axios from 'axios';
-import { backend } from "../../Configuration";
+import { backendFetch } from "../../api";
 
 export class AllBucketLists extends Component {
 	state = {
@@ -10,9 +9,9 @@ export class AllBucketLists extends Component {
 	};
 
 	componentDidMount() {
-		Axios.get(backend + '/bucketlists/all').then(response => {
+		backendFetch.get('/bucketlists/all').then(response => {
 			this.setState({
-				bucketLists: response.data
+				bucketLists: response
 			});
 		});
 	}
@@ -27,7 +26,7 @@ export class AllBucketLists extends Component {
 				</div>
 			);
 		});
-		console.log(this.props);
+
 		return (
 			<div className="left content">
 				<div className="tabs">
