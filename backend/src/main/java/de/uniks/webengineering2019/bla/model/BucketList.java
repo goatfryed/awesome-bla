@@ -23,7 +23,9 @@ public class BucketList implements Commentable {
     @GeneratedValue
     @JsonProperty(access = JsonProperty.Access.READ_ONLY) // See JavaDoc for explanation.
     private Long id;
+
     private String title;
+    private String description;
 
     @OneToMany(fetch = FetchType.EAGER, mappedBy = "bucketList")
     @OrderBy("created DESC")
@@ -31,7 +33,7 @@ public class BucketList implements Commentable {
     private int numEntries;
 
     @JsonProperty("created")
-    private Date createnDate;
+    private Date creationDate;
     private Date lastUpdated;
 
     public void addEntry(BucketListEntry newEntry){

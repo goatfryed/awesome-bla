@@ -8,6 +8,7 @@ import de.uniks.webengineering2019.bla.repositories.CommentRepository;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Date;
 import java.util.List;
 
 @CrossOrigin
@@ -47,5 +48,13 @@ public class BucketListController{
             throw new ResourceNotFoundException("requested entry unknown");
         }
         commentCreationService.addComment(comment, bucketList);
+    }
+
+    @PostMapping("/add")
+    @ResponseStatus(HttpStatus.CREATED)
+    public void addList(@RequestBody BucketList newBucketList) {
+        newBucketList.setCreationDate(new Date());
+        newBucketList.setLastUpdated(new Date());
+        bucketListRepository.save(newBucketList);
     }
 }

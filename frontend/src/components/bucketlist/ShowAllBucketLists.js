@@ -28,7 +28,7 @@ export class AllBucketLists extends Component {
 		});
 
 		return (
-			<div className="left content">
+			<div className="conatiner">
 				<h5>Bucket Lists</h5>
 				<div className="tabs">
 					<ul>
