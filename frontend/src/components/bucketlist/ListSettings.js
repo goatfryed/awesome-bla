@@ -10,19 +10,43 @@ export class ListSettings extends React.Component {
       bucketList: props.bucketList
     };
 
-    this.handleChange = this.handleChange.bind(this);
+    this.privateChanged = this.privateChanged.bind(this);
+
   }
   componentDidMount() {
   }
 
-  handleChange(evt) {
+
+  privateChanged(){
+    this.state.bucketList.private = !this.state.bucketList.private;
+    this.forceUpdate();
   }
 
   render() {
-    return (
+
+    const users = this.state.bucketList.accessed.map((user, index) => {
+      return <span key={user.id}><li>
+                <b>{user.userName}</b> |&nbsp;
+        <a>Löschen</a> |&nbsp;
+            </li></span>
+    });
+
+    const privateOptions = ()=>{
+      return <div>Berechtiget user
         <div>
-          <input type="checkbox" checked={this.state.bucketList.private}/> Private Liste
+          {users}
         </div>
+      </div>
+    };
+
+
+    return (
+        <span>
+          <div>
+            <input type="checkbox" checked={this.state.bucketList.private} onChange={this.privateChanged}/> Private Liste
+          </div>
+          {this.state.bucketList.private?privateOptions():""}
+        </span>
     );
   }
 }

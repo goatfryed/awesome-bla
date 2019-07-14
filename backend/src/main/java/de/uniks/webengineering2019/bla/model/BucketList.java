@@ -33,6 +33,10 @@ public class BucketList implements Commentable {
     private List<BucketListEntry> entries;
     private int numEntries;
 
+    @ManyToMany
+    @JsonProperty("accessed")
+    private List<User> accessedUsers;
+
     @JsonProperty("created")
     private Date createnDate;
     private Date lastUpdated;
