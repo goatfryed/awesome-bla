@@ -29,6 +29,7 @@ export class AllBucketLists extends Component {
 
 		return (
 			<div className="left content">
+				<h5>Bucket Lists</h5>
 				<div className="tabs">
 					<ul>
 						<NavTab to="/">Lists</NavTab>
@@ -46,11 +47,8 @@ export class AllBucketLists extends Component {
 
 const Lists = ({ bucketLists }) => {
 	return (
-		<div>
-			<h5>Bucket Lists</h5>
-			<div className="collection grey lighten-1">
-				{ bucketLists }
-			</div>
+		<div className="collection grey lighten-1">
+			{ bucketLists }
 		</div>
 	);
 }
