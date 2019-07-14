@@ -3,6 +3,8 @@ TRUNCATE comment CASCADE;
 TRUNCATE bucket_list_entry_comments CASCADE;
 TRUNCATE comment_comments CASCADE;
 TRUNCATE bucket_list_comments CASCADE;
+TRUNCATE users CASCADE;
+TRUNCATE bucket_list_accessed_users CASCADE;
 
 INSERT INTO "bucket_list" (id, createn_date, last_updated, num_entries, title,private_list) values (42, NOW(), NOW(), 0, 'web engineering dreams',false);
 INSERT INTO "bucket_list" (id, createn_date, last_updated, num_entries, title,private_list) values (43, NOW(), NOW(), 0, 'private web engineering dreams',true);
@@ -56,3 +58,7 @@ INSERT INTO bucket_list_comments (bucket_list_id, comments_id)
     (42, 42300),
     (42, 42400)
 ;
+
+INSERT INTO users (id,user_name,full_name) VALUES (101,'Test User','Tests Full Name');
+
+INSERT INTO bucket_list_accessed_users (bucket_list_id,accessed_users_id) VALUES (43,101);
