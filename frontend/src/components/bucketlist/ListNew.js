@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
+import { backendFetch } from "../../api";
 
-class ListNew extends Commponent {
+class ListNew extends Component {
 	state = {
 		title: "",
 		description: ""

@@ -12,6 +12,7 @@ import {AuthenticationCallback} from "./authentication/AuthenticationCallback";
 import {ListEntryNew} from "./components/bucketlist/ListEntryNew";
 import {AllBucketLists} from "./components/bucketlist/ShowAllBucketLists"
 import {BucketList} from "./components/bucketlist/BucketList";
+import ListNew from "./components/bucketlist/ListNew";
 
 //Pages
 import {frontpage} from "./components/pages/frontpage"
@@ -28,6 +29,7 @@ function App() {
         <Switch>
           <Route path="/callback" component={AuthenticationCallback}/>
           <Route path="/bucketlist/:id/newlistentry/" component={ListEntryNew}/>
+          <Route path="/newlist" component={ListNew} />
           {/* https://reacttraining.com/react-router/web/api/Route/render-func */}
           <Route path="/bucketlist/:id/" render={({match}) => <BucketList match={match} id={match.params.id} />} />
           <Route path="/friends" component={friends}/>
