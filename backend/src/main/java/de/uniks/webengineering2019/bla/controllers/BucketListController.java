@@ -29,6 +29,7 @@ public class BucketListController{
     @GetMapping("/all")
     public List<BucketList> getAllLists(){
         return bucketListRepository.findAll();
+        //return bucketListRepository.findByPrivateList(false);
     }
 
     @GetMapping("/{bucketList}/")

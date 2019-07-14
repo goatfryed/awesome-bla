@@ -4,6 +4,7 @@ import {Link, NavLink, Redirect} from "react-router-dom";
 import {Route, Switch, withRouter} from "react-router";
 import {backendFetch} from "../../api";
 import {CommentInput, Comments, CommentsBlock} from "./Comments";
+import {ListSettings} from "./ListSettings";
 
 export function BucketList({id, match}) {
     const [bucketList, setBucketList] = React.useState(null);
@@ -48,11 +49,13 @@ export function BucketList({id, match}) {
                 <NavTab to={match.url+"/entries"}>Entries</NavTab>
                 <NavTab to={match.url+"/comments"}>Comments</NavTab>
                 <NavTab to={match.url+"/newlistentry"}>New Entry</NavTab>
+                <NavTab to={match.url+"/settings"}>Einstellungen</NavTab>
             </ul>
         </div>
         <Switch>
             <Route path={match.path+"entries"}  render={() => <BucketListEntries id={id}/>} />
             <Route path={match.path+"comments"} render={() => <BucketListComments bucketList={bucketList} update={update}/>} />
+            <Route path={match.path+"settings"} render={() => <ListSettings bucketList={bucketList}/>} />
             <Redirect to={match.url+"/entries"} />
         </Switch>
     </div>

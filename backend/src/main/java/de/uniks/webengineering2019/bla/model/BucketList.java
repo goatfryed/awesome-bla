@@ -25,6 +25,9 @@ public class BucketList implements Commentable {
     private Long id;
     private String title;
 
+    @JsonProperty("private")
+    private boolean privateList;
+
     @OneToMany(fetch = FetchType.EAGER, mappedBy = "bucketList")
     @OrderBy("created DESC")
     private List<BucketListEntry> entries;

@@ -1,4 +1,11 @@
-INSERT INTO "bucket_list" (id, createn_date, last_updated, num_entries, title) values (42, NOW(), NOW(), 0, 'web engineering dreams');
+TRUNCATE bucket_list CASCADE;
+TRUNCATE comment CASCADE;
+TRUNCATE bucket_list_entry_comments CASCADE;
+TRUNCATE comment_comments CASCADE;
+TRUNCATE bucket_list_comments CASCADE;
+
+INSERT INTO "bucket_list" (id, createn_date, last_updated, num_entries, title,private_list) values (42, NOW(), NOW(), 0, 'web engineering dreams',false);
+INSERT INTO "bucket_list" (id, createn_date, last_updated, num_entries, title,private_list) values (43, NOW(), NOW(), 0, 'private web engineering dreams',true);
 
 INSERT INTO "public"."bucket_list_entry" ("id", "title", "created", "completed", bucket_list_id)
     VALUES (1001, 'Think of an bucket list item', NOW(), NOW(), 42),

@@ -8,4 +8,5 @@ import java.util.List;
 public interface BucketListRepository extends CrudRepository<BucketList, Long>{
 
     List<BucketList> findAll();
+    List<BucketList> findByPrivateList(boolean value);
 }
