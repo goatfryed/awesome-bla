@@ -7,11 +7,11 @@ class ListNew extends Component {
 		description: ""
 	};
 
-	handleChange(event) {
+	handleChange = (event) => {
 		this.setState({ [event.target.name]: event.target.value });
 	}
 
-	handleSubmit(event) {
+	handleSubmit = (event) => {
 		event.preventDefault();
 		backendFetch.post("/bucketlists/add", {
 			body: JSON.stringify({
@@ -19,7 +19,7 @@ class ListNew extends Component {
 				description: this.state.description
 			}
 		)}).then(response => {
-			this.props.history.push("/bucketlists/all");
+			this.props.history.push("/");
 		});
 	}
 
