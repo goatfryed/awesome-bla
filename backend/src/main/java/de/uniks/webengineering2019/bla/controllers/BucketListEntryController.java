@@ -110,7 +110,7 @@ public class BucketListEntryController {
         entryRepository.save(entry);
     }
 
-    @GetMapping("/cloneEntry/{entry}/")
+    @PostMapping("/cloneEntry/{entry}/")
     public ResponseEntity<Void> cloneEntry(
         @PathVariable("bucketList") BucketList targetList,
         @PathVariable("entry") BucketListEntry entryToDuplicate
@@ -134,7 +134,7 @@ public class BucketListEntryController {
         return ResponseEntity.created(null).build();
     }
 
-    @GetMapping("/cloneList/{sourceList}/")
+    @PostMapping("/cloneList/{sourceList}/")
     @ResponseStatus(HttpStatus.ACCEPTED)
     public void cloneListEntries(
             @PathVariable("bucketList") BucketList targetList,
