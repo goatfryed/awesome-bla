@@ -1,5 +1,6 @@
 package de.uniks.webengineering2019.bla.controllers;
 
+import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import de.uniks.webengineering2019.bla.comments.CommentCreationService;
 import de.uniks.webengineering2019.bla.model.BucketList;
@@ -7,9 +8,9 @@ import de.uniks.webengineering2019.bla.model.BucketListEntry;
 import de.uniks.webengineering2019.bla.model.Comment;
 import de.uniks.webengineering2019.bla.repositories.BucketListEntryRepository;
 import de.uniks.webengineering2019.bla.repositories.BucketListRepository;
-import de.uniks.webengineering2019.bla.repositories.CommentRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.lang.NonNull;
 import org.springframework.web.bind.annotation.*;
 
@@ -23,21 +24,27 @@ import java.util.Optional;
 @RestController
 public class BucketListEntryController {
 
+    private static Logger logger = LoggerFactory.getLogger(BucketListEntryController.class);
+
     @NonNull
     private final BucketListEntryRepository entryRepository;
     @NonNull
     private final BucketListRepository bucketListRepository;
     @NonNull
     private final CommentCreationService commentCreationService;
+    @NonNull
+    private final ObjectMapper objectMapper;
 
     public BucketListEntryController(
             @NonNull BucketListEntryRepository entryRepository,
             @NonNull BucketListRepository bucketListRepository,
-            @NonNull CommentCreationService commentCreationService
+            @NonNull CommentCreationService commentCreationService,
+            @NonNull ObjectMapper objectMapper
     ) {
         this.entryRepository = entryRepository;
         this.bucketListRepository = bucketListRepository;
         this.commentCreationService = commentCreationService;
+        this.objectMapper = objectMapper;
     }
 
     @GetMapping("/api/bucketlists/entries")
@@ -100,5 +107,34 @@ public class BucketListEntryController {
 
         mapper.readerForUpdating(entry).readValue(updateJson);
         entryRepository.save(entry);
+    }
+
+    @GetMapping("/cloneEntry/{entry}/")
+    public void cloneEntry(
+        @PathVariable("bucketList") BucketList targetList,
+        @PathVariable("entry") BucketListEntry entryToDuplicate
+    ) {
+        if (targetList == null) {
+            throw new ResourceNotFoundException("requested bucketlist unknown");
+        }
+        if (entryToDuplicate == null) {
+            throw new ResourceNotFoundException("requested entry unknown");
+        }
+
+        BucketListEntry newEntry = new BucketListEntry();
+
+        // https://www.baeldung.com/java-deep-copy, let's go with 6.3 as it seems to be the easiest for now
+        try {
+            objectMapper.updateValue(newEntry, entryToDuplicate);
+        } catch (JsonMappingException e) {
+            // we fucked up? return 503. Shouldn't happen.
+            logger.error("failed to duplicate entry", e);
+            throw new RuntimeException(e);
+        }
+
+        targetList.addEntry(newEntry);
+
+        entryRepository.save(newEntry);
+        bucketListRepository.save(targetList);
     }
 }
