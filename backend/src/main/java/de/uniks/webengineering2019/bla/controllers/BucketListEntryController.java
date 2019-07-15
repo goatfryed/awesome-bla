@@ -134,6 +134,27 @@ public class BucketListEntryController {
         return ResponseEntity.created(null).build();
     }
 
+    @GetMapping("/cloneList/{sourceList}/")
+    @ResponseStatus(HttpStatus.ACCEPTED)
+    public void cloneListEntries(
+            @PathVariable("bucketList") BucketList targetList,
+            @PathVariable("sourceList") BucketList sourceList
+    ) {
+        if (targetList == null) {
+            throw new ResourceNotFoundException("target bucketlist unknown");
+        }
+        if (sourceList == null) {
+            throw new ResourceNotFoundException("source bucketlist unknown");
+        }
+
+        for (BucketListEntry entry : sourceList.getEntries()) {
+            final BucketListEntry newEntry = copyEntryToList(targetList, entry);
+
+            entryRepository.save(newEntry);
+        }
+
+        bucketListRepository.save(targetList);
+    }
 
 
     private BucketListEntry copyEntryToList(
