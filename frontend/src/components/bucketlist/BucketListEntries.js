@@ -39,10 +39,9 @@ class EntryDetails extends PureComponent {
     constructor(props) {
         super(props);
 
-
-        for (let field of EntryDetails.managedFields) {
-            this.state[field] = this.props.selectedEntry[field] || "";
-        }
+        this.state = {
+            ...this.entryStateFromProps(props)
+        };
 
         [
             "onSubmit",
@@ -52,9 +51,25 @@ class EntryDetails extends PureComponent {
         );
     }
 
+    entryStateFromProps(props) {
+        let partialState = {};
+        partialState.entry = props.selectedEntry;
+
+        for (let field of EntryDetails.managedFields) {
+            partialState[field] = partialState.entry[field] || "";
+        }
+        return partialState;
+    }
+
+    componentWillReceiveProps(nextProps, nextContext) {
+        if (nextProps.selectedEntry !== this.state.entry) {
+            this.setState(this.entryStateFromProps(nextProps));
+        }
+    }
+
     hasChanges() {
         return !EntryDetails.managedFields.some(f => {
-            return (this.props.selectedEntry[f] || "") !== this.state[f]
+            return (this.state.entry[f] || "") !== this.state[f]
         });
     }
 
@@ -69,7 +84,7 @@ class EntryDetails extends PureComponent {
         this.setState({loading: true, error: null});
 
         backendFetch.put(
-            this.props.pagePath + "/" + this.props.selectedEntry.id + "/", {
+            this.props.pagePath + "/" + this.state.entry.id + "/", {
                 body: JSON.stringify(update)
             })
             .then( () => {
