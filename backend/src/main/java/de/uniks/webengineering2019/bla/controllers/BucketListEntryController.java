@@ -11,8 +11,10 @@ import de.uniks.webengineering2019.bla.repositories.BucketListRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.lang.NonNull;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.util.UriComponentsBuilder;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -110,9 +112,10 @@ public class BucketListEntryController {
     }
 
     @GetMapping("/cloneEntry/{entry}/")
-    public void cloneEntry(
+    public ResponseEntity<Void> cloneEntry(
         @PathVariable("bucketList") BucketList targetList,
-        @PathVariable("entry") BucketListEntry entryToDuplicate
+        @PathVariable("entry") BucketListEntry entryToDuplicate,
+        UriComponentsBuilder uriBuilder
     ) {
         if (targetList == null) {
             throw new ResourceNotFoundException("requested bucketlist unknown");
@@ -121,13 +124,28 @@ public class BucketListEntryController {
             throw new ResourceNotFoundException("requested entry unknown");
         }
 
-        final boolean entryInTargetList = targetList
-                .getEntries().stream()
-                .anyMatch( entry -> entry.getId().equals(entryToDuplicate.getId()));
+        final BucketListEntry newEntry = copyEntryToList(targetList, entryToDuplicate);
 
-        // maybe return a 400 response?
-        if (entryInTargetList) {
-            return;
+        if (newEntry == null) {
+            ResponseEntity.accepted();
+        }
+
+        entryRepository.save(newEntry);
+        bucketListRepository.save(targetList);
+
+        return ResponseEntity.created(null).build();
+    }
+
+    private BucketListEntry copyEntryToList(
+            @NonNull BucketList targetList,
+            @NonNull BucketListEntry entryToDuplicate
+    ) {
+        if (
+            targetList
+                .getEntries().stream()
+                .anyMatch( entry -> entry.getId().equals(entryToDuplicate.getId()))
+        ) {
+            return null;
         }
 
         BucketListEntry newEntry = new BucketListEntry();
@@ -143,7 +161,6 @@ public class BucketListEntryController {
 
         targetList.addEntry(newEntry);
 
-        entryRepository.save(newEntry);
-        bucketListRepository.save(targetList);
+        return newEntry;
     }
 }
