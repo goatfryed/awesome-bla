@@ -4,6 +4,7 @@ import {Link, Redirect} from "react-router-dom";
 import {Route, Switch, withRouter} from "react-router";
 import {backendFetch} from "../../api";
 import {CommentsBlock} from "./Comments";
+import moment from "moment";
 
 export function BucketList({match, history}) {
     const id = match.params.id;
@@ -60,7 +61,7 @@ export function BucketList({match, history}) {
                 <strong>{bucketList.title}({bucketList.id})</strong>
                 <br/>
                 <small>{counter} · <a onClick={incrementCounter}>Like</a>
-                    · <span>{bucketList.created.substr(0, 19)}</span>
+                    · <span>{moment(bucketList.created).fromNow()}</span>
                     · <button onClick={importBucketList}>copy</button>
                 </small>
             </div>
