@@ -2,6 +2,7 @@ import React, {useEffect, useState} from "react";
 import {CommentsBlock} from "./Comments";
 import {backendFetch} from "../../api";
 import {withRouter} from "react-router";
+import moment from "moment";
 
 export function BucketListEntries({id}) {
     let pagePath = "/bucketlists/"+id+"/entries";
@@ -72,9 +73,9 @@ function BucketListEntryView({entry, pagePath, forceUpdate, history}) {
                    // don't let the onClick handler for expander fire, if this checkbox is toggled
                    onClick={event => event.stopPropagation()}
             />&nbsp;<a onClick={e => {e.preventDefault(); setShowDetails(!showDetails)}}>{entry.title}</a>
-            <br/>
             <small>
-                {entry.created}
+                 ·
+                {moment(entry.created).fromNow()}
                  · <button onClick={copyEntryToBucketList}>copy</button>
             </small>
         </div>
