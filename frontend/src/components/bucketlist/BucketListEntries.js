@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from "react";
+import React, {PureComponent, useEffect, useState} from "react";
 import {CommentsBlock} from "./Comments";
 import {backendFetch} from "../../api";
 import {withRouter} from "react-router";
@@ -8,6 +8,7 @@ export function BucketListEntries({id}) {
     let pagePath = "/bucketlists/"+id+"/entries";
 
     let [entries, setEntries] = useState(null);
+    let [selectedEntry, setSelectedEntry] = useState(null);
 
     let update = async () => {
         const json = await backendFetch(pagePath + "/");
@@ -19,14 +20,86 @@ export function BucketListEntries({id}) {
         },
         [pagePath]
     );
-    return <div  className=""><ul className="collection">
-        {entries && entries.map( entry => <BucketListEntry key={entry.id} entry={entry} pagePath={pagePath} forceUpdate={update}/>)}
-    </ul></div>;
+    return <div className="columns">
+        <div  className="column">
+            <ul className="collection">
+            {entries && entries.map( entry => <BucketListEntry key={entry.id} entry={entry} pagePath={pagePath} forceUpdate={update} onSelect={setSelectedEntry}/>)}
+            </ul>
+        </div>
+        {selectedEntry && <div className="column"><EntryDetails selectedEntry={selectedEntry} onUpdate={update} pagePath={pagePath} /></div> }
+    </div>;
+}
+
+class EntryDetails extends PureComponent {
+
+    static managedFields = ["title", "description"];
+
+    state = {};
+
+    constructor(props) {
+        super(props);
+
+
+        for (let field of EntryDetails.managedFields) {
+            this.state[field] = this.props.selectedEntry[field] || "";
+        }
+
+        [
+            "onSubmit",
+            "hasChanges"
+        ].forEach(
+            fn => this[fn] = this[fn].bind(this)
+        );
+    }
+
+    hasChanges() {
+        return !EntryDetails.managedFields.some(f => {
+            return (this.props.selectedEntry[f] || "") !== this.state[f]
+        });
+    }
+
+    onSubmit(e) {
+        e.preventDefault();
+
+        let update = {};
+        for (let field of EntryDetails.managedFields) {
+            update[field] = this.state[field];
+        }
+
+        this.setState({loading: true, error: null});
+
+        backendFetch.put(
+            this.props.pagePath + "/" + this.props.selectedEntry.id + "/", {
+                body: JSON.stringify(update)
+            })
+            .then( () => {
+                this.setState({loading: false})
+                this.props.onUpdate();
+            })
+            .catch( error => {
+                console.log(error);
+                this.setState({error});
+            })
+            .finally(
+                this.setState({loading: false})
+            )
+        ;
+    }
+
+    render() {
+        return <form onSubmit={this.onSubmit}
+        >
+            {EntryDetails.managedFields.map(
+                field => <input key={field} className="input" value={this.state[field]} onChange={e => this.setState({[field]: e.target.value})}/>
+            )}
+            <button type="submit" className="button" disabled={this.hasChanges()}>Update</button>
+        </form>;
+    }
 }
 
 const BucketListEntry = withRouter(BucketListEntryView);
 
-function BucketListEntryView({entry, pagePath, forceUpdate, history}) {
+function BucketListEntryView({entry, pagePath, forceUpdate, history, onSelect}) {
     let [showDetails, setShowDetails] = useState(false);
 
 
@@ -72,10 +145,11 @@ function BucketListEntryView({entry, pagePath, forceUpdate, history}) {
                    onChange={onToggleDone}
                    // don't let the onClick handler for expander fire, if this checkbox is toggled
                    onClick={event => event.stopPropagation()}
-            />&nbsp;<a onClick={e => {e.preventDefault(); setShowDetails(!showDetails)}}>{entry.title}</a>
+            />&nbsp;<a onClick={e => {e.preventDefault(); onSelect(entry)}}>{entry.title}</a>
             <small>
                  ·
                 {moment(entry.created).fromNow()}
+                 · <button onClick={() => setShowDetails(!showDetails)}>Talk</button>
                  · <button onClick={copyEntryToBucketList}>copy</button>
             </small>
         </div>
