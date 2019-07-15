@@ -41,6 +41,7 @@ public class BucketListEntry implements Commentable {
     @OneToMany
     @OrderBy("created DESC")
     @JsonInclude(JsonInclude.Include.NON_NULL)
+    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private List<Comment> comments;
 
     public BucketListEntry()

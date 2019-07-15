@@ -25,6 +25,10 @@ export async function backendFetch(url, config) {
         }
     );
 
+    if (!response.ok) {
+        throw Error(response.statusText);
+    }
+
     if (response.status === 200) {
         // no clue, why
         if (true) {
