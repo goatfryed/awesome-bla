@@ -121,6 +121,15 @@ public class BucketListEntryController {
             throw new ResourceNotFoundException("requested entry unknown");
         }
 
+        final boolean entryInTargetList = targetList
+                .getEntries().stream()
+                .anyMatch( entry -> entry.getId().equals(entryToDuplicate.getId()));
+
+        // maybe return a 400 response?
+        if (entryInTargetList) {
+            return;
+        }
+
         BucketListEntry newEntry = new BucketListEntry();
 
         // https://www.baeldung.com/java-deep-copy, let's go with 6.3 as it seems to be the easiest for now
