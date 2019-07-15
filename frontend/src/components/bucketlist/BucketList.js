@@ -5,7 +5,8 @@ import {Route, Switch, withRouter} from "react-router";
 import {backendFetch} from "../../api";
 import {CommentInput, Comments, CommentsBlock} from "./Comments";
 
-export function BucketList({id, match}) {
+export function BucketList({match, history}) {
+    const id = match.params.id;
     const [bucketList, setBucketList] = React.useState(null);
 
     function update() {
@@ -25,7 +26,25 @@ export function BucketList({id, match}) {
     if (bucketList == null) {
         return <span>Loading</span>;
     }
+    console.log(bucketList);
 
+    async function importBucketList() {
+        let targetListId = NaN;
+        while (isNaN(targetListId)) {
+            let input = prompt("id of target bucket list?");
+            if (input === null) {
+                return;
+            }
+            targetListId = parseInt( input);
+        }
+        await backendFetch.post("/bucketlists/" + targetListId + "/entries/cloneList/" + id + "/");
+
+
+        let returnValue = window.confirm("Do you want to see your list?");
+        if (returnValue) {
+            history.push({pathname: "/bucketlist/" + targetListId} + "/entries/");
+        }
+    }
 
     return <div className="container">
         <article className="media">
@@ -37,7 +56,10 @@ export function BucketList({id, match}) {
             <div className="media-content">
                 <strong>{bucketList.title}({bucketList.id})</strong>
                 <br/>
-                <small>{counter} · <a onClick={incrementCounter}>Like</a> · <span>{bucketList.created.substr(0, 19)}</span></small>
+                <small>{counter} · <a onClick={incrementCounter}>Like</a>
+                    · <span>{bucketList.created.substr(0, 19)}</span>
+                    · <button onClick={importBucketList}>copy</button>
+                </small>
             </div>
         </article>
         <div className="tabs">
