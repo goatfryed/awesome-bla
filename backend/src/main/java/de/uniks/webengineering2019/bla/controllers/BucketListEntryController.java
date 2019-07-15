@@ -169,7 +169,6 @@ public class BucketListEntryController {
             return null;
         }
 
-        entryToDuplicate.getComments().clear();
         BucketListEntry newEntry = new BucketListEntry();
 
         // https://www.baeldung.com/java-deep-copy, let's go with 6.3 as it seems to be the easiest for now
