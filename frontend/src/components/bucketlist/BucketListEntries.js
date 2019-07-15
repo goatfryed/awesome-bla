@@ -1,6 +1,7 @@
 import React, {useEffect, useState} from "react";
 import {CommentInput, Comments, CommentsBlock} from "./Comments";
 import {backendFetch} from "../../api";
+import {withRouter} from "react-router";
 
 export function BucketListEntries({id}) {
     let pagePath = "/bucketlists/"+id+"/entries";
@@ -22,7 +23,9 @@ export function BucketListEntries({id}) {
     </ul></div>;
 }
 
-function BucketListEntry({entry, pagePath, forceUpdate}) {
+const BucketListEntry = withRouter(BucketListEntryView);
+
+function BucketListEntryView({entry, pagePath, forceUpdate, history}) {
     let [showDetails, setShowDetails] = useState(false);
 
 
@@ -44,6 +47,23 @@ function BucketListEntry({entry, pagePath, forceUpdate}) {
         toggleCompletionState(entry.completed);
     };
 
+    async function copyEntryToBucketList() {
+        let targetListId = NaN;
+        while (isNaN(targetListId)) {
+            let input = prompt("id of target bucket list?");
+            if (input === null) {
+                return;
+            }
+            targetListId = parseInt( input);
+        }
+        await backendFetch.post("/bucketlists/" + targetListId + "/entries/cloneEntry/" + entry.id + "/");
+
+        let returnValue = window.confirm("Do you want to see your list?");
+        if (returnValue) {
+            history.push({pathname: "/bucketlist/" + targetListId} + "/entries/");
+        }
+    }
+
     return <li className="collection-item">
         <div>
             <input type="checkbox"
@@ -52,6 +72,11 @@ function BucketListEntry({entry, pagePath, forceUpdate}) {
                    // don't let the onClick handler for expander fire, if this checkbox is toggled
                    onClick={event => event.stopPropagation()}
             />&nbsp;<a onClick={e => {e.preventDefault(); setShowDetails(!showDetails)}}>{entry.title}</a>
+            <br/>
+            <small>
+                {entry.created}
+                 · <button onClick={copyEntryToBucketList}>copy</button>
+            </small>
         </div>
         {showDetails && <ExtendedEntry entry={entry} pagePath={pagePath}/>}
     </li>;
