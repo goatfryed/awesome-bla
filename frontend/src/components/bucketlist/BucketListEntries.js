@@ -61,7 +61,7 @@ function BucketListEntryView({entry, pagePath, forceUpdate, history}) {
 
         let returnValue = window.confirm("Do you want to see your list?");
         if (returnValue) {
-            history.push({pathname: "/bucketlist/" + targetListId} + "/entries/");
+            history.push({pathname: "/bucketlist/" + targetListId + "/entries/"});
         }
     }
 
