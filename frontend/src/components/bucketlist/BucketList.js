@@ -10,7 +10,10 @@ export function BucketList({match, history}) {
     const [bucketList, setBucketList] = React.useState(null);
 
     function update() {
-        backendFetch("/bucketlists/" + id + "/").then(data => setBucketList(data));
+        backendFetch("/bucketlists/" + id + "/")
+            .then(data => setBucketList(data))
+            .catch( e => setBucketList(null))
+        ;
     }
 
     React.useEffect(
