@@ -14,7 +14,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.lang.NonNull;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.util.UriComponentsBuilder;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -114,8 +113,7 @@ public class BucketListEntryController {
     @GetMapping("/cloneEntry/{entry}/")
     public ResponseEntity<Void> cloneEntry(
         @PathVariable("bucketList") BucketList targetList,
-        @PathVariable("entry") BucketListEntry entryToDuplicate,
-        UriComponentsBuilder uriBuilder
+        @PathVariable("entry") BucketListEntry entryToDuplicate
     ) {
         if (targetList == null) {
             throw new ResourceNotFoundException("requested bucketlist unknown");
@@ -135,6 +133,8 @@ public class BucketListEntryController {
 
         return ResponseEntity.created(null).build();
     }
+
+
 
     private BucketListEntry copyEntryToList(
             @NonNull BucketList targetList,
