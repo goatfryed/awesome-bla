@@ -1,9 +1,9 @@
 import React from "react";
 import {BucketListEntries} from "./BucketListEntries";
-import {Link, NavLink, Redirect} from "react-router-dom";
+import {Link, Redirect} from "react-router-dom";
 import {Route, Switch, withRouter} from "react-router";
 import {backendFetch} from "../../api";
-import {CommentInput, Comments, CommentsBlock} from "./Comments";
+import {CommentsBlock} from "./Comments";
 
 export function BucketList({match, history}) {
     const id = match.params.id;

@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from "react";
-import {CommentInput, Comments, CommentsBlock} from "./Comments";
+import {CommentsBlock} from "./Comments";
 import {backendFetch} from "../../api";
 import {withRouter} from "react-router";
 
