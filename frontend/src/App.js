@@ -5,7 +5,7 @@ import {Route, Switch, BrowserRouter as Router} from "react-router-dom";
 import './styles.scss';
 
 //Basic Components
-import {Navbar} from "./components/basic-components/Navbar";
+import {AppNavbar} from "./components/basic-components/Navbar";
 import {AuthenticationCallback} from "./authentication/AuthenticationCallback";
 
 //Components
@@ -24,14 +24,14 @@ import {users} from "./components/pages/users.js"
 function App() {
   return <Router>
     <div id="app">
-      <Navbar/>
+      <AppNavbar/>
       <div class="container">
         <Switch>
           <Route path="/callback" component={AuthenticationCallback}/>
           <Route path="/bucketlist/:id/newlistentry/" component={ListEntryNew}/>
           <Route path="/newlist" component={ListNew} />
           {/* https://reacttraining.com/react-router/web/api/Route/render-func */}
-          <Route path="/bucketlist/:id/" render={({match}) => <BucketList match={match} id={match.params.id} />} />
+          <Route path="/bucketlist/:id/" component={BucketList} />
           <Route path="/friends" component={friends}/>
           <Route path="/users" component={users}/>
           <Route path="/" exact component={AllBucketLists}/>
