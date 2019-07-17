@@ -29,7 +29,7 @@ function App() {
           <Route path="/callback" component={AuthenticationCallback}/>
           <Route path="/bucketlist/:id/newlistentry/" component={ListEntryNew}/>
           {/* https://reacttraining.com/react-router/web/api/Route/render-func */}
-          <Route path="/bucketlist/:id/" render={({match}) => <BucketList match={match} id={match.params.id} />} />
+          <Route path="/bucketlist/:id/" component={BucketList} />
           <Route path="/friends" component={friends}/>
           <Route path="/users" component={users}/>
           <Route path="/" exact component={AllBucketLists}/>
