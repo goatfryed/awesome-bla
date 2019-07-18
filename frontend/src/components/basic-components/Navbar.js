@@ -2,7 +2,7 @@ import React from "react";
 import Authentication from "../../authentication/Authentication";
 import { NavLink } from "react-router-dom";
 import { backend, isDebug } from "../../Configuration";
-import { Navbar } from "react-materialize";
+import { Navbar, Icon } from "react-materialize";
 import Button from "react-materialize/lib/Button";
 import NavItem from "react-materialize/lib/NavItem";
 
@@ -46,48 +46,48 @@ export class AppNavbar extends React.Component {
 
     //------------------
     render() {
-        //const logo = <a href="/"><img src="/logo/Logo_transparent2.png" className="navbar-logo" alt="logo"></img><span>Awesome Bucket List</span></a>;
+        const logo = <a href="/"><img src="/logo/Logo_transparent2.png" className="navbar-logo" alt="logo"></img><span className="logo-text">Awesome Bucket List</span></a>;
         return (
-            <Navbar className="light-blue" alignLinks="left">
+            <Navbar brand={logo} className="light-blue app-navbar">
                 <NavLink exact to="/" activeClassName="activeLink">
                     Home
-                </NavLink>
-                <NavLink to="/friends" activeClassName="activeLink">
-                    Friends
                 </NavLink>
                 <NavLink to="/users" activeClassName="activeLink">
                     Benutzersuche
                 </NavLink>
                 {!Authentication.isAuthenticated() && isDebug && (
-                    <NavItem className="right">
+                    <NavItem  className="navbar-btn">
                         <input type="text" className="debugInput" placeholder="Test user" defaultValue={this.state.fakeUser} onChange={e => (this.state.fakeUser = e.target.value)} />
-                        <Button onClick={this.fakeLogin}>Debug</Button>
+                        <Button waves="light" onClick={this.fakeLogin}>Debug</Button>
                     </NavItem>
                 )}
                 {Authentication.isAuthenticated() && (
-                    <NavItem>
-                        <Button onClick={Authentication.logout}>
+                    <NavItem className="navbar-btn">
+                        <Button waves="light" onClick={Authentication.logout}>
                             <strong>Logout</strong>
                         </Button>
                     </NavItem>
                 )}
                 {!Authentication.isAuthenticated() && (
-                    <NavItem>
-                        <Button href={this.state.url}>
+                    <NavItem className="navbar-btn">
+                        <Button waves="light" href={this.state.url}>
                             <strong>Login</strong>
                         </Button>
                     </NavItem>
                 )}
                 {Authentication.isAuthenticated() && (
-                    <NavItem>
-                        <Button>
+                    <NavItem className="navbar-btn">
+                        <Button waves="light">
+                            <Icon className="navbar-icons" left>
+                                assignment_ind
+                            </Icon>
                             <strong>{Authentication.getUser().sub}</strong>
                         </Button>
                     </NavItem>
                 )}
                 {isDebug && (
-                    <NavItem>
-                        <Button onClick={this.testAcces}>Test Authentication</Button>
+                    <NavItem className="navbar-btn">
+                        <Button waves="light" onClick={this.testAcces}>Test Authentication</Button>
                     </NavItem>
                 )}
             </Navbar>

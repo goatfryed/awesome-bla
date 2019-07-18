@@ -15,8 +15,6 @@ import {BucketList} from "./components/bucketlist/BucketList";
 import ListNew from "./components/bucketlist/ListNew";
 
 //Pages
-import {frontpage} from "./components/pages/frontpage"
-import {friends} from "./components/pages/friends"
 import page404 from "./components/pages/Page404"
 import {users} from "./components/pages/users.js"
 
@@ -32,7 +30,6 @@ function App() {
           <Route path="/newlist" component={ListNew} />
           {/* https://reacttraining.com/react-router/web/api/Route/render-func */}
           <Route path="/bucketlist/:id/" component={BucketList} />
-          <Route path="/friends" component={friends}/>
           <Route path="/users" component={users}/>
           <Route path="/" exact component={AllBucketLists}/>
           <Route path="/" component={page404}/>

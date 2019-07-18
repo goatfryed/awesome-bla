@@ -1,26 +1,76 @@
 @charset "utf-8";
-@import url('https://fonts.googleapis.com/css?family=Raleway:400,500,600,700,800&display=swap');
+@import url("https://fonts.googleapis.com/css?family=Raleway:400,500,600,700,800&display=swap");
 @import "../node_modules/materialize-css/sass/materialize.scss";
 
-body{
-  font-family: 'Raleway', sans-serif;
+body {
+    font-family: "Raleway", sans-serif;
+}
+.navbar-btn{
+  .btn {
+    padding: 0 10px;
+  }
+}
+.app-navbar {
+    .navbar-icons {
+        line-height: inherit;
+        height:100%;
+        margin-right: 10px;
+    }
+    
+    .brand-logo {
+        .navbar-logo {
+            max-height: 50px;
+            margin-right: 7px;
+            margin-left: 7px;
+            position: relative;
+            top: 50%;
+            transform: translateY(-50%);
+        }
+        .logo-text {
+            margin-right: 7px;
+        }
+        @media screen and (min-width: 992px) {
+            float: left;
+            position: relative;
+        }
+        @media screen and (max-width: 600px) {
+            .navbar-logo {
+                max-height: 40px;
+                margin-left: 0;
+            }
+            .logo-text {
+                font-size: 0.9rem;
+                margin-right: 0;
+            }
+        }
+        
+        display: inline-flex;
+        font-size: 1.2rem;
+        height: inherit;
+    }
+    ul {
+        width: 100%;
+        //Login Items float right
+        li:nth-last-child(-n + 5) {
+            float: right;
+        }
+    }
+    max-width: 1280px;
+    margin: 0 auto;
 }
 
-nav, #mobile-nav {
-  .activeLink{
-    color:black;
-  }
-  .navbar-logo{
-    max-height: 64px;
-  }
-  .debugInput{
-    width: unset !important;
-    margin-right: 10px !important;
-  }
-
+nav,
+#mobile-nav {
+    .activeLink {
+        color: black;
+    }
+    .debugInput {
+        width: unset !important;
+        margin-right: 10px !important;
+    }
 }
-
-
 
 //Generic Classes
-.ml05 {margin-left: 5px} 
+.ml05 {
+    margin-left: 5px;
+}
