@@ -17,7 +17,8 @@ import {BucketList} from "./components/bucketlist/BucketList";
 import {frontpage} from "./components/pages/frontpage"
 import {friends} from "./components/pages/friends"
 import page404 from "./components/pages/Page404"
-import {users} from "./components/pages/users.js"
+import {Users} from "./components/basic-components/users.js"
+import {allUsers} from "./components/pages/allUsers";
 
 
 function App() {
@@ -31,7 +32,7 @@ function App() {
           {/* https://reacttraining.com/react-router/web/api/Route/render-func */}
           <Route path="/bucketlist/:id/" render={({match}) => <BucketList match={match} id={match.params.id} />} />
           <Route path="/friends" component={friends}/>
-          <Route path="/users" component={users}/>
+          <Route path="/users" component={allUsers}/>
           <Route path="/" exact component={AllBucketLists}/>
           <Route path="/" component={page404}/>
         </Switch>

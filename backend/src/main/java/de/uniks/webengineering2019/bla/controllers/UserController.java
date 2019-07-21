@@ -1,5 +1,6 @@
 package de.uniks.webengineering2019.bla.controllers;
 
+import de.uniks.webengineering2019.bla.model.BucketList;
 import de.uniks.webengineering2019.bla.model.User;
 import de.uniks.webengineering2019.bla.repositories.UserRepository;
 import de.uniks.webengineering2019.bla.service.UserService;
@@ -31,8 +32,13 @@ public class UserController{
     @GetMapping("/find")
     public ResponseEntity findUsers(@RequestParam String name){
         if(StringUtils.isEmpty(name)){
-            return ResponseEntity.badRequest().build();
+            return ResponseEntity.ok(userService.findAllUsers());
         }
         return ResponseEntity.ok(userService.findUser(name));
+    }
+
+    @GetMapping("/byList")
+    public ResponseEntity findNotPrivelegedUsersByName(@RequestParam BucketList bucketlist,@RequestParam String name){
+        return ResponseEntity.ok(userService.findUserNotPrivelegedAndName(name,bucketlist));
     }
 }

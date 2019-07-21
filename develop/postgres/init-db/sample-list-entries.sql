@@ -59,6 +59,9 @@ INSERT INTO bucket_list_comments (bucket_list_id, comments_id)
     (42, 42400)
 ;
 
-INSERT INTO users (id,user_name,full_name) VALUES (101,'Test User','Tests Full Name');
+INSERT INTO users (id,user_name,full_name) VALUES (101,'Test User 1','Tests 1 Full Name');
+INSERT INTO users (id,user_name,full_name) VALUES (102,'Test User 2','Tests 2 Full Name');
+INSERT INTO users (id,user_name,full_name) VALUES (103,'Test User 3','Tests 3 Full Name');
+INSERT INTO users (id,user_name,full_name) VALUES (104,'Test User 4','Tests 4 Full Name');
 
 INSERT INTO bucket_list_accessed_users (bucket_list_id,accessed_users_id) VALUES (43,101);

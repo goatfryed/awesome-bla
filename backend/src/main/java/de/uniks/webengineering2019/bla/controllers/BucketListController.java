@@ -3,6 +3,7 @@ package de.uniks.webengineering2019.bla.controllers;
 import de.uniks.webengineering2019.bla.comments.CommentCreationService;
 import de.uniks.webengineering2019.bla.model.BucketList;
 import de.uniks.webengineering2019.bla.model.Comment;
+import de.uniks.webengineering2019.bla.model.User;
 import de.uniks.webengineering2019.bla.repositories.BucketListRepository;
 import de.uniks.webengineering2019.bla.repositories.CommentRepository;
 import org.springframework.http.HttpStatus;
@@ -48,5 +49,9 @@ public class BucketListController{
             throw new ResourceNotFoundException("requested entry unknown");
         }
         commentCreationService.addComment(comment, bucketList);
+    }
+
+    @PostMapping("/{bucketList}/priveleged/{user}")
+    public void addPriveledUser(@PathVariable BucketList bucketList,@PathVariable User user){
     }
 }

@@ -1,5 +1,6 @@
 import React from "react";
 import {backendFetch} from "../../api";
+import {Users} from "../basic-components/users";
 
 export class ListSettings extends React.Component {
   constructor(props) {
@@ -7,10 +8,12 @@ export class ListSettings extends React.Component {
     console.log(props);
     //const privateList = props.bucketlist.private;
     this.state = {
-      bucketList: props.bucketList
+      bucketList: props.bucketList,
+      endPoint: "/api/users/byList?bucketlist="+props.bucketList.id
     };
 
     this.privateChanged = this.privateChanged.bind(this);
+    this.makePriveleged = this.makePriveleged.bind(this);
 
   }
   componentDidMount() {
@@ -22,9 +25,13 @@ export class ListSettings extends React.Component {
     this.forceUpdate();
   }
 
+  makePriveleged(){
+    console.log("Make user priveled");
+  }
+
   render() {
 
-    const users = this.state.bucketList.accessed.map((user, index) => {
+    const priv_users = this.state.bucketList.accessed.map((user, index) => {
       return <span key={user.id}><li>
                 <b>{user.userName}</b> |&nbsp;
         <a>Löschen</a> |&nbsp;
@@ -32,9 +39,14 @@ export class ListSettings extends React.Component {
     });
 
     const privateOptions = ()=>{
-      return <div>Berechtiget user
-        <div>
-          {users}
+      return <div>
+        <div>Berechtiget user
+          <div>
+            {priv_users}
+          </div>
+        </div>
+        <div>Berechtigungen zuteilen
+          <Users text="Hier Text einfügen" onKlick={this.makePriveleged} endPoint={this.state.endPoint}></Users>
         </div>
       </div>
     };

@@ -1,7 +1,7 @@
 import React from "react";
 import {backend} from "../../Configuration";
 
-export class users extends React.Component {
+export class Users extends React.Component {
 
     constructor(props) {
         super(props);
@@ -9,10 +9,17 @@ export class users extends React.Component {
             users: [],
             lastSearch: null,
             timeout: null,
-            onLoading: false
+            onLoading: false,
+            text: props.text,
+            onKlick: props.onKlick,
+            endPoint: "/api/users/find"
         };
+        if(props.endPoint != null){
+            this.state.endPoint = props.endPoint;
+        }
         this.searchUserChanged = this.searchUserChanged.bind(this);
         this.searchUsers = this.searchUsers.bind(this);
+        this.getEndPointUrl = this.getEndPointUrl.bind(this);
     }
 
     searchUserChanged(ev){
@@ -35,8 +42,7 @@ export class users extends React.Component {
         const users = this.state.users.map((user, index) => {
             return <span key={user.id}><li>
                 <b>{user.userName}</b> |&nbsp;
-                <a>Add as Friend</a> |&nbsp;
-                <a>Show Bucketlists</a>
+                <a onClick={this.state.onKlick}>{this.state.text}</a> |&nbsp;
             </li></span>
         });
 
@@ -55,6 +61,14 @@ export class users extends React.Component {
         this.searchUsers("");
     }
 
+    getEndPointUrl(name){
+        if(this.state.endPoint.includes("?")){
+            return backend + this.state.endPoint+'&name='+name
+        }else{
+            return backend + this.state.endPoint+'?name='+name
+        }
+    }
+
     searchUsers(name){
         this.state.onLoading=false;
         if(name === this.state.lastSearch)
@@ -62,27 +76,15 @@ export class users extends React.Component {
             return;
         }
         this.state.lastSearch = name;
-        if(name === ""){
-            fetch(backend + '/api/users/all')
-                .then((response) => {
-                    return response.json()
-                })
-                .then((data) => {
-                    this.setState({
-                        users: data
-                    });
-                })
-        }else{
-            fetch(backend + '/api/users/find?name='+name)
-                .then((response) => {
-                    return response.json()
-                })
-                .then((data) => {
-                    this.setState({
-                        users: data
-                    });
-                })
-        }
+        fetch(this.getEndPointUrl(name))
+            .then((response) => {
+                return response.json()
+            })
+            .then((data) => {
+                this.setState({
+                    users: data
+            });
+        })
     }
 
 }
