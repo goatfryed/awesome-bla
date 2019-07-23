@@ -16,7 +16,7 @@ import javax.persistence.*;
 @AllArgsConstructor
 @Builder
 @Entity
-@Table(catalog="bucketlist")
+@Table(catalog = "bucketlist")
 public class BucketList implements Commentable {
 
     @Id
@@ -40,6 +40,39 @@ public class BucketList implements Commentable {
         this.entries.add(newEntry);
         newEntry.setBucketList(this);
         this.numEntries = this.entries.size();
+    }
+    @OneToMany
+    private List<User> userUpvote;
+    @OneToMany
+    private List<User> userDownvote;
+
+    private int voteCount;
+
+    // upvote and remove downvote
+    public void upvote(User user) {
+        if (!this.userUpvote.contains(user)) {
+            this.userUpvote.add(user);
+        }
+        if (this.userDownvote.contains(user)) {
+            this.userDownvote.remove(user);
+        }
+        countVotes();
+    }
+
+    // downvote and remove upvote
+    public void downvote(User user) {
+        if (this.userUpvote.contains(user)) {
+            this.userUpvote.add(user);
+        }
+        if (!this.userDownvote.contains(user)) {
+            this.userDownvote.remove(user);
+        }
+        countVotes();
+    }
+
+    public int countVotes() {
+        this.voteCount = this.userUpvote.size() + this.userDownvote.size();
+        return this.voteCount;
     }
 
     @OneToMany

@@ -36,7 +36,7 @@ public class AuthenticationFilter implements Filter {
     @Value("${SECRET_KEY}")
     private String secretKey;
 
-    @Value("${debug.authentication:false}")
+    @Value("${debug.authentication:true}")
     private boolean debugAuthentication;
 
     @Autowired
