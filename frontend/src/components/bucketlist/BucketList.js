@@ -12,7 +12,7 @@ function BucketListDetails(props) {
     return <article className="media">
         <figure className="media-left">
             <p className="image is-64x64">
-                <img src="https://bulma.io/images/placeholders/128x128.png"/>
+                <img src="https://bulma.io/images/placeholders/128x128.png" alt="icon"/>
             </p>
         </figure>
         <div className="media-content">
@@ -52,8 +52,7 @@ function SubTabNavigation(props) {
                 return;
             }
 
-            const instance = window.M.Tabs.init(tabsElement.current)
-            instance.select(null);
+            const instance = window.M.Tabs.init(tabsElement.current);
 
             return function () {
                 instance.destroy();
@@ -67,7 +66,7 @@ function SubTabNavigation(props) {
         <ul className="tabs" ref={tabsElement}>
             <li className="tab col s3"><NavLink onClick={updateUrl} to={props.url + "/entries"} >Entries</NavLink></li>
             <li className="tab col s3"><NavLink onClick={updateUrl} to={props.url + "/comments"} >Comments</NavLink></li>
-            <li className="tab col s3"><NavLink target="_self" to={props.url + "/newlistentry"} >Comments</NavLink></li>
+            <li className="tab col s3"><NavLink target="_self" to={props.url + "/newlistentry"} >New Entry</NavLink></li>
         </ul>
         {url && <Redirect to={url} />}
     </Fragment>
@@ -82,7 +81,7 @@ export function BucketList({match, history}) {
     function update() {
         backendFetch("/bucketlists/" + id + "/")
             .then(data => setBucketList(data))
-            .catch( e => setBucketList(null))
+            .catch( () => setBucketList(null))
         ;
     }
 
@@ -156,11 +155,3 @@ function BucketListComments({bucketList, update}) {
         comments={bucketList.comments}
     />
 }
-
-// with router provides route awareness to this component, so it can set a class to the li, if it's matching
-// using NavLink could do similiar things, but could only add a class to the <a> link
-const NavTab = withRouter(({to, location, children}) =>{
-    return <li className={location.pathname.startsWith(to) ? "is-active" : null}>
-        <Link to={to}>{children}</Link>
-    </li>
-});
