@@ -6,10 +6,10 @@ TRUNCATE bucket_list_comments CASCADE;
 TRUNCATE users CASCADE;
 TRUNCATE bucket_list_accessed_users CASCADE;
 
-INSERT INTO "bucket_list" (id, createn_date, last_updated, num_entries, title,private_list) values (42, NOW(), NOW(), 0, 'web engineering dreams',false);
-INSERT INTO "bucket_list" (id, createn_date, last_updated, num_entries, title,private_list) values (43, NOW(), NOW(), 0, 'private web engineering dreams',true);
+INSERT INTO "bucket_list" (id, createn_date, last_updated, num_entries, title, private_list) values (42, NOW(), NOW(), 0, 'web engineering dreams',false);
+INSERT INTO "bucket_list" (id, createn_date, last_updated, num_entries, title, private_list) values (43, NOW(), NOW(), 0, 'private web engineering dreams',true);
 
-INSERT INTO "bucket_list" (id, createn_date, last_updated, num_entries, title) values (666, NOW(), NOW(), 0, 'thing'' i wanna fail at');
+INSERT INTO "bucket_list" (id, createn_date, last_updated, num_entries, title, private_list) values (666, NOW(), NOW(), 0, 'thing'' i wanna fail at', false);
 
 INSERT INTO "public"."bucket_list_entry" ("id", "title", "created", "completed", bucket_list_id)
     VALUES (1001, 'Think of an bucket list item', NOW(), NOW(), 42),
