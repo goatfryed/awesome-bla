@@ -1,12 +1,12 @@
-import React, {Fragment} from "react";
-import {useRef, useEffect, useState} from "react";
-import {Link, NavLink, Redirect} from "react-router-dom";
-import {Route, Switch, withRouter} from "react-router";
+import React from "react";
+import {NavLink, Redirect} from "react-router-dom";
+import {Route, Switch} from "react-router";
 import {BucketListEntries} from "./BucketListEntries";
 import {backendFetch} from "../../api";
 import {CommentsBlock} from "./Comments";
 import moment from "moment";
 import * as PropTypes from "prop-types";
+import {NavTabs} from "./NavTabs";
 
 function BucketListDetails(props) {
     return <article className="media">
@@ -32,47 +32,6 @@ BucketListDetails.propTypes = {
     onLike: PropTypes.func,
     onImport: PropTypes.func
 };
-
-function SubTabNavigation(props) {
-
-    const tabsElement = useRef(null);
-    const [url, setUrl] = useState(null);
-
-    console.log(url);
-
-    function updateUrl() {
-        // this in function means calling context
-        console.log(this);
-        setUrl(this.to);
-    }
-
-    useEffect(
-        function () {
-            if (tabsElement.current === null) {
-                return;
-            }
-
-            const instance = window.M.Tabs.init(tabsElement.current);
-
-            return function () {
-                instance.destroy();
-            }
-        },
-        [tabsElement.current]
-    );
-
-    /* https://stackoverflow.com/a/46531324/10526222 */
-    return <Fragment>
-        <ul className="tabs" ref={tabsElement}>
-            <li className="tab col s3"><NavLink onClick={updateUrl} to={props.url + "/entries"} >Entries</NavLink></li>
-            <li className="tab col s3"><NavLink onClick={updateUrl} to={props.url + "/comments"} >Comments</NavLink></li>
-            <li className="tab col s3"><NavLink target="_self" to={props.url + "/newlistentry"} >New Entry</NavLink></li>
-        </ul>
-        {url && <Redirect to={url} />}
-    </Fragment>
-}
-
-SubTabNavigation.propTypes = {url: PropTypes.any};
 
 export function BucketList({match, history}) {
     const id = match.params.id;
@@ -124,7 +83,21 @@ export function BucketList({match, history}) {
                                onImport={importBucketList}/>
         </div>
         <div className="row">
-            <SubTabNavigation url={match.url}/>
+            <NavTabs links={[
+                {
+                    url: match.url + "/entries",
+                    title: "Entries",
+                },
+                {
+                    url: match.url + "/comments",
+                    title: "Comments",
+                },
+                {
+                    url: match.url + "/newlistentry",
+                    title: "New list entry",
+                    navLinkProps: {target: "_self"},
+                }
+            ]} />
         </div>
         <div className="row">
             <Switch>
