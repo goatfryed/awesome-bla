@@ -56,12 +56,14 @@ public class BucketListController{
     @PostMapping("/{bucketList}/privelege/{user}")
     public ResponseEntity addPriveledUser(@PathVariable BucketList bucketList,@PathVariable User user){
         bucketList.getAccessedUsers().add(user);
+        bucketList = bucketListRepository.save(bucketList);
         return ResponseEntity.ok(bucketList.getAccessedUsers());
     }
 
-    @PostMapping("/{bucketList}/unpivelege/{user}")
+    @PostMapping("/{bucketList}/unprivelege/{user}")
     public ResponseEntity removePriveledUser(@PathVariable BucketList bucketList,@PathVariable User user){
         bucketList.getAccessedUsers().remove(user);
+        bucketList = bucketListRepository.save(bucketList);
         return ResponseEntity.ok(bucketList.getAccessedUsers());
     }
 

@@ -1,5 +1,6 @@
 import React from "react";
 import {backend} from "../../Configuration";
+import moment from "../bucketlist/BucketListEntries";
 
 export class Users extends React.Component {
 
@@ -12,7 +13,7 @@ export class Users extends React.Component {
             onLoading: false,
             text: props.text,
             onKlick: props.onKlick,
-            endPoint: "/api/users/find"
+            endPoint: "/api/users/find",
         };
         if(props.endPoint != null){
             this.state.endPoint = props.endPoint;
@@ -20,6 +21,7 @@ export class Users extends React.Component {
         this.searchUserChanged = this.searchUserChanged.bind(this);
         this.searchUsers = this.searchUsers.bind(this);
         this.getEndPointUrl = this.getEndPointUrl.bind(this);
+        this.forcepUpdateRequest = this.forcepUpdateRequest.bind(this);
     }
 
     searchUserChanged(ev){
@@ -32,7 +34,7 @@ export class Users extends React.Component {
             clearTimeout(this.state.timeout);
         }
         this.state.timeout = setTimeout(ev=>{
-            this.searchUsers(name);
+            this.searchUsers(name,false);
         }, 1000);
         this.forceUpdate();
         //this.searchUsers(name);
@@ -40,14 +42,15 @@ export class Users extends React.Component {
 
     render() {
         const users = this.state.users.map((user, index) => {
-            return <span key={user.id}><li>
+            return <span key={user.id}><li class="active">
                 <b>{user.userName}</b> |&nbsp;
-                <a onClick={this.state.onKlick(user)}>{this.state.text}</a> |&nbsp;
-            </li></span>
+                <button onClick={this.state.onKlick.bind(this,user)} type="submit">{this.state.text}</button>
+            </li>
+            </span>
         });
 
         return (
-            <div className='content'>
+            <div>
                 Benutzersuche: <input type="text" defaultValue="#Username" onChange={this.searchUserChanged}/>
                 {this.state.onLoading?"Loading...":""}
                 <ul>
@@ -58,7 +61,7 @@ export class Users extends React.Component {
     }
 
     componentDidMount() {
-        this.searchUsers("");
+        this.searchUsers("",false);
     }
 
     getEndPointUrl(name){
@@ -69,9 +72,13 @@ export class Users extends React.Component {
         }
     }
 
-    searchUsers(name){
+    forcepUpdateRequest(){
+        this.searchUsers(this.state.lastSearch,true);
+    }
+
+    searchUsers(name,force){
         this.state.onLoading=false;
-        if(name === this.state.lastSearch)
+        if(force === false && name === this.state.lastSearch)
         {
             return;
         }

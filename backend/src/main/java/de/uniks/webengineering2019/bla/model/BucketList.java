@@ -2,6 +2,7 @@ package de.uniks.webengineering2019.bla.model;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Set;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -35,9 +36,9 @@ public class BucketList implements Commentable {
     private List<BucketListEntry> entries;
     private int numEntries;
 
-    @ManyToMany
+    @ManyToMany(cascade = CascadeType.ALL)
     @JsonProperty("accessed")
-    private List<User> accessedUsers;
+    private Set<User> accessedUsers;
 
     @JsonProperty("created")
     private Date creationDate;

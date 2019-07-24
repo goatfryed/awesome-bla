@@ -14,7 +14,7 @@ export class ListSettings extends React.Component {
 
     this.privateChanged = this.privateChanged.bind(this);
     this.makePriveleged = this.makePriveleged.bind(this);
-
+    this.makeUnprieleged = this.makeUnprieleged.bind(this);
   }
   componentDidMount() {
   }
@@ -26,9 +26,20 @@ export class ListSettings extends React.Component {
   }
 
   makePriveleged(user){
-    console.log("Make user priveled");
+    //console.log("Make user priveled");
     backendFetch.post("/bucketlists/"+this.state.bucketList.id+"/privelege/"+user.id).then(res=>{
       this.state.bucketList.accessed = res;
+      this.refs.usersRef.forcepUpdateRequest();
+      this.forceUpdate();
+    })
+  }
+
+  makeUnprieleged(user){
+    console.log("Make user unpriveled");
+    backendFetch.post("/bucketlists/"+this.state.bucketList.id+"/unprivelege/"+user.id).then(res=>{
+      this.state.bucketList.accessed = res;
+      this.refs.usersRef.forcepUpdateRequest();
+      this.forceUpdate();
     })
   }
 
@@ -37,8 +48,8 @@ export class ListSettings extends React.Component {
     const priv_users = this.state.bucketList.accessed.map((user, index) => {
       return <span key={user.id}><li>
                 <b>{user.userName}</b> |&nbsp;
-        <a>Löschen</a> |&nbsp;
-            </li></span>
+            <button type="submit" onClick={this.makeUnprieleged.bind(this,user)}>Entfernen</button> |&nbsp;
+          </li></span>
     });
 
     const privateOptions = ()=>{
@@ -49,19 +60,22 @@ export class ListSettings extends React.Component {
           </div>
         </div>
         <div>Berechtigungen zuteilen
-          <Users text="Hier Text einfügen" onKlick={this.makePriveleged} endPoint={this.state.endPoint}></Users>
+          <Users ref="usersRef" text="Hier Text einfügen" onKlick={this.makePriveleged} endPoint={this.state.endPoint}></Users>
         </div>
       </div>
     };
 
 
     return (
-        <span>
+        <apan>
           <div>
-            <input type="checkbox" checked={this.state.bucketList.private} onChange={this.privateChanged}/> Private Liste
+            <label>
+              <input class="filled-in" type="checkbox" checked={this.state.bucketList.private} onChange={this.privateChanged} />
+              <span>Private Liste</span>
+            </label>
           </div>
           {this.state.bucketList.private?privateOptions():""}
-        </span>
+        </apan>
     );
   }
 }
