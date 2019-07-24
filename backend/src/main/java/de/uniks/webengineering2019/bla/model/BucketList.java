@@ -23,7 +23,9 @@ public class BucketList implements Commentable {
     @GeneratedValue
     @JsonProperty(access = JsonProperty.Access.READ_ONLY) // See JavaDoc for explanation.
     private Long id;
+
     private String title;
+    private String description;
 
     @JsonProperty("private")
     private boolean privateList;
@@ -38,7 +40,7 @@ public class BucketList implements Commentable {
     private List<User> accessedUsers;
 
     @JsonProperty("created")
-    private Date createnDate;
+    private Date creationDate;
     private Date lastUpdated;
 
     public void addEntry(BucketListEntry newEntry){

@@ -1,6 +1,7 @@
 import React, {useState} from "react";
 import {addCommentReply} from "../../api";
 import Authentication from "../../authentication/Authentication";
+import moment from "moment";
 
 export function CommentsBlock({onRootCommentCreation, onReplyCreated, comments}) {
     return <div className="content">
@@ -22,7 +23,7 @@ function Comment({comment, onCommentReplyCreated}) {
     let user = comment.user == null ? "anonymous" : comment.user.userName;
 
     return <li className="collection-item">
-        <small>{user} · {comment.created.substr(0, 19)}</small>
+        <small>{user} · {moment(comment.created).fromNow()}</small>
         <div>{comment.comment}</div>
         <CommentInput onCommentCreation={onCommentCreation}/>
         <Comments comments={comment.comments} onCommentReplyCreated={onCommentReplyCreated}/>
