@@ -1,5 +1,5 @@
-import React from "react";
-import {useRef, useEffect} from "react";
+import React, {Fragment} from "react";
+import {useRef, useEffect, useState} from "react";
 import {Link, NavLink, Redirect} from "react-router-dom";
 import {Route, Switch, withRouter} from "react-router";
 import {BucketListEntries} from "./BucketListEntries";
@@ -36,30 +36,41 @@ BucketListDetails.propTypes = {
 function SubTabNavigation(props) {
 
     const tabsElement = useRef(null);
+    const [url, setUrl] = useState(null);
 
-    // we rebuild the tabsInstance on every render, which is not nice, but it seems like the only way to actually have them work as a simple css style
-    // consider switching to another css tabs component. maybe only pick bulma tabs?
+    console.log(url);
+
+    function updateUrl() {
+        // this in function means calling context
+        console.log(this);
+        setUrl(this.to);
+    }
+
     useEffect(
         function () {
             if (tabsElement.current === null) {
-                console.log("was here");
                 return;
             }
-            console.log(tabsElement);
-            let instance = window.M.Tabs.init(tabsElement.current, {});
+
+            const instance = window.M.Tabs.init(tabsElement.current)
+            instance.select(null);
 
             return function () {
                 instance.destroy();
             }
-        }
+        },
+        [tabsElement.current]
     );
 
     /* https://stackoverflow.com/a/46531324/10526222 */
-    return <ul className="tabs" ref={tabsElement}>
-        <li className="tab col s3"><NavLink target="_self" to={props.url + "/entries"}>Entries</NavLink></li>
-        <li className="tab col s3"><NavLink target="_self" to={props.url + "/comments"}>Comments</NavLink></li>
-        <li className="tab col s3"><NavLink target="_self" to={props.url + "/newlistentry"}>New Entry</NavLink></li>
-    </ul>
+    return <Fragment>
+        <ul className="tabs" ref={tabsElement}>
+            <li className="tab col s3"><NavLink onClick={updateUrl} to={props.url + "/entries"} >Entries</NavLink></li>
+            <li className="tab col s3"><NavLink onClick={updateUrl} to={props.url + "/comments"} >Comments</NavLink></li>
+            <li className="tab col s3"><NavLink target="_self" to={props.url + "/newlistentry"} >Comments</NavLink></li>
+        </ul>
+        {url && <Redirect to={url} />}
+    </Fragment>
 }
 
 SubTabNavigation.propTypes = {url: PropTypes.any};
