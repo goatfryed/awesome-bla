@@ -23,7 +23,7 @@ function App() {
   return <Router>
     <div id="app">
       <AppNavbar/>
-      <div class="container">
+      <div className="container">
         <Switch>
           <Route path="/callback" component={AuthenticationCallback}/>
           <Route path="/bucketlist/:id/newlistentry/" component={ListEntryNew}/>
