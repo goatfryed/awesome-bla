@@ -33,4 +33,14 @@ public class User {
 
     public User(){
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (!(o instanceof User)) {
+            return false;
+        }
+
+        User other = (User) o;
+        return other.getId() == this.getId();
+    }
 }
