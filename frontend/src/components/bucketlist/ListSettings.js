@@ -25,8 +25,11 @@ export class ListSettings extends React.Component {
     this.forceUpdate();
   }
 
-  makePriveleged(){
+  makePriveleged(user){
     console.log("Make user priveled");
+    backendFetch.post("/bucketlists/"+this.state.bucketList.id+"/privelege/"+user.id).then(res=>{
+      this.state.bucketList.accessed = res;
+    })
   }
 
   render() {

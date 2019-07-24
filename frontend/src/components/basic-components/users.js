@@ -42,7 +42,7 @@ export class Users extends React.Component {
         const users = this.state.users.map((user, index) => {
             return <span key={user.id}><li>
                 <b>{user.userName}</b> |&nbsp;
-                <a onClick={this.state.onKlick}>{this.state.text}</a> |&nbsp;
+                <a onClick={this.state.onKlick(user)}>{this.state.text}</a> |&nbsp;
             </li></span>
         });
 

@@ -84,7 +84,12 @@ public class AuthenticationFilter implements Filter {
             Claims c = claims.get();
 
             User user = new User();
-            user.setId((long) c.get("id", Integer.class));
+            c.forEach((s,o)->{
+                System.out.println(o);
+            });
+            String id = c.getId();
+            Integer i = c.get("id",Integer.class);
+            user.setId(Long.parseLong(c.getId()));
             user.setUserName(c.getSubject());
             user.setFullName(c.get("name", String.class));
 

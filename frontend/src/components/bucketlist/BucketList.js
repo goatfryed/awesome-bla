@@ -38,7 +38,7 @@ export function BucketList({id, match}) {
             <div className="media-content">
                 <strong>{bucketList.title}({bucketList.id})</strong>
                 <br/>
-                <small>{counter} · <a onClick={incrementCounter}>Like</a> · <span>{bucketList.created.substr(0, 19)}</span></small>
+                 <small>{counter} · <a onClick={incrementCounter}>Like</a> · <span>{bucketList.created.substr(0, 19)}</span></small>
             </div>
         </article>
         <div className="tabs">

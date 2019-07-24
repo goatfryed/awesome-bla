@@ -7,6 +7,7 @@ import de.uniks.webengineering2019.bla.model.User;
 import de.uniks.webengineering2019.bla.repositories.BucketListRepository;
 import de.uniks.webengineering2019.bla.repositories.CommentRepository;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -51,7 +52,16 @@ public class BucketListController{
         commentCreationService.addComment(comment, bucketList);
     }
 
-    @PostMapping("/{bucketList}/priveleged/{user}")
-    public void addPriveledUser(@PathVariable BucketList bucketList,@PathVariable User user){
+    @PostMapping("/{bucketList}/privelege/{user}")
+    public ResponseEntity addPriveledUser(@PathVariable BucketList bucketList,@PathVariable User user){
+        bucketList.getAccessedUsers().add(user);
+        return ResponseEntity.ok(bucketList.getAccessedUsers());
     }
+
+    @PostMapping("/{bucketList}/unpivelege/{user}")
+    public ResponseEntity removePriveledUser(@PathVariable BucketList bucketList,@PathVariable User user){
+        bucketList.getAccessedUsers().remove(user);
+        return ResponseEntity.ok(bucketList.getAccessedUsers());
+    }
+
 }
