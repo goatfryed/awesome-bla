@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
-import { Route, Switch, withRouter } from "react-router";
-import { Link, NavLink, Redirect } from "react-router-dom";
+import { Route, Switch} from "react-router";
+import { Link, Redirect } from "react-router-dom";
 import { backendFetch } from "../../api";
+import {NavTabs} from "./NavTabs";
 
 export class AllBucketLists extends Component {
 	state = {
@@ -30,12 +31,19 @@ export class AllBucketLists extends Component {
 		return (
 			<div className="container">
 				<h5>Bucket Lists</h5>
-				<div className="tabs">
-					<ul>
-						<NavTab to="/">Lists</NavTab>
-						<NavTab to="/newlist">New List</NavTab>
-					</ul>
-				</div>
+				<NavTabs
+					links={[
+						{
+							url: "/",
+							title: "Lists",
+						},
+						{
+							url: "/newlist",
+							title: "New List",
+							navLinkProps: {target: "_self"},
+						},
+					]}
+				/>
 				<Switch>
 					<Route path="/" render={() => <Lists bucketLists={ bucketLists } />} />
 					<Redirect to="/newlist" />
@@ -51,12 +59,4 @@ const Lists = ({ bucketLists }) => {
 			{ bucketLists }
 		</div>
 	);
-}
-
-// with router provides route awareness to this component, so it can set a class to the li, if it's matching
-// using NavLink could do similiar things, but could only add a class to the <a> link
-const NavTab = withRouter(({to, location, children}) => {
-	return <li className={location.pathname.startsWith(to) ? "is-active" : null}>
-			<Link to={to}>{children}</Link>
-	</li>
-});
+};
