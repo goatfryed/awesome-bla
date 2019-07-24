@@ -5,11 +5,10 @@ import {Users} from "../basic-components/users";
 export class ListSettings extends React.Component {
   constructor(props) {
     super(props);
-    console.log(props);
     //const privateList = props.bucketlist.private;
     this.state = {
       bucketList: props.bucketList,
-      endPoint: "/api/users/byList?bucketlist="+props.bucketList.id
+      endPoint: "/users/byList?bucketlist="+props.bucketList.id
     };
 
     this.privateChanged = this.privateChanged.bind(this);
@@ -21,12 +20,13 @@ export class ListSettings extends React.Component {
 
 
   privateChanged(){
-    this.state.bucketList.private = !this.state.bucketList.private;
-    this.forceUpdate();
+    backendFetch.post("/bucketlists/"+this.state.bucketList.id+"/private?value="+!this.state.bucketList.private).then(res=>{
+      this.state.bucketList.private=!this.state.bucketList.private;
+      this.forceUpdate();
+    });
   }
 
   makePriveleged(user){
-    //console.log("Make user priveled");
     backendFetch.post("/bucketlists/"+this.state.bucketList.id+"/privelege/"+user.id).then(res=>{
       this.state.bucketList.accessed = res;
       this.refs.usersRef.forcepUpdateRequest();
@@ -35,7 +35,6 @@ export class ListSettings extends React.Component {
   }
 
   makeUnprieleged(user){
-    console.log("Make user unpriveled");
     backendFetch.post("/bucketlists/"+this.state.bucketList.id+"/unprivelege/"+user.id).then(res=>{
       this.state.bucketList.accessed = res;
       this.refs.usersRef.forcepUpdateRequest();

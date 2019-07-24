@@ -67,6 +67,13 @@ public class BucketListController{
         return ResponseEntity.ok(bucketList.getAccessedUsers());
     }
 
+    @PostMapping("/{bucketList}/private")
+    public ResponseEntity removePriveledUser(@PathVariable BucketList bucketList,@RequestParam boolean value){
+        bucketList.setPrivateList(value);
+        bucketList = bucketListRepository.save(bucketList);
+        return ResponseEntity.ok(bucketList.isPrivateList());
+    }
+
 
     @PostMapping("/add")
     @ResponseStatus(HttpStatus.CREATED)
@@ -75,4 +82,6 @@ public class BucketListController{
         newBucketList.setLastUpdated(new Date());
         bucketListRepository.save(newBucketList);
     }
+
+
 }

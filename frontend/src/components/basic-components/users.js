@@ -1,6 +1,7 @@
 import React from "react";
 import {backend} from "../../Configuration";
 import moment from "../bucketlist/BucketListEntries";
+import {backendFetch} from "../../api";
 
 export class Users extends React.Component {
 
@@ -13,7 +14,7 @@ export class Users extends React.Component {
             onLoading: false,
             text: props.text,
             onKlick: props.onKlick,
-            endPoint: "/api/users/find",
+            endPoint: "/users/find",
         };
         if(props.endPoint != null){
             this.state.endPoint = props.endPoint;
@@ -66,9 +67,9 @@ export class Users extends React.Component {
 
     getEndPointUrl(name){
         if(this.state.endPoint.includes("?")){
-            return backend + this.state.endPoint+'&name='+name
+            return this.state.endPoint+'&name='+name
         }else{
-            return backend + this.state.endPoint+'?name='+name
+            return this.state.endPoint+'?name='+name
         }
     }
 
@@ -83,9 +84,9 @@ export class Users extends React.Component {
             return;
         }
         this.state.lastSearch = name;
-        fetch(this.getEndPointUrl(name))
+        backendFetch.get(this.getEndPointUrl(name))
             .then((response) => {
-                return response.json()
+                return response;
             })
             .then((data) => {
                 this.setState({
