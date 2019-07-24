@@ -1,5 +1,5 @@
 import React from "react";
-import {NavLink, Redirect} from "react-router-dom";
+import {Redirect} from "react-router-dom";
 import {Route, Switch} from "react-router";
 import {BucketListEntries} from "./BucketListEntries";
 import {backendFetch} from "../../api";
