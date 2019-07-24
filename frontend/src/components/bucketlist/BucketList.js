@@ -1,7 +1,8 @@
 import React from "react";
-import {BucketListEntries} from "./BucketListEntries";
+import {useRef, useEffect} from "react";
 import {Link, NavLink, Redirect} from "react-router-dom";
 import {Route, Switch, withRouter} from "react-router";
+import {BucketListEntries} from "./BucketListEntries";
 import {backendFetch} from "../../api";
 import {CommentsBlock} from "./Comments";
 import moment from "moment";
@@ -33,13 +34,31 @@ BucketListDetails.propTypes = {
 };
 
 function SubTabNavigation(props) {
-    return <ul className="tabs">
-        {/* i'd actually prefer to just provide relative routes, but than activeClassName won't match
-                        see https://github.com/ReactTraining/react-router/issues/6201#issuecomment-403291934
-                    */}
-        <li className="tb col s3"><NavLink to={props.url + "/entries"}>Entries</NavLink></li>
-        <li className="tb col s3"><NavLink to={props.url + "/comments"}>Comments</NavLink></li>
-        <li className="tb col s3"><NavLink to={props.url + "/newlistentry"}>New Entry</NavLink></li>
+
+    const tabsElement = useRef(null);
+
+    // we rebuild the tabsInstance on every render, which is not nice, but it seems like the only way to actually have them work as a simple css style
+    // consider switching to another css tabs component. maybe only pick bulma tabs?
+    useEffect(
+        function () {
+            if (tabsElement.current === null) {
+                console.log("was here");
+                return;
+            }
+            console.log(tabsElement);
+            let instance = window.M.Tabs.init(tabsElement.current, {});
+
+            return function () {
+                instance.destroy();
+            }
+        }
+    );
+
+    /* https://stackoverflow.com/a/46531324/10526222 */
+    return <ul className="tabs" ref={tabsElement}>
+        <li className="tab col s3"><NavLink target="_self" to={props.url + "/entries"}>Entries</NavLink></li>
+        <li className="tab col s3"><NavLink target="_self" to={props.url + "/comments"}>Comments</NavLink></li>
+        <li className="tab col s3"><NavLink target="_self" to={props.url + "/newlistentry"}>New Entry</NavLink></li>
     </ul>
 }
 
