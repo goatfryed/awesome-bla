@@ -1,5 +1,6 @@
 package de.uniks.webengineering2019.bla.controllers;
 
+import de.uniks.webengineering2019.bla.authentication.UserContext;
 import de.uniks.webengineering2019.bla.comments.CommentCreationService;
 import de.uniks.webengineering2019.bla.model.BucketList;
 import de.uniks.webengineering2019.bla.model.Comment;
@@ -10,6 +11,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
@@ -20,19 +22,32 @@ public class BucketListController{
 
     private final BucketListRepository bucketListRepository;
     private final CommentCreationService commentCreationService;
+    private final UserContext userContext;
 
     public BucketListController(
         BucketListRepository bucketListRepository,
-        CommentCreationService commentCreationService
+        CommentCreationService commentCreationService,
+        UserContext userContext
     ) {
         this.bucketListRepository = bucketListRepository;
         this.commentCreationService = commentCreationService;
+        this.userContext = userContext;
     }
 
     @GetMapping("/all")
     public List<BucketList> getAllLists(){
         return bucketListRepository.findAll();
         //return bucketListRepository.findByPrivateList(false);
+    }
+
+    @GetMapping("/all2")
+    public List<BucketList> getAllLists2(){
+        if(userContext.hasUser()){
+            return bucketListRepository.findByPrivateListOrAccessedUsersContains(false, userContext.getUser());
+        }else{
+            return bucketListRepository.findByPrivateList(false);
+        }
+
     }
 
     @GetMapping("/{bucketList}/")

@@ -49,6 +49,9 @@ export class AppNavbar extends React.Component {
         const logo = <a href="/"><img src="/logo/Logo_transparent2.png" className="navbar-logo" alt="logo"></img><span className="logo-text">Awesome Bucket List</span></a>;
         return (
             <Navbar brand={logo} className="light-blue app-navbar">
+                <NavLink exact to="/accessed" activeClassName="activeLink">
+                    Access Bucket Lists
+                </NavLink>
                 <NavLink exact to="/" activeClassName="activeLink">
                     Home
                 </NavLink>

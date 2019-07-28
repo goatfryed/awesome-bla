@@ -18,6 +18,7 @@ import ListNew from "./components/bucketlist/ListNew";
 import page404 from "./components/pages/Page404"
 import {Users} from "./components/basic-components/users.js"
 import {allUsers} from "./components/pages/allUsers";
+import {AccessedAllBucketLists} from "./components/bucketlist/ShowAccessAllBucketLists";
 
 
 function App() {
@@ -33,6 +34,7 @@ function App() {
           <Route path="/bucketlist/:id/" render={({match}) => <BucketList match={match} id={match.params.id} />} />
           <Route path="/users" component={allUsers}/>
           <Route path="/" exact component={AllBucketLists}/>
+          <Route path="/accessed" exact component={AccessedAllBucketLists}/>
           <Route path="/" component={page404}/>
         </Switch>
       </div>
