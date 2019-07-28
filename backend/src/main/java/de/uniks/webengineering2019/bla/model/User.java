@@ -1,15 +1,14 @@
 package de.uniks.webengineering2019.bla.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
+import java.util.List;
 import java.util.Objects;
 
 @Entity
@@ -26,6 +25,10 @@ public class User {
 
     private String userName;
     private String fullName;
+
+    @JsonIgnore
+    @OneToMany(fetch=FetchType.LAZY,mappedBy="owner")
+    private List<BucketList> bucketListLists;
 
     @Override
     public String toString(){

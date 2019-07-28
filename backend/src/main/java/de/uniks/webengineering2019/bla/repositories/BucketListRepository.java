@@ -12,5 +12,5 @@ public interface BucketListRepository extends CrudRepository<BucketList, Long>{
     List<BucketList> findAll();
     List<BucketList> findByPrivateList(boolean value);
 
-    List<BucketList> findByPrivateListOrAccessedUsersContains(boolean privateList,User user);
+    List<BucketList> findByPrivateListOrAccessedUsersContainsOrOwner(boolean privateList,User user,User owner);
 }

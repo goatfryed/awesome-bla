@@ -43,7 +43,7 @@ public class BucketListController{
     @GetMapping("/all2")
     public List<BucketList> getAllLists2(){
         if(userContext.hasUser()){
-            return bucketListRepository.findByPrivateListOrAccessedUsersContains(false, userContext.getUser());
+            return bucketListRepository.findByPrivateListOrAccessedUsersContainsOrOwner(false, userContext.getUser(), userContext.getUser());
         }else{
             return bucketListRepository.findByPrivateList(false);
         }

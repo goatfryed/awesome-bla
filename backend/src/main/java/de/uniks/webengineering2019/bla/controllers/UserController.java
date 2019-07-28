@@ -39,6 +39,6 @@ public class UserController{
 
     @GetMapping("/byList")
     public ResponseEntity findNotPrivelegedUsersByName(@RequestParam BucketList bucketlist,@RequestParam String name){
-        return ResponseEntity.ok(userService.findUserNotPrivelegedAndName(name,bucketlist));
+        return ResponseEntity.ok(userService.findUserNotPrivelegedAndName(name,bucketlist).stream());
     }
 }

@@ -1,5 +1,6 @@
 package de.uniks.webengineering2019.bla.service;
 
+import de.uniks.webengineering2019.bla.authentication.UserContext;
 import de.uniks.webengineering2019.bla.model.BucketList;
 import de.uniks.webengineering2019.bla.model.User;
 import de.uniks.webengineering2019.bla.repositories.UserRepository;
@@ -11,6 +12,10 @@ import java.util.stream.Collectors;
 
 @Service
 public class UserService{
+
+    @Autowired
+    UserContext userContext;
+
     @Autowired
     UserRepository userRepository;
 
@@ -24,6 +29,9 @@ public class UserService{
 
     public List<User> findUserNotPrivelegedAndName(String user, BucketList list){
         List<User> users = findUser(user);
+        if(userContext.hasUser()){
+            users=users.stream().filter(u->u.getId()!=userContext.getUser().getId()).collect(Collectors.toList());
+        }
         return users.stream().filter(u->!list.getAccessedUsers().contains(u)).collect(Collectors.toList());
     }
 }

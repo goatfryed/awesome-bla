@@ -4,6 +4,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Set;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
@@ -39,6 +40,10 @@ public class BucketList implements Commentable {
     @ManyToMany(cascade = CascadeType.ALL)
     @JsonProperty("accessed")
     private Set<User> accessedUsers;
+
+    @ManyToOne
+    @JoinColumn(name="owner_id",nullable = false)
+    private User owner;
 
     @JsonProperty("created")
     private Date creationDate;
