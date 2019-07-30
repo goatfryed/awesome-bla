@@ -12,7 +12,7 @@ import java.util.List;
 public interface BucketListRepository extends CrudRepository<BucketList, Long>{
 
     List<BucketList> findAll();
-    List<BucketList> findByPrivateList(boolean value);
+    Page<BucketList> findByPrivateList(boolean value, Pageable pageable);
 
     Page<BucketList> findByPrivateListOrAccessedUsersContainsOrOwner(boolean privateList, User user, User owner, Pageable pageable);
 }

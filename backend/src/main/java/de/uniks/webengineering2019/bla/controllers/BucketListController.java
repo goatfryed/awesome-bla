@@ -7,6 +7,7 @@ import de.uniks.webengineering2019.bla.model.Comment;
 import de.uniks.webengineering2019.bla.model.User;
 import de.uniks.webengineering2019.bla.repositories.BucketListRepository;
 import de.uniks.webengineering2019.bla.repositories.CommentRepository;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
@@ -25,6 +26,9 @@ public class BucketListController{
     private final BucketListRepository bucketListRepository;
     private final CommentCreationService commentCreationService;
     private final UserContext userContext;
+
+    @Value("${Page.Bucketlist.DefaultSize:10}")
+    private int elementsOnPage;
 
     public BucketListController(
         BucketListRepository bucketListRepository,
@@ -47,12 +51,12 @@ public class BucketListController{
         if(page<0){
             page = 0;
         }
-        Pageable pageable = PageRequest.of(page,2);
+        Pageable pageable = PageRequest.of(page,elementsOnPage);
 
         if(userContext.hasUser()){
             return bucketListRepository.findByPrivateListOrAccessedUsersContainsOrOwner(false, userContext.getUser(), userContext.getUser(),pageable).getContent();
         }else{
-            return bucketListRepository.findByPrivateList(false);
+            return bucketListRepository.findByPrivateList(false,pageable).getContent();
         }
 
     }
