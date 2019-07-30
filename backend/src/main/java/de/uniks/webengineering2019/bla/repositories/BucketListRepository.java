@@ -2,6 +2,8 @@ package de.uniks.webengineering2019.bla.repositories;
 
 import de.uniks.webengineering2019.bla.model.BucketList;
 import de.uniks.webengineering2019.bla.model.User;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 
@@ -12,5 +14,5 @@ public interface BucketListRepository extends CrudRepository<BucketList, Long>{
     List<BucketList> findAll();
     List<BucketList> findByPrivateList(boolean value);
 
-    List<BucketList> findByPrivateListOrAccessedUsersContainsOrOwner(boolean privateList,User user,User owner);
+    Page<BucketList> findByPrivateListOrAccessedUsersContainsOrOwner(boolean privateList, User user, User owner, Pageable pageable);
 }

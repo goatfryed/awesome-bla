@@ -7,6 +7,8 @@ import de.uniks.webengineering2019.bla.model.Comment;
 import de.uniks.webengineering2019.bla.model.User;
 import de.uniks.webengineering2019.bla.repositories.BucketListRepository;
 import de.uniks.webengineering2019.bla.repositories.CommentRepository;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -41,9 +43,14 @@ public class BucketListController{
     }
 
     @GetMapping("/all2")
-    public List<BucketList> getAllLists2(){
+    public List<BucketList> getAllLists2(@RequestParam(defaultValue = "0")int page){
+        if(page<0){
+            page = 0;
+        }
+        Pageable pageable = PageRequest.of(page,2);
+
         if(userContext.hasUser()){
-            return bucketListRepository.findByPrivateListOrAccessedUsersContainsOrOwner(false, userContext.getUser(), userContext.getUser());
+            return bucketListRepository.findByPrivateListOrAccessedUsersContainsOrOwner(false, userContext.getUser(), userContext.getUser(),pageable).getContent();
         }else{
             return bucketListRepository.findByPrivateList(false);
         }

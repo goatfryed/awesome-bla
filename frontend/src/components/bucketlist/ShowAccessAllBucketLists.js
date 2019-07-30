@@ -5,16 +5,30 @@ import { backendFetch } from "../../api";
 import {NavTabs} from "./NavTabs";
 
 export class AccessedAllBucketLists extends Component {
-	state = {
-		bucketLists: []
-	};
+	constructor(props) {
+		super(props);
+		this.state = {
+			bucketLists: [],
+			loadedPages: 0
+		};
+		this.loadMore = this.loadMore.bind(this);
+
+	}
+
+	loadMore(){
+		backendFetch.get('/bucketlists/all2?page='+this.state.loadedPages).then(response => {
+			if(response.length > 0){
+				this.state.loadedPages++;
+			}
+			this.state.bucketLists = this.state.bucketLists.concat(response);
+			this.forceUpdate();
+		});
+	}
 
 	componentDidMount() {
-		backendFetch.get('/bucketlists/all2').then(response => {
-			this.setState({
-				bucketLists: response
-			});
-		});
+		this.loadMore = this.loadMore.bind(this);
+		this.state.loadedPages = 0;
+		this.loadMore();
 	}
 
 	render() {
@@ -48,6 +62,7 @@ export class AccessedAllBucketLists extends Component {
 					<Route path="/" render={() => <Lists bucketLists={ bucketLists } />} />
 					<Redirect to="/newlist" />
 				</Switch>
+				<button type="submit" onClick={this.loadMore.bind(this)}>Mehr laden</button>
 			</div>
 		);
 	}
