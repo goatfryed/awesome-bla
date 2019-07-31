@@ -1,10 +1,9 @@
 import {keyBy} from "lodash/collection";
 import moment from "moment";
 import * as PropTypes from "prop-types";
-import React, {useEffect, useState, useCallback} from "react";
+import React, {useEffect, useState, useCallback, useReducer} from "react";
 import {Route, Switch, withRouter} from "react-router";
 import {Link} from "react-router-dom";
-import {Checkbox} from "react-materialize";
 
 import BucketListEntryDetails from "./BucketListEntryDetails";
 import {CommentsBlock} from "./Comments";
@@ -32,7 +31,7 @@ EntryListView.propTypes = {
     forceUpdate: PropTypes.func.isRequired,
 };
 
-export const BucketListEntries = withRouter(BucketListEntriesBase)
+export const BucketListEntries = withRouter(BucketListEntriesBase);
 
 function BucketListEntriesBase({id, match}) {
     let pagePath = "/bucketlists/"+id+"/entries";
@@ -74,44 +73,54 @@ function BucketListEntriesBase({id, match}) {
 
 const BucketListEntry = withRouter(BucketListEntryView);
 
-function BucketListEntryView({entry, pagePath, forceUpdate, history, onSelect, match}) {
-    let [showComments, setShowComments] = useState(false);
+function BucketListEntryView({entry, pagePath, forceUpdate, history,  match}) {
 
+    let entryBackendUrl = pagePath + "/" + entry.id + "/";
+    let [showComments, toggleComments] = useReducer(isChecked => !isChecked, false);
 
-    async function toggleCompletionState(wasCompleted) {
-        let nextEntryState = {
-            completed: wasCompleted ? null : Date.now()
-        };
+    let toggleCompletionState = useCallback(
+        async function (wasCompleted) {
+            let nextEntryState = {
+                completed: wasCompleted ? null : Date.now()
+            };
 
-        const response = await backendFetch.put(
-            pagePath + "/" + entry.id + "/", {
-            body: JSON.stringify(nextEntryState)
-        });
-        forceUpdate();
-    }
+            await backendFetch.put(
+                entryBackendUrl, {
+                    body: JSON.stringify(nextEntryState)
+                });
+            forceUpdate();
+        },
+        [forceUpdate, entryBackendUrl]
+    );
 
-    let onToggleDone = e => {
-        e.stopPropagation();
-        e.preventDefault();
-        toggleCompletionState(entry.completed);
-    };
+    let toggleCompleted = useCallback(
+        e => {
+            e.stopPropagation();
+            e.preventDefault();
+            toggleCompletionState(entry.completed);
+        },
+        [toggleCompletionState]
+    );
 
-    async function copyEntryToBucketList() {
-        let targetListId = NaN;
-        while (isNaN(targetListId)) {
-            let input = prompt("id of target bucket list?");
-            if (input === null) {
-                return;
+    let copyEntryToBucketList = useCallback(
+        async function () {
+            let targetListId = NaN;
+            while (isNaN(targetListId)) {
+                let input = prompt("id of target bucket list?");
+                if (input === null) {
+                    return;
+                }
+                targetListId = parseInt( input);
             }
-            targetListId = parseInt( input);
-        }
-        await backendFetch.post("/bucketlists/" + targetListId + "/entries/cloneEntry/" + entry.id + "/");
+            await backendFetch.post("/bucketlists/" + targetListId + "/entries/cloneEntry/" + entry.id + "/");
 
-        let returnValue = window.confirm("Do you want to see your list?");
-        if (returnValue) {
-            history.push({pathname: "/bucketlist/" + targetListId + "/entries/"});
-        }
-    }
+            let returnValue = window.confirm("Do you want to see your list?");
+            if (returnValue) {
+                history.push({pathname: "/bucketlist/" + targetListId + "/entries/"});
+            }
+        },
+        [entry]
+    );
 
     return <li className="collection-item">
         <div>
@@ -119,13 +128,13 @@ function BucketListEntryView({entry, pagePath, forceUpdate, history, onSelect, m
             <input
                 type="checkbox"
                 checked={!!entry.completed}
-                onChange={onToggleDone}
+                onChange={toggleCompleted}
             /><span/></label>
             &nbsp;<Link to={match.url + entry.id + "/"}>{entry.title}</Link>
             <small>
                  ·
                 {moment(entry.created).fromNow()}
-                 · <button onClick={() => setShowComments(!showComments)}>Talk</button>
+                 · <button onClick={() => toggleComments(!showComments)}>Talk</button>
                  · <button onClick={copyEntryToBucketList}>copy</button>
             </small>
         </div>
