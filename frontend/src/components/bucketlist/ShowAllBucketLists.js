@@ -5,15 +5,17 @@ import { backendFetch } from "../../api";
 import {NavTabs} from "./NavTabs";
 import PropTypes from "prop-types";
 
-export function BucketListProvider ({children: Child}) {
+export function BucketListProvider ({children: Child, filter}) {
 
 	let [bucketLists, setBucketLists] = useState([]);
 
 	useEffect(
 		() => {
-			backendFetch.get('/bucketlists/all').then(response => setBucketLists(response))
+			backendFetch.get('/bucketlists/all')
+                .then( response => (filter ? response.filter(filter) : response))
+                .then(response => setBucketLists(response))
 		},
-		[]
+		[filter]
 	);
 
 	return <Child bucketLists={bucketLists} />

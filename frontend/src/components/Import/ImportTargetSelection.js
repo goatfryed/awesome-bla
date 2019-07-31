@@ -19,9 +19,11 @@ function ImportBase({location, history}) {
     let clonePath;
     let description;
     let confirmDescription;
+    let sourceListId;
 
     if (location.state.entry) {
         clonePath = "/entries/cloneEntry/" + location.state.entry.id + "/";
+        sourceListId = location.state.entry.bucketList;
         confirmDescription = location.state.entry.title;
         description = <code>{location.state.entry.title}</code>
     } else {
@@ -38,7 +40,6 @@ function ImportBase({location, history}) {
         try {
             await backendFetch.post("/bucketlists/" + targetListId + clonePath);
         } catch (e) {
-            console.log(e);
             window.alert("Sorry, I can't let you do that, John.")
             return;
         }
@@ -55,7 +56,7 @@ function ImportBase({location, history}) {
 
     return <div>
         <p>In which bucket list do you want to import {description}</p>
-        <BucketListProvider>
+        <BucketListProvider filter={list => list.id !== sourceListId }>
             {({bucketLists}) => <BucketListSelection bucketLists={bucketLists} onSelect={handleBucketListSelected}/>}
         </BucketListProvider>
     </div>
@@ -64,7 +65,8 @@ function ImportBase({location, history}) {
 function BucketListSelection({bucketLists, onSelect}) {
     return (
         <div className="collection grey lighten-1">
-            { bucketLists.map( bucketList => (
+            { bucketLists
+                .map( bucketList => (
                 <div>
                     <a className="collection-item grey lighten-3" onClick={e => onSelect(bucketList)}>
                         {bucketList.title}
