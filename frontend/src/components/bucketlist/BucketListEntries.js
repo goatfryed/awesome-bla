@@ -1,16 +1,15 @@
 import {keyBy} from "lodash/collection";
 import moment from "moment";
 import * as PropTypes from "prop-types";
-import React, {useEffect, useState, useCallback} from "react";
+import React, {useEffect, useState, useCallback, useReducer} from "react";
 import {Route, Switch, withRouter} from "react-router";
 import {Link} from "react-router-dom";
-import {Checkbox} from "react-materialize";
 
 import BucketListEntryDetails from "./BucketListEntryDetails";
 import {CommentsBlock} from "./Comments";
 import {backendFetch} from "../../api";
 
-function EntryListView({entries, forceUpdate, onSelect, pagePath}) {
+function EntryListView({entries, forceUpdate, onSelect, pagePath, onDelete}) {
 
     if (entries === null) {
         return <span>Loading</span>
@@ -20,8 +19,12 @@ function EntryListView({entries, forceUpdate, onSelect, pagePath}) {
 
     return <div className="column">
         <ul className="collection">
-            {entries.map(entry => <BucketListEntry key={entry.id} entry={entry} pagePath={pagePath}
-                                        forceUpdate={forceUpdate} onSelect={onSelect}/>
+            {entries.map(entry => <BucketListEntry key={entry.id} pagePath={pagePath}
+                                                   entry={entry}
+                                                   forceUpdate={forceUpdate}
+                                                   onSelect={onSelect}
+                                                   onDelete={onDelete}
+                />
             )}
         </ul>
     </div>;
@@ -29,17 +32,17 @@ function EntryListView({entries, forceUpdate, onSelect, pagePath}) {
 
 EntryListView.propTypes = {
     entries: PropTypes.any.isRequired,
-    forceUpdate: PropTypes.func.isRequired,
+    refresh: PropTypes.func.isRequired,
 };
 
-export const BucketListEntries = withRouter(BucketListEntriesBase)
+export const BucketListEntries = withRouter(BucketListEntriesBase);
 
 function BucketListEntriesBase({id, match}) {
     let pagePath = "/bucketlists/"+id+"/entries";
 
     let [entries, setEntries] = useState(null);
 
-    let update = useCallback(
+    let refresh = useCallback(
         async () => {
         const json = await backendFetch(pagePath + "/");
         setEntries(keyBy(json, o => o.id));
@@ -47,24 +50,37 @@ function BucketListEntriesBase({id, match}) {
         [pagePath]
     );
 
-    useEffect(() => {
-            update();
+    let deleteEntry = useCallback(
+        async ({id}) => {
+            await  backendFetch.delete( pagePath + "/" + id + "/");
+            await refresh();
         },
-        [update]
+        [pagePath, refresh]
+    );
+
+    useEffect(() => {
+            refresh();
+        },
+        [refresh]
     );
 
 
 
     return <Switch>
         <Route exact strict path={match.path}>
-            <EntryListView pagePath={pagePath} entries={entries} forceUpdate={update}/>
+            <EntryListView
+                pagePath={pagePath}
+                entries={entries}
+                refresh={refresh}
+                onDelete={deleteEntry}
+            />
         </Route>
         <Route path={match.path + ":entryId"}
             render={
                 ({match}) => <BucketListEntryDetails
                     isLoading={entries === null}
                     selectedEntry={entries && entries[match.params.entryId]}
-                    onUpdate={update}
+                    refresh={refresh}
                     pagePath={pagePath}
                 />
             }
@@ -74,44 +90,54 @@ function BucketListEntriesBase({id, match}) {
 
 const BucketListEntry = withRouter(BucketListEntryView);
 
-function BucketListEntryView({entry, pagePath, forceUpdate, history, onSelect, match}) {
-    let [showComments, setShowComments] = useState(false);
+function BucketListEntryView({entry, pagePath, refresh, history,  match, onDelete}) {
 
+    let entryBackendUrl = pagePath + "/" + entry.id + "/";
+    let [showComments, toggleComments] = useReducer(isChecked => !isChecked, false);
 
-    async function toggleCompletionState(wasCompleted) {
-        let nextEntryState = {
-            completed: wasCompleted ? null : Date.now()
-        };
+    let toggleCompletionState = useCallback(
+        async function (wasCompleted) {
+            let nextEntryState = {
+                completed: wasCompleted ? null : Date.now()
+            };
 
-        const response = await backendFetch.put(
-            pagePath + "/" + entry.id + "/", {
-            body: JSON.stringify(nextEntryState)
-        });
-        forceUpdate();
-    }
+            await backendFetch.put(
+                entryBackendUrl, {
+                    body: JSON.stringify(nextEntryState)
+                });
+            refresh();
+        },
+        [refresh, entryBackendUrl]
+    );
 
-    let onToggleDone = e => {
-        e.stopPropagation();
-        e.preventDefault();
-        toggleCompletionState(entry.completed);
-    };
+    let toggleCompleted = useCallback(
+        e => {
+            e.stopPropagation();
+            e.preventDefault();
+            toggleCompletionState(entry.completed);
+        },
+        [toggleCompletionState]
+    );
 
-    async function copyEntryToBucketList() {
-        let targetListId = NaN;
-        while (isNaN(targetListId)) {
-            let input = prompt("id of target bucket list?");
-            if (input === null) {
-                return;
+    let copyEntryToBucketList = useCallback(
+        async function () {
+            let targetListId = NaN;
+            while (isNaN(targetListId)) {
+                let input = prompt("id of target bucket list?");
+                if (input === null) {
+                    return;
+                }
+                targetListId = parseInt( input);
             }
-            targetListId = parseInt( input);
-        }
-        await backendFetch.post("/bucketlists/" + targetListId + "/entries/cloneEntry/" + entry.id + "/");
+            await backendFetch.post("/bucketlists/" + targetListId + "/entries/cloneEntry/" + entry.id + "/");
 
-        let returnValue = window.confirm("Do you want to see your list?");
-        if (returnValue) {
-            history.push({pathname: "/bucketlist/" + targetListId + "/entries/"});
-        }
-    }
+            let returnValue = window.confirm("Do you want to see your list?");
+            if (returnValue) {
+                history.push({pathname: "/bucketlist/" + targetListId + "/entries/"});
+            }
+        },
+        [entry]
+    );
 
     return <li className="collection-item">
         <div>
@@ -119,14 +145,15 @@ function BucketListEntryView({entry, pagePath, forceUpdate, history, onSelect, m
             <input
                 type="checkbox"
                 checked={!!entry.completed}
-                onChange={onToggleDone}
+                onChange={toggleCompleted}
             /><span/></label>
             &nbsp;<Link to={match.url + entry.id + "/"}>{entry.title}</Link>
             <small>
                  ·
                 {moment(entry.created).fromNow()}
-                 · <button onClick={() => setShowComments(!showComments)}>Talk</button>
+                 · <button onClick={() => toggleComments(!showComments)}>Talk</button>
                  · <button onClick={copyEntryToBucketList}>copy</button>
+                 · <button onClick={() => onDelete(entry)}>delete</button>
             </small>
         </div>
         {showComments && <ExtendedEntry entry={entry} pagePath={pagePath}/>}

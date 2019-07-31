@@ -27,7 +27,7 @@ public class BucketList implements Commentable {
     private String title;
     private String description;
 
-    @OneToMany(fetch = FetchType.EAGER, mappedBy = "bucketList")
+    @OneToMany(fetch = FetchType.EAGER, mappedBy = "bucketList", orphanRemoval = true, cascade = CascadeType.REMOVE)
     @OrderBy("created DESC")
     private List<BucketListEntry> entries;
     private int numEntries;

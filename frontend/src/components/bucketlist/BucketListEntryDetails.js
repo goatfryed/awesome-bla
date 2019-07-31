@@ -1,4 +1,5 @@
 import React, {PureComponent} from "react";
+import PropTypes from "prop-types";
 import {backendFetch} from "../../api";
 
 export default class BucketListEntryDetails extends PureComponent {
@@ -60,7 +61,7 @@ export default class BucketListEntryDetails extends PureComponent {
             })
             .then(() => {
                 this.setState({loading: false})
-                this.props.onUpdate();
+                this.props.refresh();
             })
             .catch(error => {
                 console.log(error);
@@ -87,3 +88,10 @@ export default class BucketListEntryDetails extends PureComponent {
         </form>;
     }
 }
+
+BucketListEntryDetails.propTypes = {
+    refresh: PropTypes.func.isRequired,
+    pagePath: PropTypes.string.isRequired,
+    selectedEntry: PropTypes.object,
+    isLoading: PropTypes.bool,
+};
