@@ -1,14 +1,16 @@
+import {keyBy} from "lodash/collection";
+import moment from "moment";
+import * as PropTypes from "prop-types";
 import React, {useEffect, useState, useCallback} from "react";
+import {Route, Switch, withRouter} from "react-router";
+import {Link} from "react-router-dom";
+import {Checkbox} from "react-materialize";
+
+import BucketListEntryDetails from "./BucketListEntryDetails";
 import {CommentsBlock} from "./Comments";
 import {backendFetch} from "../../api";
-import {Route, Switch, withRouter} from "react-router";
-import moment from "moment";
-import BucketListEntryDetails from "./BucketListEntryDetails";
-import * as PropTypes from "prop-types";
-import {keyBy} from "lodash/collection";
-import {Link} from "react-router-dom";
 
-function EntryListView({entries, forceUpdate, onSelect}) {
+function EntryListView({entries, forceUpdate, onSelect, pagePath}) {
 
     if (entries === null) {
         return <span>Loading</span>
@@ -18,7 +20,7 @@ function EntryListView({entries, forceUpdate, onSelect}) {
 
     return <div className="column">
         <ul className="collection">
-            {entries.map(entry => <BucketListEntry key={entry.id} entry={entry}
+            {entries.map(entry => <BucketListEntry key={entry.id} entry={entry} pagePath={pagePath}
                                         forceUpdate={forceUpdate} onSelect={onSelect}/>
             )}
         </ul>
@@ -55,7 +57,7 @@ function BucketListEntriesBase({id, match}) {
 
     return <Switch>
         <Route exact strict path={match.path}>
-            <EntryListView entries={entries} forceUpdate={update}/>
+            <EntryListView pagePath={pagePath} entries={entries} forceUpdate={update}/>
         </Route>
         <Route path={match.path + ":entryId"}
             render={
@@ -113,12 +115,13 @@ function BucketListEntryView({entry, pagePath, forceUpdate, history, onSelect, m
 
     return <li className="collection-item">
         <div>
-            <input type="checkbox"
-                   checked={entry.completed || false}
-                   onChange={onToggleDone}
-                   // don't let the onClick handler for expander fire, if this checkbox is toggled
-                   onClick={event => event.stopPropagation()}
-            />&nbsp;<Link to={match.url + entry.id + "/"}>{entry.title}</Link>
+            <label>
+            <input
+                type="checkbox"
+                checked={!!entry.completed}
+                onChange={onToggleDone}
+            /><span/></label>
+            &nbsp;<Link to={match.url + entry.id + "/"}>{entry.title}</Link>
             <small>
                  ·
                 {moment(entry.created).fromNow()}
