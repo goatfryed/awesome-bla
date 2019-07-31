@@ -17,9 +17,11 @@ function ImportBase({location, history}) {
         return <InvalidState/>
     }
     let clonePath;
+    let description;
 
     if (location.state.entry) {
         clonePath = "/entries/cloneEntry/" + location.state.entry.id + "/";
+        description = <span>entry <code>{location.state.entry.title}</code></span>
     } else {
         return <InvalidState/>
     }
@@ -46,6 +48,7 @@ function ImportBase({location, history}) {
     }
 
     return <div>
+        <p>In which bucket list do you want to import {description}</p>
         <BucketListProvider>
             {({bucketLists}) => <BucketListSelection bucketLists={bucketLists} onSelect={handleBucketListSelected}/>}
         </BucketListProvider>
