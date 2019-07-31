@@ -1,7 +1,7 @@
 import {keyBy} from "lodash/collection";
 import moment from "moment";
 import * as PropTypes from "prop-types";
-import React, {useEffect, useState, useCallback, useReducer} from "react";
+import React, {useEffect, useState, useCallback, useReducer, useMemo} from "react";
 import {Route, Switch, withRouter} from "react-router";
 import {Link} from "react-router-dom";
 
@@ -31,7 +31,7 @@ function EntryListView({entries, forceUpdate, onSelect, pagePath, onDelete}) {
 }
 
 EntryListView.propTypes = {
-    entries: PropTypes.any.isRequired,
+    entries: PropTypes.any,
     refresh: PropTypes.func.isRequired,
 };
 
@@ -139,6 +139,13 @@ function BucketListEntryView({entry, pagePath, refresh, history,  match, onDelet
         [entry]
     );
 
+    let cloneLocation = useMemo(() => ({
+            pathname: "/import/",
+            state: { entry }
+        }),
+        [entry]
+    );
+
     return <li className="collection-item">
         <div>
             <label>
@@ -152,7 +159,7 @@ function BucketListEntryView({entry, pagePath, refresh, history,  match, onDelet
                  ·
                 {moment(entry.created).fromNow()}
                  · <button onClick={() => toggleComments(!showComments)}>Talk</button>
-                 · <button onClick={copyEntryToBucketList}>copy</button>
+                 · <Link className="button" to={cloneLocation}>Copy</Link>
                  · <button onClick={() => onDelete(entry)}>delete</button>
             </small>
         </div>

@@ -17,6 +17,7 @@ import ListNew from "./components/bucketlist/ListNew";
 //Pages
 import page404 from "./components/pages/Page404"
 import {users} from "./components/pages/users.js"
+import ImportTargetSelection from "./components/Import/ImportTargetSelection";
 
 
 function App() {
@@ -26,6 +27,7 @@ function App() {
       <div className="container">
         <Switch>
           <Route path="/callback" component={AuthenticationCallback}/>
+          <Route strict exact path="/import/" component={ImportTargetSelection} />
           <Route path="/bucketlist/:id/newlistentry/" component={ListEntryNew}/>
           <Route path="/newlist" component={ListNew} />
           {/* https://reacttraining.com/react-router/web/api/Route/render-func */}
