@@ -18,16 +18,22 @@ function ImportBase({location, history}) {
     }
     let clonePath;
     let description;
+    let confirmDescription;
 
     if (location.state.entry) {
         clonePath = "/entries/cloneEntry/" + location.state.entry.id + "/";
-        description = <span>entry <code>{location.state.entry.title}</code></span>
+        confirmDescription = location.state.entry.title;
+        description = <code>{location.state.entry.title}</code>
     } else {
         return <InvalidState/>
     }
 
     async function handleBucketListSelected(bucketList) {
         let targetListId = bucketList.id;
+
+        if (!window.confirm("Are you sure you want to import \"" + confirmDescription + "\" into \"" + bucketList.title + "\"")) {
+            return;
+        }
 
         try {
             await backendFetch.post("/bucketlists/" + targetListId + clonePath);
