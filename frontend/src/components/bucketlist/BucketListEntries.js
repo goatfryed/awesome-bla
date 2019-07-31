@@ -9,7 +9,7 @@ import BucketListEntryDetails from "./BucketListEntryDetails";
 import {CommentsBlock} from "./Comments";
 import {backendFetch} from "../../api";
 
-function EntryListView({entries, forceUpdate, onSelect, pagePath}) {
+function EntryListView({entries, forceUpdate, onSelect, pagePath, onDelete}) {
 
     if (entries === null) {
         return <span>Loading</span>
@@ -19,8 +19,12 @@ function EntryListView({entries, forceUpdate, onSelect, pagePath}) {
 
     return <div className="column">
         <ul className="collection">
-            {entries.map(entry => <BucketListEntry key={entry.id} entry={entry} pagePath={pagePath}
-                                        forceUpdate={forceUpdate} onSelect={onSelect}/>
+            {entries.map(entry => <BucketListEntry key={entry.id} pagePath={pagePath}
+                                                   entry={entry}
+                                                   forceUpdate={forceUpdate}
+                                                   onSelect={onSelect}
+                                                   onDelete={onDelete}
+                />
             )}
         </ul>
     </div>;
@@ -28,7 +32,7 @@ function EntryListView({entries, forceUpdate, onSelect, pagePath}) {
 
 EntryListView.propTypes = {
     entries: PropTypes.any.isRequired,
-    forceUpdate: PropTypes.func.isRequired,
+    refresh: PropTypes.func.isRequired,
 };
 
 export const BucketListEntries = withRouter(BucketListEntriesBase);
@@ -38,7 +42,7 @@ function BucketListEntriesBase({id, match}) {
 
     let [entries, setEntries] = useState(null);
 
-    let update = useCallback(
+    let refresh = useCallback(
         async () => {
         const json = await backendFetch(pagePath + "/");
         setEntries(keyBy(json, o => o.id));
@@ -46,24 +50,37 @@ function BucketListEntriesBase({id, match}) {
         [pagePath]
     );
 
-    useEffect(() => {
-            update();
+    let deleteEntry = useCallback(
+        async ({id}) => {
+            await  backendFetch.delete( pagePath + "/" + id + "/");
+            await refresh();
         },
-        [update]
+        [pagePath, refresh]
+    );
+
+    useEffect(() => {
+            refresh();
+        },
+        [refresh]
     );
 
 
 
     return <Switch>
         <Route exact strict path={match.path}>
-            <EntryListView pagePath={pagePath} entries={entries} forceUpdate={update}/>
+            <EntryListView
+                pagePath={pagePath}
+                entries={entries}
+                refresh={refresh}
+                onDelete={deleteEntry}
+            />
         </Route>
         <Route path={match.path + ":entryId"}
             render={
                 ({match}) => <BucketListEntryDetails
                     isLoading={entries === null}
                     selectedEntry={entries && entries[match.params.entryId]}
-                    onUpdate={update}
+                    refresh={refresh}
                     pagePath={pagePath}
                 />
             }
@@ -73,7 +90,7 @@ function BucketListEntriesBase({id, match}) {
 
 const BucketListEntry = withRouter(BucketListEntryView);
 
-function BucketListEntryView({entry, pagePath, forceUpdate, history,  match}) {
+function BucketListEntryView({entry, pagePath, refresh, history,  match, onDelete}) {
 
     let entryBackendUrl = pagePath + "/" + entry.id + "/";
     let [showComments, toggleComments] = useReducer(isChecked => !isChecked, false);
@@ -88,9 +105,9 @@ function BucketListEntryView({entry, pagePath, forceUpdate, history,  match}) {
                 entryBackendUrl, {
                     body: JSON.stringify(nextEntryState)
                 });
-            forceUpdate();
+            refresh();
         },
-        [forceUpdate, entryBackendUrl]
+        [refresh, entryBackendUrl]
     );
 
     let toggleCompleted = useCallback(
@@ -136,6 +153,7 @@ function BucketListEntryView({entry, pagePath, forceUpdate, history,  match}) {
                 {moment(entry.created).fromNow()}
                  · <button onClick={() => toggleComments(!showComments)}>Talk</button>
                  · <button onClick={copyEntryToBucketList}>copy</button>
+                 · <button onClick={() => onDelete(entry)}>delete</button>
             </small>
         </div>
         {showComments && <ExtendedEntry entry={entry} pagePath={pagePath}/>}
