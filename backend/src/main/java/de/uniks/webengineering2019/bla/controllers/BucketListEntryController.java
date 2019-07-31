@@ -133,7 +133,7 @@ public class BucketListEntryController {
         final BucketListEntry newEntry = copyEntryToList(targetList, entryToDuplicate);
 
         if (newEntry == null) {
-            ResponseEntity.accepted();
+            return ResponseEntity.accepted().build();
         }
 
         entryRepository.save(newEntry);
