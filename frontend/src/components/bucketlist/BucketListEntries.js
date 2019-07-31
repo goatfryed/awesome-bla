@@ -119,29 +119,12 @@ function BucketListEntryView({entry, pagePath, refresh, history,  match, onDelet
         [toggleCompletionState]
     );
 
-    let copyEntryToBucketList = useCallback(
-        async function () {
-            let targetListId = NaN;
-            while (isNaN(targetListId)) {
-                let input = prompt("id of target bucket list?");
-                if (input === null) {
-                    return;
-                }
-                targetListId = parseInt( input);
-            }
-            await backendFetch.post("/bucketlists/" + targetListId + "/entries/cloneEntry/" + entry.id + "/");
-
-            let returnValue = window.confirm("Do you want to see your list?");
-            if (returnValue) {
-                history.push({pathname: "/bucketlist/" + targetListId + "/entries/"});
-            }
-        },
-        [entry]
-    );
-
     let cloneLocation = useMemo(() => ({
             pathname: "/import/",
-            state: { entry }
+            state: {
+                entry,
+                from: match.url
+            }
         }),
         [entry]
     );
