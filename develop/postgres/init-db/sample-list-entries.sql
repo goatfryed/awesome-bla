@@ -1,6 +1,6 @@
-INSERT INTO "bucket_list" (id, createn_date, last_updated, num_entries, title) values (42, NOW(), NOW(), 0, 'web engineering dreams');
+INSERT INTO "bucket_list" (id, creation_date, last_updated, num_entries, title) values (42, NOW(), NOW(), 0, 'web engineering dreams');
 
-INSERT INTO "bucket_list" (id, createn_date, last_updated, num_entries, title) values (666, NOW(), NOW(), 0, 'thing'' i wanna fail at');
+INSERT INTO "bucket_list" (id, creation_date, last_updated, num_entries, title) values (666, NOW(), NOW(), 0, 'thing'' i wanna fail at');
 
 INSERT INTO "public"."bucket_list_entry" ("id", "title", "created", "completed", bucket_list_id)
     VALUES (1001, 'Think of an bucket list item', NOW(), NOW(), 42),
