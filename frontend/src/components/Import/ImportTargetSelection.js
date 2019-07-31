@@ -12,20 +12,29 @@ function InvalidState() {
 
 function ImportBase({location, history}) {
 
-    console.log(history);
-    if (!location.state || !location.state.from) {
+    if (!location.state) {
         return <InvalidState/>
     }
     let clonePath;
-    let description;
-    let confirmDescription;
+    let title;
+    let remark = "";
     let sourceListId;
 
     if (location.state.entry) {
-        clonePath = "/entries/cloneEntry/" + location.state.entry.id + "/";
-        sourceListId = location.state.entry.bucketList;
-        confirmDescription = location.state.entry.title;
-        description = <code>{location.state.entry.title}</code>
+
+        let entry = location.state.entry;
+        clonePath = "/entries/cloneEntry/" + entry.id + "/";
+        sourceListId = entry.bucketList;
+        title = entry.title;
+
+    } else if (location.state.bucketList) {
+
+        let bucketList = location.state.bucketList;
+        clonePath = "/entries/cloneList/" + bucketList.id + "/";
+        sourceListId = bucketList.id;
+        title = bucketList.title;
+        remark = "ALL entries of ";
+
     } else {
         return <InvalidState/>
     }
@@ -33,7 +42,7 @@ function ImportBase({location, history}) {
     async function handleBucketListSelected(bucketList) {
         let targetListId = bucketList.id;
 
-        if (!window.confirm("Are you sure you want to import \"" + confirmDescription + "\" into \"" + bucketList.title + "\"")) {
+        if (!window.confirm("Are you sure you want to import \"" + remark + title + "\" into \"" + bucketList.title + "\"")) {
             return;
         }
 
@@ -55,7 +64,7 @@ function ImportBase({location, history}) {
     }
 
     return <div>
-        <p>In which bucket list do you want to import {description}</p>
+        <p>In which bucket list do you want to import <span>{remark}<code>{title}</code></span></p>
         <BucketListProvider filter={list => list.id !== sourceListId }>
             {({bucketLists}) => <BucketListSelection bucketLists={bucketLists} onSelect={handleBucketListSelected}/>}
         </BucketListProvider>
