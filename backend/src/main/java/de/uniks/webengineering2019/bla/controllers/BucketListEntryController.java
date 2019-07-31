@@ -95,6 +95,14 @@ public class BucketListEntryController {
 
     }
 
+    @DeleteMapping("/{entry}/")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void deleteEntry(@PathVariable BucketList bucketList, @PathVariable BucketListEntry entry)
+    {
+        bucketList.getEntries().remove(entry);
+        entryRepository.delete(entry);
+    }
+
     @PutMapping("/{entry}/")
     @ResponseStatus(HttpStatus.ACCEPTED)
     public void comments(
