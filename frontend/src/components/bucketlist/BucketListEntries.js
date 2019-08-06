@@ -1,174 +1,162 @@
-import React, {PureComponent, useEffect, useState} from "react";
+import {keyBy} from "lodash/collection";
+import moment from "moment";
+import * as PropTypes from "prop-types";
+import React, {useEffect, useState, useCallback, useReducer} from "react";
+import {Route, Switch, withRouter} from "react-router";
+import {Link} from "react-router-dom";
+
+import BucketListEntryDetails from "./BucketListEntryDetails";
 import {CommentsBlock} from "./Comments";
 import {backendFetch} from "../../api";
-import {withRouter} from "react-router";
-import moment from "moment";
 
-export function BucketListEntries({id}) {
-    let pagePath = "/bucketlists/"+id+"/entries";
+function EntryListView({entries, forceUpdate, onSelect, pagePath, onDelete}) {
 
-    let [entries, setEntries] = useState(null);
-    let [selectedEntry, setSelectedEntry] = useState(null);
+    if (entries === null) {
+        return <span>Loading</span>
+    }
 
-    let update = async () => {
-        const json = await backendFetch(pagePath + "/");
-        setEntries(json);
-    };
+    entries = Object.values(entries);
 
-    useEffect(() => {
-            update();
-        },
-        [pagePath]
-    );
-    return <div className="columns">
-        <div  className="column">
-            <ul className="collection">
-            {entries && entries.map( entry => <BucketListEntry key={entry.id} entry={entry} pagePath={pagePath} forceUpdate={update} onSelect={setSelectedEntry}/>)}
-            </ul>
-        </div>
-        {selectedEntry && <div className="column"><EntryDetails selectedEntry={selectedEntry} onUpdate={update} pagePath={pagePath} /></div> }
+    return <div className="column">
+        <ul className="collection">
+            {entries.map(entry => <BucketListEntry key={entry.id} pagePath={pagePath}
+                                                   entry={entry}
+                                                   forceUpdate={forceUpdate}
+                                                   onSelect={onSelect}
+                                                   onDelete={onDelete}
+                />
+            )}
+        </ul>
     </div>;
 }
 
-class EntryDetails extends PureComponent {
+EntryListView.propTypes = {
+    entries: PropTypes.any.isRequired,
+    refresh: PropTypes.func.isRequired,
+};
 
-    static managedFields = ["title", "description"];
+export const BucketListEntries = withRouter(BucketListEntriesBase);
 
-    state = {};
+function BucketListEntriesBase({id, match}) {
+    let pagePath = "/bucketlists/"+id+"/entries";
 
-    constructor(props) {
-        super(props);
+    let [entries, setEntries] = useState(null);
 
-        this.state = {
-            ...this.entryStateFromProps(props)
-        };
+    let refresh = useCallback(
+        async () => {
+        const json = await backendFetch(pagePath + "/");
+        setEntries(keyBy(json, o => o.id));
+        },
+        [pagePath]
+    );
 
-        [
-            "onSubmit",
-            "hasChanges"
-        ].forEach(
-            fn => this[fn] = this[fn].bind(this)
-        );
-    }
+    let deleteEntry = useCallback(
+        async ({id}) => {
+            await  backendFetch.delete( pagePath + "/" + id + "/");
+            await refresh();
+        },
+        [pagePath, refresh]
+    );
 
-    entryStateFromProps(props) {
-        let partialState = {};
-        partialState.entry = props.selectedEntry;
+    useEffect(() => {
+            refresh();
+        },
+        [refresh]
+    );
 
-        for (let field of EntryDetails.managedFields) {
-            partialState[field] = partialState.entry[field] || "";
-        }
-        return partialState;
-    }
 
-    componentWillReceiveProps(nextProps, nextContext) {
-        if (nextProps.selectedEntry !== this.state.entry) {
-            this.setState(this.entryStateFromProps(nextProps));
-        }
-    }
 
-    hasChanges() {
-        return !EntryDetails.managedFields.some(f => {
-            return (this.state.entry[f] || "") !== this.state[f]
-        });
-    }
-
-    onSubmit(e) {
-        e.preventDefault();
-
-        let update = {};
-        for (let field of EntryDetails.managedFields) {
-            update[field] = this.state[field];
-        }
-
-        this.setState({loading: true, error: null});
-
-        backendFetch.put(
-            this.props.pagePath + "/" + this.state.entry.id + "/", {
-                body: JSON.stringify(update)
-            })
-            .then( () => {
-                this.setState({loading: false})
-                this.props.onUpdate();
-            })
-            .catch( error => {
-                console.log(error);
-                this.setState({error});
-            })
-            .finally(
-                this.setState({loading: false})
-            )
-        ;
-    }
-
-    render() {
-        return <form onSubmit={this.onSubmit}
-        >
-            {EntryDetails.managedFields.map(
-                field => <input key={field} className="input" value={this.state[field]} onChange={e => this.setState({[field]: e.target.value})}/>
-            )}
-            <button type="submit" className="button" disabled={this.hasChanges()}>Update</button>
-        </form>;
-    }
+    return <Switch>
+        <Route exact strict path={match.path}>
+            <EntryListView
+                pagePath={pagePath}
+                entries={entries}
+                refresh={refresh}
+                onDelete={deleteEntry}
+            />
+        </Route>
+        <Route path={match.path + ":entryId"}
+            render={
+                ({match}) => <BucketListEntryDetails
+                    isLoading={entries === null}
+                    selectedEntry={entries && entries[match.params.entryId]}
+                    refresh={refresh}
+                    pagePath={pagePath}
+                />
+            }
+        />
+    </Switch>
 }
 
 const BucketListEntry = withRouter(BucketListEntryView);
 
-function BucketListEntryView({entry, pagePath, forceUpdate, history, onSelect}) {
-    let [showDetails, setShowDetails] = useState(false);
+function BucketListEntryView({entry, pagePath, refresh, history,  match, onDelete}) {
 
+    let entryBackendUrl = pagePath + "/" + entry.id + "/";
+    let [showComments, toggleComments] = useReducer(isChecked => !isChecked, false);
 
-    async function toggleCompletionState(wasCompleted) {
-        let nextEntryState = {
-            completed: wasCompleted ? null : Date.now()
-        };
+    let toggleCompletionState = useCallback(
+        async function (wasCompleted) {
+            let nextEntryState = {
+                completed: wasCompleted ? null : Date.now()
+            };
 
-        const response = await backendFetch.put(
-            pagePath + "/" + entry.id + "/", {
-            body: JSON.stringify(nextEntryState)
-        });
-        forceUpdate();
-    }
+            await backendFetch.put(
+                entryBackendUrl, {
+                    body: JSON.stringify(nextEntryState)
+                });
+            refresh();
+        },
+        [refresh, entryBackendUrl]
+    );
 
-    let onToggleDone = e => {
-        e.stopPropagation();
-        e.preventDefault();
-        toggleCompletionState(entry.completed);
-    };
+    let toggleCompleted = useCallback(
+        e => {
+            e.stopPropagation();
+            e.preventDefault();
+            toggleCompletionState(entry.completed);
+        },
+        [toggleCompletionState]
+    );
 
-    async function copyEntryToBucketList() {
-        let targetListId = NaN;
-        while (isNaN(targetListId)) {
-            let input = prompt("id of target bucket list?");
-            if (input === null) {
-                return;
+    let copyEntryToBucketList = useCallback(
+        async function () {
+            let targetListId = NaN;
+            while (isNaN(targetListId)) {
+                let input = prompt("id of target bucket list?");
+                if (input === null) {
+                    return;
+                }
+                targetListId = parseInt( input);
             }
-            targetListId = parseInt( input);
-        }
-        await backendFetch.post("/bucketlists/" + targetListId + "/entries/cloneEntry/" + entry.id + "/");
+            await backendFetch.post("/bucketlists/" + targetListId + "/entries/cloneEntry/" + entry.id + "/");
 
-        let returnValue = window.confirm("Do you want to see your list?");
-        if (returnValue) {
-            history.push({pathname: "/bucketlist/" + targetListId + "/entries/"});
-        }
-    }
+            let returnValue = window.confirm("Do you want to see your list?");
+            if (returnValue) {
+                history.push({pathname: "/bucketlist/" + targetListId + "/entries/"});
+            }
+        },
+        [entry]
+    );
 
     return <li className="collection-item">
         <div>
-            <input type="checkbox"
-                   checked={entry.completed || false}
-                   onChange={onToggleDone}
-                   // don't let the onClick handler for expander fire, if this checkbox is toggled
-                   onClick={event => event.stopPropagation()}
-            />&nbsp;<a onClick={e => {e.preventDefault(); onSelect(entry)}}>{entry.title}</a>
+            <label>
+            <input
+                type="checkbox"
+                checked={!!entry.completed}
+                onChange={toggleCompleted}
+            /><span/></label>
+            &nbsp;<Link to={match.url + entry.id + "/"}>{entry.title}</Link>
             <small>
                  ·
                 {moment(entry.created).fromNow()}
-                 · <button onClick={() => setShowDetails(!showDetails)}>Talk</button>
+                 · <button onClick={() => toggleComments(!showComments)}>Talk</button>
                  · <button onClick={copyEntryToBucketList}>copy</button>
+                 · <button onClick={() => onDelete(entry)}>delete</button>
             </small>
         </div>
-        {showDetails && <ExtendedEntry entry={entry} pagePath={pagePath}/>}
+        {showComments && <ExtendedEntry entry={entry} pagePath={pagePath}/>}
     </li>;
 }
 

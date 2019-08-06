@@ -86,11 +86,11 @@ export function BucketList({match, history}) {
         <div className="row">
             <NavTabs links={[
                 {
-                    url: match.url + "/entries",
+                    url: match.url + "/entries/",
                     title: "Entries",
                 },
                 {
-                    url: match.url + "/comments",
+                    url: match.url + "/comments/",
                     title: "Comments",
                 },
                 {
@@ -106,14 +106,14 @@ export function BucketList({match, history}) {
         </div>
         <div className="row">
             <Switch>
-                <Route path={match.path + "entries"}
+                <Route strict path={match.path + "entries/"}
                        render={() => <div className="col"><BucketListEntries id={id}/></div>}/>
-                <Route path={match.path + "comments"}
+                <Route strict path={match.path + "comments/"}
                        render={() => <div className="col"><BucketListComments bucketList={bucketList} update={update}/>
                        </div>}/>
                 <Route path={match.path+"settings"}
                        render={() => <ListSettings bucketList={bucketList}/>} />
-                <Redirect to={match.url + "/entries"}/>
+                <Redirect to={match.url + "/entries/"}/>
             </Switch>
         </div>
     </div>

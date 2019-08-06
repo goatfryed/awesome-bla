@@ -32,7 +32,7 @@ public class BucketList implements Commentable {
     @JsonProperty("private")
     private boolean privateList;
 
-    @OneToMany(fetch = FetchType.EAGER, mappedBy = "bucketList")
+    @OneToMany(fetch = FetchType.EAGER, mappedBy = "bucketList", orphanRemoval = true, cascade = CascadeType.REMOVE)
     @OrderBy("created DESC")
     private List<BucketListEntry> entries;
     private int numEntries;

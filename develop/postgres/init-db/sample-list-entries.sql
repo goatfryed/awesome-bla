@@ -11,6 +11,18 @@ INSERT INTO users (id,user_name,full_name) VALUES (102,'Test User 2','Tests 2 Fu
 INSERT INTO users (id,user_name,full_name) VALUES (103,'Test User 3','Tests 3 Full Name');
 INSERT INTO users (id,user_name,full_name) VALUES (104,'Test User 4','Tests 4 Full Name');
 
+INSERT INTO "bucket_list" (id, creation_date, last_updated, num_entries, title, private_list,owner_id) values (50, NOW(), NOW(), 0, 'Public Liste 1',false,101);
+INSERT INTO "bucket_list" (id, creation_date, last_updated, num_entries, title, private_list,owner_id) values (51, NOW(), NOW(), 0, 'Public Liste 2',false,101);
+INSERT INTO "bucket_list" (id, creation_date, last_updated, num_entries, title, private_list,owner_id) values (52, NOW(), NOW(), 0, 'Public Liste 3',false,101);
+INSERT INTO "bucket_list" (id, creation_date, last_updated, num_entries, title, private_list,owner_id) values (53, NOW(), NOW(), 0, 'Public Liste 4',false,101);
+INSERT INTO "bucket_list" (id, creation_date, last_updated, num_entries, title, private_list,owner_id) values (54, NOW(), NOW(), 0, 'Public Liste 5',false,101);
+INSERT INTO "bucket_list" (id, creation_date, last_updated, num_entries, title, private_list,owner_id) values (55, NOW(), NOW(), 0, 'Public Liste 6',false,101);
+INSERT INTO "bucket_list" (id, creation_date, last_updated, num_entries, title, private_list,owner_id) values (56, NOW(), NOW(), 0, 'Public Liste 7',false,101);
+INSERT INTO "bucket_list" (id, creation_date, last_updated, num_entries, title, private_list,owner_id) values (57, NOW(), NOW(), 0, 'Public Liste 8',false,101);
+INSERT INTO "bucket_list" (id, creation_date, last_updated, num_entries, title, private_list,owner_id) values (58, NOW(), NOW(), 0, 'Public Liste 9',false,101);
+INSERT INTO "bucket_list" (id, creation_date, last_updated, num_entries, title, private_list,owner_id) values (59, NOW(), NOW(), 0, 'Public Liste 10',false,101);
+INSERT INTO "bucket_list" (id, creation_date, last_updated, num_entries, title, private_list,owner_id) values (60, NOW(), NOW(), 0, 'Public Liste 11',false,101);
+
 INSERT INTO "bucket_list" (id, creation_date, last_updated, num_entries, title, private_list,owner_id) values (42, NOW(), NOW(), 0, 'web engineering dreams',false,101);
 INSERT INTO "bucket_list" (id, creation_date, last_updated, num_entries, title, private_list,owner_id) values (43, NOW(), NOW(), 0, 'private web engineering dreams',true,102);
 INSERT INTO "bucket_list" (id, creation_date, last_updated, num_entries, title, private_list,owner_id) values (44, NOW(), NOW(), 0, 'private web dreams for test uesr 1',true,102);
