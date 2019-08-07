@@ -7,7 +7,9 @@ import de.uniks.webengineering2019.bla.model.Comment;
 import de.uniks.webengineering2019.bla.model.User;
 import de.uniks.webengineering2019.bla.repositories.BucketListRepository;
 import de.uniks.webengineering2019.bla.repositories.CommentRepository;
+import de.uniks.webengineering2019.bla.utils.PageSupport;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
@@ -47,17 +49,25 @@ public class BucketListController{
     }
 
     @GetMapping("/all2")
-    public List<BucketList> getAllLists2(@RequestParam(defaultValue = "0")int page){
+    public PageSupport<BucketList> getAllLists2(@RequestParam(defaultValue = "0")int page){
         if(page<0){
             page = 0;
         }
         Pageable pageable = PageRequest.of(page,elementsOnPage);
 
+        Page<BucketList> pageRessult;
+
         if(userContext.hasUser()){
-            return bucketListRepository.findByPrivateListOrAccessedUsersContainsOrOwner(false, userContext.getUser(), userContext.getUser(),pageable).getContent();
+            pageRessult = bucketListRepository.findByPrivateListOrAccessedUsersContainsOrOwner(false, userContext.getUser(), userContext.getUser(),pageable);
         }else{
-            return bucketListRepository.findByPrivateList(false,pageable).getContent();
+            pageRessult = bucketListRepository.findByPrivateList(false,pageable);
         }
+
+        int lasting = (int)pageRessult.getTotalElements() - (page+1) * elementsOnPage;
+        if(lasting < 0){
+            lasting = 0;
+        }
+        return new PageSupport<BucketList>(pageRessult.getContent(),lasting);
 
     }
 

@@ -3,12 +3,14 @@ import { Route, Switch} from "react-router";
 import { Link, Redirect } from "react-router-dom";
 import { backendFetch } from "../../api";
 import {NavTabs} from "./NavTabs";
+import {Users} from "../basic-components/users";
 
 export class AccessedAllBucketLists extends Component {
 	constructor(props) {
 		super(props);
 		this.state = {
 			bucketLists: [],
+			lastingElements: null,
 			loadedPages: 0
 		};
 		this.loadMore = this.loadMore.bind(this);
@@ -17,10 +19,11 @@ export class AccessedAllBucketLists extends Component {
 
 	loadMore(){
 		backendFetch.get('/bucketlists/all2?page='+this.state.loadedPages).then(response => {
-			if(response.length > 0){
+			if(response.content.length > 0){
 				this.state.loadedPages++;
 			}
-			this.state.bucketLists = this.state.bucketLists.concat(response);
+			this.state.lastingElements = response.lastingElements;
+			this.state.bucketLists = this.state.bucketLists.concat(response.content);
 			this.forceUpdate();
 		});
 	}
@@ -42,6 +45,10 @@ export class AccessedAllBucketLists extends Component {
 			);
 		});
 
+		const moreSides = ()=>{
+			return this.state.lastingElements == null ? '':this.state.lastingElements<=0?<div>Kine Weiteren Listen verfügbar</div>:<div>{this.state.lastingElements} weiter Listen <button type="submit" onClick={this.loadMore.bind(this)}>Laden</button></div>
+		};
+
 		return (
 			<div className="container">
 				<h5>Bucket Lists</h5>
@@ -62,7 +69,7 @@ export class AccessedAllBucketLists extends Component {
 					<Route path="/" render={() => <Lists bucketLists={ bucketLists } />} />
 					<Redirect to="/newlist" />
 				</Switch>
-				<button type="submit" onClick={this.loadMore.bind(this)}>Mehr laden</button>
+				{moreSides()}
 			</div>
 		);
 	}
