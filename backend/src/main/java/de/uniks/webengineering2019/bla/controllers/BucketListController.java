@@ -106,6 +106,7 @@ public class BucketListController{
     public void addList(@RequestBody BucketList newBucketList) {
         newBucketList.setCreationDate(new Date());
         newBucketList.setLastUpdated(new Date());
+        newBucketList.setOwner(userContext.getUser());
         bucketListRepository.save(newBucketList);
     }
 
