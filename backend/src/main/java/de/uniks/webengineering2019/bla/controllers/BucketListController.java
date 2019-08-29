@@ -1,5 +1,6 @@
 package de.uniks.webengineering2019.bla.controllers;
 
+import antlr.StringUtils;
 import de.uniks.webengineering2019.bla.authentication.UserContext;
 import de.uniks.webengineering2019.bla.comments.CommentCreationService;
 import de.uniks.webengineering2019.bla.model.BucketList;
@@ -14,9 +15,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Arrays;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 @CrossOrigin
 @RequestMapping("/bucketlists/")
@@ -46,6 +45,15 @@ public class BucketListController{
         //return bucketListRepository.findByPrivateList(false);
     }
 
+    void changeAccesedUsersByOwnder(Collection<BucketList> bucketListCollection){
+        for(BucketList bucketList:bucketListCollection){
+            if(bucketList.getOwner().getId() != userContext.getUser().getId()){
+                bucketList.getAccessedUsers().clear();
+            }
+            bucketList.setOwnList(bucketList.getOwner().getId() == userContext.getUser().getId());
+        }
+    }
+
     @GetMapping("/all2")
     public List<BucketList> getAllLists2(@RequestParam(defaultValue = "0")int page){
         if(page<0){
@@ -53,17 +61,21 @@ public class BucketListController{
         }
         Pageable pageable = PageRequest.of(page,elementsOnPage);
 
+        List<BucketList> list;
         if(userContext.hasUser()){
-            return bucketListRepository.findByPrivateListOrAccessedUsersContainsOrOwner(false, userContext.getUser(), userContext.getUser(),pageable).getContent();
+            list = bucketListRepository.findByPrivateListOrAccessedUsersContainsOrOwner(false, userContext.getUser(), userContext.getUser(),pageable).getContent();
         }else{
-            return bucketListRepository.findByPrivateList(false,pageable).getContent();
+            list = bucketListRepository.findByPrivateList(false,pageable).getContent();
         }
+        changeAccesedUsersByOwnder(list);
+        return list;
 
     }
 
     @GetMapping("/{bucketList}/")
     public BucketList get(@PathVariable BucketList bucketList) {
         bucketList.getEntries().clear();
+        changeAccesedUsersByOwnder(Collections.singletonList(bucketList));
         return bucketList;
     }
 

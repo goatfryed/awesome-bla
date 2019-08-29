@@ -84,7 +84,7 @@ export function BucketList({match, history}) {
                                onImport={importBucketList}/>
         </div>
         <div className="row">
-            <NavTabs links={[
+            <NavTabs links={bucketList.ownList?[
                 {
                     url: match.url + "/entries/",
                     title: "Entries",
@@ -96,6 +96,20 @@ export function BucketList({match, history}) {
                 {
                     url: match.url + "/settings",
                     title: "Settings",
+                },
+                {
+                    url: match.url + "/newlistentry",
+                    title: "New list entry",
+                    navLinkProps: {target: "_self"},
+                }
+            ]:[
+                {
+                    url: match.url + "/entries/",
+                    title: "Entries",
+                },
+                {
+                    url: match.url + "/comments/",
+                    title: "Comments",
                 },
                 {
                     url: match.url + "/newlistentry",
