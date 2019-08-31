@@ -66,7 +66,7 @@ export class ListSettings extends React.Component {
 
 
     return (
-        <apan>
+        <span>
           <div>
             <label>
               <input class="filled-in" type="checkbox" checked={this.state.bucketList.private} onChange={this.privateChanged} />
@@ -74,7 +74,7 @@ export class ListSettings extends React.Component {
             </label>
           </div>
           {this.state.bucketList.private?privateOptions():""}
-        </apan>
+        </span>
     );
   }
 }

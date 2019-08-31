@@ -4,7 +4,10 @@ import de.uniks.webengineering2019.bla.model.BucketList;
 import de.uniks.webengineering2019.bla.model.User;
 import de.uniks.webengineering2019.bla.repositories.UserRepository;
 import de.uniks.webengineering2019.bla.service.UserService;
+import de.uniks.webengineering2019.bla.utils.PageSupport;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
@@ -23,20 +26,20 @@ public class UserController{
     UserRepository userRepository;
 
     @GetMapping("/all")
-    public List<User> getAll(){
-        return userRepository.findAll();
+    public PageSupport<User> getAll(@RequestParam(defaultValue = "0")int page){
+        return userService.findAllUsers(page);
     }
 
     @GetMapping("/find")
-    public ResponseEntity findUsers(@RequestParam String name){
+    public PageSupport<User> findUsers(@RequestParam String name,@RequestParam(defaultValue = "0")int page){
         if(StringUtils.isEmpty(name)){
-            return ResponseEntity.ok(userService.findAllUsers());
+            return userService.findAllUsers(page);
         }
-        return ResponseEntity.ok(userService.findUser(name));
+        return userService.findUser(name,page);
     }
 
     @GetMapping("/byList")
-    public ResponseEntity findNotPrivelegedUsersByName(@RequestParam BucketList bucketlist,@RequestParam String name){
-        return ResponseEntity.ok(userService.findUserNotPrivelegedAndName(name,bucketlist).stream());
+    public PageSupport<User> findNotPrivelegedUsersByName(@RequestParam BucketList bucketlist,@RequestParam String name,@RequestParam(defaultValue = "0")int page){
+        return userService.findUserNotPrivelegedAndName(name,bucketlist,page);
     }
 }

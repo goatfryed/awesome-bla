@@ -15,6 +15,8 @@ export class Users extends React.Component {
             text: props.text,
             onKlick: props.onKlick,
             endPoint: "/users/find",
+            lastingElements: null,
+            loadedPages: 0
         };
         if(props.endPoint != null){
             this.state.endPoint = props.endPoint;
@@ -23,10 +25,14 @@ export class Users extends React.Component {
         this.searchUsers = this.searchUsers.bind(this);
         this.getEndPointUrl = this.getEndPointUrl.bind(this);
         this.forcepUpdateRequest = this.forcepUpdateRequest.bind(this);
+        this.loadMore = this.loadMore.bind(this);
     }
 
     searchUserChanged(ev){
         let name = ev.target.value;
+        this.state.users = [];
+        this.state.loadedPages = 0;
+        this.state.lastingElements = null;
         if(name.startsWith("#")){
             return;
         }
@@ -42,6 +48,10 @@ export class Users extends React.Component {
     }
 
     render() {
+        const moreSides = ()=>{
+            return this.state.lastingElements == null ? '':this.state.lastingElements<=0?<div>Kine Weiteren User verfügbar</div>:<div>{this.state.lastingElements} weitere User <button type="submit" onClick={this.loadMore.bind(this,this.state.lastSearch)}>Laden</button></div>
+        };
+
         const users = this.state.users.map((user, index) => {
             return <span key={user.id}><li class="active">
                 <b>{user.userName}</b> |&nbsp;
@@ -57,6 +67,7 @@ export class Users extends React.Component {
                 <ul>
                     {users}
                 </ul>
+                {moreSides()}
             </div>
         )
     }
@@ -67,9 +78,9 @@ export class Users extends React.Component {
 
     getEndPointUrl(name){
         if(this.state.endPoint.includes("?")){
-            return this.state.endPoint+'&name='+name
+            return this.state.endPoint+'&name='+name+"&page="+this.state.loadedPages
         }else{
-            return this.state.endPoint+'?name='+name
+            return this.state.endPoint+'?name='+name+"&page="+this.state.loadedPages
         }
     }
 
@@ -84,14 +95,21 @@ export class Users extends React.Component {
             return;
         }
         this.state.lastSearch = name;
+        this.loadMore(name);
+    }
+
+    loadMore(name){
         backendFetch.get(this.getEndPointUrl(name))
-            .then((response) => {
-                return response;
-            })
-            .then((data) => {
-                this.setState({
-                    users: data
-            });
+        .then((response) => {
+            return response;
+        })
+        .then((response) => {
+            if(response.content.length > 0){
+                this.state.loadedPages++;
+            }
+            this.state.lastingElements = response.lastingElements;
+            this.state.users = this.state.users.concat(response.content);
+            this.forceUpdate();
         })
     }
 
