@@ -1,5 +1,6 @@
 package de.uniks.webengineering2019.bla.controllers;
 
+import antlr.StringUtils;
 import de.uniks.webengineering2019.bla.authentication.UserContext;
 import de.uniks.webengineering2019.bla.comments.CommentCreationService;
 import de.uniks.webengineering2019.bla.model.BucketList;
@@ -16,9 +17,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Arrays;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 @CrossOrigin
 @RequestMapping("/bucketlists/")
@@ -48,12 +47,22 @@ public class BucketListController{
         //return bucketListRepository.findByPrivateList(false);
     }
 
+    void changeAccesedUsersByOwnder(Collection<BucketList> bucketListCollection){
+        for(BucketList bucketList:bucketListCollection){
+            if(bucketList.getOwner().getId() != userContext.getUser().getId()){
+                bucketList.getAccessedUsers().clear();
+            }
+            bucketList.setOwnList(bucketList.getOwner().getId() == userContext.getUser().getId());
+        }
+    }
+
     @GetMapping("/all2")
     public PageSupport<BucketList> getAllLists2(@RequestParam(defaultValue = "0")int page){
         if(page<0){
             page = 0;
         }
         Pageable pageable = PageRequest.of(page,elementsOnPage);
+
 
         Page<BucketList> pageRessult;
 
@@ -67,13 +76,14 @@ public class BucketListController{
         if(lasting < 0){
             lasting = 0;
         }
+        changeAccesedUsersByOwnder(pageRessult.getContent());
         return new PageSupport<BucketList>(pageRessult.getContent(),lasting);
-
     }
 
     @GetMapping("/{bucketList}/")
     public BucketList get(@PathVariable BucketList bucketList) {
         bucketList.getEntries().clear();
+        changeAccesedUsersByOwnder(Collections.singletonList(bucketList));
         return bucketList;
     }
 
@@ -116,6 +126,7 @@ public class BucketListController{
     public void addList(@RequestBody BucketList newBucketList) {
         newBucketList.setCreationDate(new Date());
         newBucketList.setLastUpdated(new Date());
+        newBucketList.setOwner(userContext.getUser());
         bucketListRepository.save(newBucketList);
     }
 

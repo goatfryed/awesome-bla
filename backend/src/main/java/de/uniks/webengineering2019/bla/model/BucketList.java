@@ -41,6 +41,9 @@ public class BucketList implements Commentable {
     @JsonProperty("accessed")
     private Set<User> accessedUsers;
 
+    @Transient
+    private boolean ownList;
+
     @ManyToOne
     @JoinColumn(name="owner_id",nullable = false)
     private User owner;

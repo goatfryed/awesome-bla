@@ -39,7 +39,7 @@ export class AccessedAllBucketLists extends Component {
 			return (
 				<div>
 					<Link to={"/bucketlist/" + bucketList.id} className="collection-item grey lighten-3">
-						{bucketList.title}
+						{bucketList.title} {bucketList.ownList?"(Eigene Liste)":""}
 					</Link>
 				</div>
 			);
