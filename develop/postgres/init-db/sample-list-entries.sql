@@ -10,6 +10,14 @@ INSERT INTO users (id,user_name,full_name) VALUES (101,'Test User 1','Tests 1 Fu
 INSERT INTO users (id,user_name,full_name) VALUES (102,'Test User 2','Tests 2 Full Name');
 INSERT INTO users (id,user_name,full_name) VALUES (103,'Test User 3','Tests 3 Full Name');
 INSERT INTO users (id,user_name,full_name) VALUES (104,'Test User 4','Tests 4 Full Name');
+INSERT INTO users (id,user_name,full_name) VALUES (105,'Test User 5','Tests 5 Full Name');
+INSERT INTO users (id,user_name,full_name) VALUES (106,'Test User 6','Tests 6 Full Name');
+INSERT INTO users (id,user_name,full_name) VALUES (107,'Test User 7','Tests 7 Full Name');
+INSERT INTO users (id,user_name,full_name) VALUES (108,'Test User 8','Tests 8 Full Name');
+INSERT INTO users (id,user_name,full_name) VALUES (109,'Test User 9','Tests 9 Full Name');
+INSERT INTO users (id,user_name,full_name) VALUES (110,'Test User 10','Tests 10 Full Name');
+INSERT INTO users (id,user_name,full_name) VALUES (111,'Test User 11','Tests 11 Full Name');
+INSERT INTO users (id,user_name,full_name) VALUES (112,'Test User 12','Tests 12 Full Name');
 
 INSERT INTO "bucket_list" (id, creation_date, last_updated, num_entries, title, private_list,owner_id) values (50, NOW(), NOW(), 0, 'Public Liste 1',false,101);
 INSERT INTO "bucket_list" (id, creation_date, last_updated, num_entries, title, private_list,owner_id) values (51, NOW(), NOW(), 0, 'Public Liste 2',false,101);

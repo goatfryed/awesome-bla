@@ -59,7 +59,7 @@ export class ListSettings extends React.Component {
           </div>
         </div>
         <div>Berechtigungen zuteilen
-          <Users ref="usersRef" text="Hier Text einfügen" onKlick={this.makePriveleged} endPoint={this.state.endPoint}></Users>
+          <Users ref="usersRef" text="Zugriff erlauben" onKlick={this.makePriveleged} endPoint={this.state.endPoint}></Users>
         </div>
       </div>
     };

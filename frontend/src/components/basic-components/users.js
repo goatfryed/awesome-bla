@@ -85,6 +85,7 @@ export class Users extends React.Component {
     }
 
     forcepUpdateRequest(){
+        this.state.users = [];
         this.searchUsers(this.state.lastSearch,true);
     }
 
@@ -95,11 +96,11 @@ export class Users extends React.Component {
             return;
         }
         this.state.lastSearch = name;
-        this.loadMore(name);
+        this.loadMore(name,force);
     }
 
-    loadMore(name){
-        backendFetch.get(this.getEndPointUrl(name))
+    loadMore(name,reload){
+        backendFetch.get(this.getEndPointUrl(name)+(reload==true ? "&reload=true":""))
         .then((response) => {
             return response;
         })

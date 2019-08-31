@@ -27,7 +27,7 @@ public class UserService{
     @Autowired
     UserRepository userRepository;
 
-    @Value("${Page.User.DefaultSize:2}")
+    @Value("${Page.User.DefaultSize:10}")
     private int elementsOnPage;
 
     public PageSupport<User> findUser(String user, int page){
@@ -42,11 +42,14 @@ public class UserService{
         return new PageSupport<User>(pageResult,page,elementsOnPage);
     }
 
-    public PageSupport<User> findUserNotPrivelegedAndName(final String user, final BucketList list, final int page){
+    public PageSupport<User> findUserNotPrivelegedAndName(final String user, final BucketList list, final int page,boolean reload){
         Pageable pageable = PageRequest.of(page,elementsOnPage);
+        if(reload){
+            pageable = PageRequest.of(0,page*elementsOnPage);
+        }
         String userPattern = "%"+user+"%";
         Page<User> pageResult  = userRepository.findByUserNameAndNotAccesdByBucketlist(list.getId(),list.getOwner().getId(),userPattern,pageable);
-        return new PageSupport<User>(pageResult,page,elementsOnPage);
+        return new PageSupport<>(pageResult,page,elementsOnPage);
         //return userRepository.findByUserNameAndNotAccesdByBucketlist(user,list.getId(),pageable);
         /*List<User> users = findUser(user,pageable);
         if(userContext.hasUser()){

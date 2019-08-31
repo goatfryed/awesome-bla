@@ -39,7 +39,7 @@ public class UserController{
     }
 
     @GetMapping("/byList")
-    public PageSupport<User> findNotPrivelegedUsersByName(@RequestParam BucketList bucketlist,@RequestParam String name,@RequestParam(defaultValue = "0")int page){
-        return userService.findUserNotPrivelegedAndName(name,bucketlist,page);
+    public PageSupport<User> findNotPrivelegedUsersByName(@RequestParam BucketList bucketlist,@RequestParam String name,@RequestParam(defaultValue = "0")int page,@RequestParam(required = false,defaultValue = "false") boolean reload){
+        return userService.findUserNotPrivelegedAndName(name,bucketlist,page,reload);
     }
 }
