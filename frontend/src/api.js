@@ -14,6 +14,7 @@ export async function backendFetch(url, config) {
         configHeaders.Authorization = 'Bearer ' + Authentication.getToken();
     }
 
+
     const response = await fetch(
         backend + url,
         {

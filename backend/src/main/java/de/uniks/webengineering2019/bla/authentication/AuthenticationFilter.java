@@ -84,9 +84,9 @@ public class AuthenticationFilter implements Filter {
             Claims c = claims.get();
 
             User user = new User();
-            user.setId((long) c.get("id", Integer.class));
+            user.setId(Long.parseLong((String)c.get("id")));
             user.setUserName(c.getSubject());
-            user.setFullName(c.get("name", String.class));
+            user.setFullName((String)c.get("name"));
 
             userContext.setUser(user);
 
@@ -136,7 +136,7 @@ public class AuthenticationFilter implements Filter {
             oUser = userRepository.save(user);
             LOG.info("Cretaed new debug user: " + oUser.getFullName());
         }
-        claims.put("id", oUser.getId().intValue());
+        claims.put("id", ""+oUser.getId().intValue());
         LOG.info("Accepted debug user: "+oUser.getFullName());
 
         return Optional.of(claims);

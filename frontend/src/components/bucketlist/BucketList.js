@@ -3,7 +3,8 @@ import {Link, Redirect} from "react-router-dom";
 import {Route, Switch} from "react-router";
 import {BucketListEntries} from "./BucketListEntries";
 import {backendFetch} from "../../api";
-import {CommentsBlock} from "./Comments";
+import {CommentInput, Comments, CommentsBlock} from "./Comments";
+import {ListSettings} from "./ListSettings";
 import moment from "moment";
 import * as PropTypes from "prop-types";
 import {NavTabs} from "./NavTabs";
@@ -75,7 +76,25 @@ export function BucketList({match, history}) {
             <BucketListDetails bucketList={bucketList} counter={counter} onLike={incrementCounter} />
         </div>
         <div className="row">
-            <NavTabs links={[
+            <NavTabs links={bucketList.ownList?[
+                {
+                    url: match.url + "/entries/",
+                    title: "Entries",
+                },
+                {
+                    url: match.url + "/comments/",
+                    title: "Comments",
+                },
+                {
+                    url: match.url + "/settings",
+                    title: "Settings",
+                },
+                {
+                    url: match.url + "/newlistentry",
+                    title: "New list entry",
+                    navLinkProps: {target: "_self"},
+                }
+            ]:[
                 {
                     url: match.url + "/entries/",
                     title: "Entries",
@@ -98,6 +117,8 @@ export function BucketList({match, history}) {
                 <Route strict path={match.path + "comments/"}
                        render={() => <div className="col"><BucketListComments bucketList={bucketList} update={update}/>
                        </div>}/>
+                <Route path={match.path+"settings"}
+                       render={() => <ListSettings bucketList={bucketList}/>} />
                 <Redirect to={match.url + "/entries/"}/>
             </Switch>
         </div>
