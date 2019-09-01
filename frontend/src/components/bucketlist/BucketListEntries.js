@@ -9,7 +9,7 @@ import BucketListEntryDetails from "./BucketListEntryDetails";
 import {CommentsBlock} from "./Comments";
 import {backendFetch} from "../../api";
 
-function EntryListView({entries, forceUpdate, onSelect, pagePath, onDelete}) {
+function EntryListView({entries, refresh, onSelect, pagePath, onDelete}) {
 
     if (entries === null) {
         return <span>Loading</span>
@@ -21,7 +21,7 @@ function EntryListView({entries, forceUpdate, onSelect, pagePath, onDelete}) {
         <ul className="collection">
             {entries.map(entry => <BucketListEntry key={entry.id} pagePath={pagePath}
                                                    entry={entry}
-                                                   forceUpdate={forceUpdate}
+                                                   refresh={refresh}
                                                    onSelect={onSelect}
                                                    onDelete={onDelete}
                 />
@@ -116,7 +116,7 @@ function BucketListEntryView({entry, pagePath, refresh, history,  match, onDelet
             e.preventDefault();
             toggleCompletionState(entry.completed);
         },
-        [toggleCompletionState]
+        [toggleCompletionState, entry.completed]
     );
 
     let cloneLocation = useMemo(() => ({
