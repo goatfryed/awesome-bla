@@ -1,5 +1,5 @@
-import React from "react";
-import {Redirect} from "react-router-dom";
+import React, {useMemo} from "react";
+import {Link, Redirect} from "react-router-dom";
 import {Route, Switch} from "react-router";
 import {BucketListEntries} from "./BucketListEntries";
 import {backendFetch} from "../../api";
@@ -9,7 +9,18 @@ import moment from "moment";
 import * as PropTypes from "prop-types";
 import {NavTabs} from "./NavTabs";
 
-function BucketListDetails(props) {
+function BucketListDetails({onLike, bucketList, counter}) {
+
+    let cloneLocation = useMemo(
+        () => ({
+            pathname: "/import/",
+            state: {
+                bucketList,
+            }
+        }),
+        [bucketList]
+    );
+
     return <article className="media">
         <figure className="media-left">
             <p className="image is-64x64">
@@ -17,11 +28,11 @@ function BucketListDetails(props) {
             </p>
         </figure>
         <div className="media-content">
-            <strong>{props.bucketList.title}({props.bucketList.id})</strong>
+            <strong>{bucketList.title}({bucketList.id})</strong>
             <br/>
-            <small>{props.counter} · <a onClick={props.onLike}>Like</a>
-                · <span>{moment(props.bucketList.created).fromNow()}</span>
-                · <button onClick={props.onImport}>copy</button>
+            <small>{counter} · <a onClick={onLike}>Like</a>
+                · <span>{moment(bucketList.created).fromNow()}</span>
+                · <Link className="button" to={cloneLocation}>Copy</Link>
             </small>
         </div>
     </article>;
@@ -31,7 +42,6 @@ BucketListDetails.propTypes = {
     bucketList: PropTypes.any,
     counter: PropTypes.number,
     onLike: PropTypes.func,
-    onImport: PropTypes.func
 };
 
 export function BucketList({match, history}) {
@@ -58,30 +68,12 @@ export function BucketList({match, history}) {
     if (bucketList == null) {
         return <span>Loading</span>;
     }
-    console.log(bucketList);
-
-    async function importBucketList() {
-        let targetListId = NaN;
-        while (isNaN(targetListId)) {
-            let input = prompt("id of target bucket list?");
-            if (input === null) {
-                return;
-            }
-            targetListId = parseInt( input);
-        }
-        await backendFetch.post("/bucketlists/" + targetListId + "/entries/cloneList/" + id + "/");
 
 
-        let returnValue = window.confirm("Do you want to see your list?");
-        if (returnValue) {
-            history.push({pathname: "/bucketlist/" + targetListId} + "/entries/");
-        }
-    }
 
     return <div className="container">
         <div className="row">
-            <BucketListDetails bucketList={bucketList} counter={counter} onLike={incrementCounter}
-                               onImport={importBucketList}/>
+            <BucketListDetails bucketList={bucketList} counter={counter} onLike={incrementCounter} />
         </div>
         <div className="row">
             <NavTabs links={bucketList.ownList?[

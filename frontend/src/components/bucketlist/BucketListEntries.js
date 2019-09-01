@@ -1,7 +1,7 @@
 import {keyBy} from "lodash/collection";
 import moment from "moment";
 import * as PropTypes from "prop-types";
-import React, {useEffect, useState, useCallback, useReducer} from "react";
+import React, {useEffect, useState, useCallback, useReducer, useMemo} from "react";
 import {Route, Switch, withRouter} from "react-router";
 import {Link} from "react-router-dom";
 
@@ -9,7 +9,7 @@ import BucketListEntryDetails from "./BucketListEntryDetails";
 import {CommentsBlock} from "./Comments";
 import {backendFetch} from "../../api";
 
-function EntryListView({entries, forceUpdate, onSelect, pagePath, onDelete}) {
+function EntryListView({entries, refresh, onSelect, pagePath, onDelete}) {
 
     if (entries === null) {
         return <span>Loading</span>
@@ -21,7 +21,7 @@ function EntryListView({entries, forceUpdate, onSelect, pagePath, onDelete}) {
         <ul className="collection">
             {entries.map(entry => <BucketListEntry key={entry.id} pagePath={pagePath}
                                                    entry={entry}
-                                                   forceUpdate={forceUpdate}
+                                                   refresh={refresh}
                                                    onSelect={onSelect}
                                                    onDelete={onDelete}
                 />
@@ -31,7 +31,7 @@ function EntryListView({entries, forceUpdate, onSelect, pagePath, onDelete}) {
 }
 
 EntryListView.propTypes = {
-    entries: PropTypes.any.isRequired,
+    entries: PropTypes.any,
     refresh: PropTypes.func.isRequired,
 };
 
@@ -116,26 +116,16 @@ function BucketListEntryView({entry, pagePath, refresh, history,  match, onDelet
             e.preventDefault();
             toggleCompletionState(entry.completed);
         },
-        [toggleCompletionState]
+        [toggleCompletionState, entry.completed]
     );
 
-    let copyEntryToBucketList = useCallback(
-        async function () {
-            let targetListId = NaN;
-            while (isNaN(targetListId)) {
-                let input = prompt("id of target bucket list?");
-                if (input === null) {
-                    return;
-                }
-                targetListId = parseInt( input);
+    let cloneLocation = useMemo(() => ({
+            pathname: "/import/",
+            state: {
+                entry,
+                from: match.url
             }
-            await backendFetch.post("/bucketlists/" + targetListId + "/entries/cloneEntry/" + entry.id + "/");
-
-            let returnValue = window.confirm("Do you want to see your list?");
-            if (returnValue) {
-                history.push({pathname: "/bucketlist/" + targetListId + "/entries/"});
-            }
-        },
+        }),
         [entry]
     );
 
@@ -152,7 +142,7 @@ function BucketListEntryView({entry, pagePath, refresh, history,  match, onDelet
                  ·
                 {moment(entry.created).fromNow()}
                  · <button onClick={() => toggleComments(!showComments)}>Talk</button>
-                 · <button onClick={copyEntryToBucketList}>copy</button>
+                 · <Link className="button" to={cloneLocation}>Copy</Link>
                  · <button onClick={() => onDelete(entry)}>delete</button>
             </small>
         </div>
