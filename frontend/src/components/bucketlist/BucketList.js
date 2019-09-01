@@ -21,19 +21,16 @@ function BucketListDetails({onLike, bucketList, counter}) {
         [bucketList]
     );
 
-    return <article className="media">
-        <figure className="media-left">
-            <p className="image is-64x64">
-                <img src="https://bulma.io/images/placeholders/128x128.png" alt="icon"/>
-            </p>
-        </figure>
-        <div className="media-content">
-            <strong>{bucketList.title}({bucketList.id})</strong>
-            <br/>
-            <small>{counter} · <a onClick={onLike}>Like</a>
-                · <span>{moment(bucketList.created).fromNow()}</span>
-                · <Link className="button" to={cloneLocation}>Copy</Link>
-            </small>
+    return <article className="row">
+        <div className="col s10 offset-s1">
+            <div>
+                <h5>{bucketList.title}</h5>
+                <hr/>
+                <small>{counter} · <a onClick={onLike}>Like</a>
+                    · <span>{moment(bucketList.created).fromNow()}</span>
+                    · <Link className="button" to={cloneLocation}>Copy</Link>
+                </small>
+            </div>
         </div>
     </article>;
 }
