@@ -8,6 +8,7 @@ import {ListSettings} from "./ListSettings";
 import moment from "moment";
 import * as PropTypes from "prop-types";
 import {NavTabs} from "./NavTabs";
+import {Button, Icon} from "react-materialize";
 
 function BucketListDetails({onLike, bucketList, counter}) {
 
@@ -26,11 +27,18 @@ function BucketListDetails({onLike, bucketList, counter}) {
             <div>
                 <h5>{bucketList.title}</h5>
                 <hr/>
+                <p><strong>{bucketList.description}</strong></p>
                 <small>{counter} · <a onClick={onLike}>Like</a>
                     · <span>{moment(bucketList.created).fromNow()}</span>
                     · <Link className="button" to={cloneLocation}>Copy</Link>
                 </small>
             </div>
+        </div>
+        <div className="col s1 valign-wrapper">
+            <ul>
+                <li><Button disabled waves="light" style={{marginBottom:"5px"}}><Icon>edit</Icon></Button></li>
+                <li><Button disabled className="red" waves="light"><Icon>delete</Icon></Button></li>
+            </ul>
         </div>
     </article>;
 }
