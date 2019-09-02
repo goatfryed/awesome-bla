@@ -126,7 +126,7 @@ function BucketListEntryView({entry, pagePath, refresh, history,  match, onDelet
                 from: match.url
             }
         }),
-        [entry]
+        [entry, match.url]
     );
 
     return <li className="collection-item">
@@ -155,14 +155,17 @@ function ExtendedEntry({entry, pagePath}) {
 
     let entryPath = pagePath+"/"+entry.id+"/";
 
-    async function update() {
-        const json = await backendFetch( entryPath);
-        setDetails(json);
-    }
+    let update = useCallback(
+            async function update() {
+            const json = await backendFetch( entryPath);
+            setDetails(json);
+        },
+        [entryPath]
+    );
 
     useEffect(
         function () {update();},
-        [entryPath]
+        [update]
     );
 
     async function onCommentCreation(comment, url) {
