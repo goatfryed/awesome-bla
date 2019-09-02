@@ -16,7 +16,6 @@ import ListNew from "./components/bucketlist/ListNew";
 
 //Pages
 import page404 from "./components/pages/Page404"
-import {Users} from "./components/basic-components/users.js"
 import {allUsers} from "./components/pages/allUsers";
 import {AccessedAllBucketLists} from "./components/bucketlist/ShowAccessAllBucketLists";
 import ImportTargetSelection from "./components/Import/ImportTargetSelection";
