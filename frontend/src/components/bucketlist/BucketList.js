@@ -118,7 +118,7 @@ function BucketListDetails({onLike, bucketList, counter, editUrl, onUpdateBucket
         </div>
         <div className="col s1 valign-wrapper">
             <ul>
-                <li><Button type="submit" disabled={!editUrl} waves="light"><Icon>{editIconType}</Icon></Button></li>
+                <li><Button type="submit" disabled={!bucketList.ownList} waves="light"><Icon>{editIconType}</Icon></Button></li>
                 <li style={{marginTop: "5px"}}><Button type="button" disabled className="red"
                                                        waves="light"><Icon>delete</Icon></Button></li>
             </ul>
