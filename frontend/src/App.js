@@ -16,22 +16,27 @@ import ListNew from "./components/bucketlist/ListNew";
 
 //Pages
 import page404 from "./components/pages/Page404"
-import {users} from "./components/pages/users.js"
+import {Users} from "./components/basic-components/users.js"
+import {allUsers} from "./components/pages/allUsers";
+import {AccessedAllBucketLists} from "./components/bucketlist/ShowAccessAllBucketLists";
+import ImportTargetSelection from "./components/Import/ImportTargetSelection";
 
 
 function App() {
   return <Router>
     <div id="app">
       <AppNavbar/>
-      <div class="container">
+      <div className="container">
         <Switch>
           <Route path="/callback" component={AuthenticationCallback}/>
+          <Route strict exact path="/import/" component={ImportTargetSelection} />
           <Route path="/bucketlist/:id/newlistentry/" component={ListEntryNew}/>
           <Route path="/newlist" component={ListNew} />
           {/* https://reacttraining.com/react-router/web/api/Route/render-func */}
-          <Route path="/bucketlist/:id/" component={BucketList} />
-          <Route path="/users" component={users}/>
+          <Route path="/bucketlist/:id/" render={({match}) => <BucketList match={match} id={match.params.id} />} />
+          <Route path="/users" component={allUsers}/>
           <Route path="/" exact component={AllBucketLists}/>
+          <Route path="/accessed" exact component={AccessedAllBucketLists}/>
           <Route path="/" component={page404}/>
         </Switch>
       </div>

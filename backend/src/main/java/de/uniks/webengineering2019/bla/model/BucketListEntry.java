@@ -38,7 +38,7 @@ public class BucketListEntry implements Commentable {
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private BucketList bucketList;
 
-    @OneToMany
+    @OneToMany(cascade = CascadeType.REMOVE, orphanRemoval = true)
     @OrderBy("created DESC")
     @JsonInclude(JsonInclude.Include.NON_NULL)
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
