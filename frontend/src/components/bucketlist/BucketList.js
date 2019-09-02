@@ -2,7 +2,7 @@ import React, {useCallback, useMemo, useState, useRef} from "react";
 import {Link, Redirect} from "react-router-dom";
 import {Route, Switch} from "react-router";
 import {backendFetch} from "../../api";
-import {Comments, CommentsBlock} from "./Comments";
+import {CommentsBlock} from "./Comments";
 import moment from "moment";
 import * as PropTypes from "prop-types";
 import {NavTabs} from "./NavTabs";
@@ -25,8 +25,6 @@ DefaultListHeader.propTypes = {
 
 function EditableListHeader({bucketList, changedBucketListRef}) {
 
-    const {defaultDescription, defaultTitle} = bucketList;
-
     let [title, setTitle] = useState(bucketList.title);
     let [description, setDescription] = useState(bucketList.description || "");
     changedBucketListRef.current = {
@@ -48,7 +46,7 @@ DefaultListHeader.propTypes = {
     bucketList: PropTypes.object,
 };
 
-function BucketListDetails({bucketList, editUrl, onUpdateBucketList}) {
+function BucketListDetails({bucketList, onUpdateBucketList}) {
 
     let cloneLocation = useMemo(
         () => ({
@@ -81,9 +79,6 @@ function BucketListDetails({bucketList, editUrl, onUpdateBucketList}) {
         },100)
     }
 
-
-    let editButtonClass = "waves-effect waves-light btn";
-    if (!editUrl) editButtonClass += " disabled";
     let editIconType = editing ? "save" : "edit";
 
     let onSubmit = useCallback(
@@ -109,17 +104,7 @@ function BucketListDetails({bucketList, editUrl, onUpdateBucketList}) {
             }
             setEditing(false);
         },
-        [editing, onUpdateBucketList]
-    );
-    let onEditorButtonClicked = useCallback(
-        () => {
-            if (editing) {
-                onSubmit();
-            } else {
-                setEditing(true);
-            }
-        },
-        [onSubmit, editing]
+        [editing, onUpdateBucketList, bucketList]
     );
 
     return <form className="row" onSubmit={onSubmit}>
@@ -154,8 +139,8 @@ BucketListDetails.propTypes = {
 
 function BucketListDefaultView({bucketList, url, path, onUpdateBucketList}) {
 
-    let renderEntries= useCallback(() => <div className="col"><BucketListEntries id={bucketList.id}/></div>, [bucketList.id]);
-    let renderComments= useCallback(() => <div className="col"><BucketListComments bucketList={bucketList} /></div>, [bucketList]);
+    let renderEntries= useCallback(() => <BucketListEntries id={bucketList.id}/>, [bucketList.id]);
+    let renderComments= useCallback(() => <BucketListComments bucketList={bucketList} />, [bucketList]);
     let renderSettings= useCallback(() => <ListSettings bucketList={bucketList}/>, [bucketList]);
 
 
@@ -204,15 +189,17 @@ function BucketListDefaultView({bucketList, url, path, onUpdateBucketList}) {
             ]}/>
         </div>
         <div className="row">
-            <Switch>
-                <Route strict path={path + "entries/"}
-                       render={renderEntries}/>
-                <Route strict path={path + "comments/"}
-                       render={renderComments}/>
-                <Route path={path + "settings"}
-                       render={renderSettings}/>
-                <Redirect to={url + "/entries/"}/>
-            </Switch>
+            <div className="col s12">
+                <Switch>
+                    <Route strict path={path + "entries/"}
+                           render={renderEntries}/>
+                    <Route strict path={path + "comments/"}
+                           render={renderComments}/>
+                    <Route path={path + "settings"}
+                           render={renderSettings}/>
+                    <Redirect to={url + "/entries/"}/>
+                </Switch>
+            </div>
         </div>
     </>;
 }
@@ -228,7 +215,7 @@ BucketListDefaultView.propTypes = {
     render2: PropTypes.func
 };
 
-export function BucketList({match, history}) {
+export function BucketList({match}) {
     const id = match.params.id;
     const [bucketList, setBucketList] = React.useState(null);
 
@@ -258,7 +245,7 @@ export function BucketList({match, history}) {
         () => {
             loadBucketList();
         },
-        [id]
+        [loadBucketList]
     );
 
 

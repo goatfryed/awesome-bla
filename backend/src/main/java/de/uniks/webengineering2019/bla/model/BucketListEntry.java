@@ -25,9 +25,14 @@ public class BucketListEntry implements Commentable {
     private String title;
     private String description;
 
+    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private Date created;
+
     private Date updated;
+
     private Date completed;
+
+    private Date dueDate;
 
     /*
         avoid infinite recursion in generated json of bidirectional relationships by using JsonIdentityInfo

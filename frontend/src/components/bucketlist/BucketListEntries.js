@@ -8,6 +8,7 @@ import {Link} from "react-router-dom";
 import BucketListEntryDetails from "./BucketListEntryDetails";
 import {CommentsBlock} from "./Comments";
 import {backendFetch} from "../../api";
+import {Button, Icon} from "react-materialize";
 
 function EntryListView({entries, refresh, onSelect, pagePath, onDelete}) {
 
@@ -19,11 +20,12 @@ function EntryListView({entries, refresh, onSelect, pagePath, onDelete}) {
 
     return <div className="column">
         <ul className="collection">
-            {entries.map(entry => <BucketListEntry key={entry.id} pagePath={pagePath}
-                                                   entry={entry}
-                                                   refresh={refresh}
-                                                   onSelect={onSelect}
-                                                   onDelete={onDelete}
+            {entries.map(entry => <BucketListEntry
+                    key={entry.id} pagePath={pagePath}
+                    entry={entry}
+                    refresh={refresh}
+                    onSelect={onSelect}
+                    onDelete={onDelete}
                 />
             )}
         </ul>
@@ -126,7 +128,7 @@ function BucketListEntryView({entry, pagePath, refresh, history,  match, onDelet
                 from: match.url
             }
         }),
-        [entry]
+        [entry, match.url]
     );
 
     return <li className="collection-item">
@@ -139,11 +141,10 @@ function BucketListEntryView({entry, pagePath, refresh, history,  match, onDelet
             /><span/></label>
             &nbsp;<Link to={match.url + entry.id + "/"}>{entry.title}</Link>
             <small>
-                 ·
-                {moment(entry.created).fromNow()}
-                 · <button onClick={() => toggleComments(!showComments)}>Talk</button>
-                 · <Link className="button" to={cloneLocation}>Copy</Link>
-                 · <button onClick={() => onDelete(entry)}>delete</button>
+                {" · "+ moment(entry.created).fromNow() + " · "}
+                 <Button className="btn-small" onClick={() => toggleComments(!showComments)}><Icon>comment</Icon></Button>
+                 <Link className="btn btn-small" to={cloneLocation}><Icon>import_export</Icon></Link>
+                 <Button className="btn-small red" onClick={() => onDelete(entry)}><Icon>delete</Icon></Button>
             </small>
         </div>
         {showComments && <ExtendedEntry entry={entry} pagePath={pagePath}/>}
@@ -155,14 +156,17 @@ function ExtendedEntry({entry, pagePath}) {
 
     let entryPath = pagePath+"/"+entry.id+"/";
 
-    async function update() {
-        const json = await backendFetch( entryPath);
-        setDetails(json);
-    }
+    let update = useCallback(
+            async function update() {
+            const json = await backendFetch( entryPath);
+            setDetails(json);
+        },
+        [entryPath]
+    );
 
     useEffect(
         function () {update();},
-        [entryPath]
+        [update]
     );
 
     async function onCommentCreation(comment, url) {

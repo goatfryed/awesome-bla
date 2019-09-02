@@ -76,7 +76,7 @@ function BucketListSelection({bucketLists, onSelect}) {
         <div className="collection grey lighten-1">
             { bucketLists
                 .map( bucketList => (
-                <div>
+                <div key={bucketList.id}>
                     <a className="collection-item grey lighten-3" onClick={e => onSelect(bucketList)}>
                         {bucketList.title}
                     </a>
