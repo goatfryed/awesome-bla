@@ -125,14 +125,16 @@ public class BucketListController{
     }
 
     @PutMapping("/{bucketList}/")
-    public BucketList updateBucketList(@PathVariable BucketList target, @RequestBody String update, ObjectMapper mapper) throws IOException {
-        if (target == null) {
+    public BucketList updateBucketList(@PathVariable BucketList bucketList, @RequestBody String update, ObjectMapper mapper) throws IOException {
+        if (bucketList == null) {
             throw new ResourceNotFoundException("requested entry unknown");
         }
-        if (userContext.getUser() != target.getOwner()) {
+        if (!userContext.getUser().equals(bucketList.getOwner())) {
             throw new InsuficientPermissionException();
         }
-        mapper.readerForUpdating(target).readValue(update);
-        return bucketListRepository.save(target);
+        mapper.readerForUpdating(bucketList).readValue(update);
+        BucketList updatedBucketList = bucketListRepository.save(bucketList);
+        changeAccessedUsersByOwner(Collections.singletonList(updatedBucketList));
+        return updatedBucketList;
     }
 }
