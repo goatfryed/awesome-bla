@@ -8,6 +8,7 @@ import {Link} from "react-router-dom";
 import BucketListEntryDetails from "./BucketListEntryDetails";
 import {CommentsBlock} from "./Comments";
 import {backendFetch} from "../../api";
+import {Button, Icon} from "react-materialize";
 
 function EntryListView({entries, refresh, onSelect, pagePath, onDelete}) {
 
@@ -139,11 +140,10 @@ function BucketListEntryView({entry, pagePath, refresh, history,  match, onDelet
             /><span/></label>
             &nbsp;<Link to={match.url + entry.id + "/"}>{entry.title}</Link>
             <small>
-                 ·
-                {moment(entry.created).fromNow()}
-                 · <button onClick={() => toggleComments(!showComments)}>Talk</button>
-                 · <Link className="button" to={cloneLocation}>Copy</Link>
-                 · <button onClick={() => onDelete(entry)}>delete</button>
+                {" · "+ moment(entry.created).fromNow() + " · "}
+                 <Button className="btn-small" onClick={() => toggleComments(!showComments)}><Icon>comment</Icon></Button>
+                 <Link className="btn btn-small" to={cloneLocation}><Icon>import_export</Icon></Link>
+                 <Button className="btn-small red" onClick={() => onDelete(entry)}><Icon>delete</Icon></Button>
             </small>
         </div>
         {showComments && <ExtendedEntry entry={entry} pagePath={pagePath}/>}
