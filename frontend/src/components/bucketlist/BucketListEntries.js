@@ -20,11 +20,12 @@ function EntryListView({entries, refresh, onSelect, pagePath, onDelete}) {
 
     return <div className="column">
         <ul className="collection">
-            {entries.map(entry => <BucketListEntry key={entry.id} pagePath={pagePath}
-                                                   entry={entry}
-                                                   refresh={refresh}
-                                                   onSelect={onSelect}
-                                                   onDelete={onDelete}
+            {entries.map(entry => <BucketListEntry
+                    key={entry.id} pagePath={pagePath}
+                    entry={entry}
+                    refresh={refresh}
+                    onSelect={onSelect}
+                    onDelete={onDelete}
                 />
             )}
         </ul>
