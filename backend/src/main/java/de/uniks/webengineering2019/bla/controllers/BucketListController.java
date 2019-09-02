@@ -124,5 +124,15 @@ public class BucketListController{
         bucketListRepository.save(newBucketList);
     }
 
-
+    @PutMapping("/{bucketList}/")
+    public BucketList updateBucketList(@PathVariable BucketList target, @RequestBody String update, ObjectMapper mapper) throws IOException {
+        if (target == null) {
+            throw new ResourceNotFoundException("requested entry unknown");
+        }
+        if (userContext.getUser() != target.getOwner()) {
+            throw new InsuficientPermissionException();
+        }
+        mapper.readerForUpdating(target).readValue(update);
+        return bucketListRepository.save(target);
+    }
 }
