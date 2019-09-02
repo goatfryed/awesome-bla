@@ -89,12 +89,13 @@ export default class BucketListEntryDetails extends PureComponent {
                 field => {
                     let FieldRenderer = BucketListEntryDetails.fieldRenderes[field] || DefaultFieldRenderer;
                     return <FieldRenderer key={field}
-                         value={this.state[field]}
-                         onChange={value => this.setState({[field]: value})}
+                        value={this.state[field]}
+                        onChange={value => this.setState({[field]: value})}
+                        fieldLabel={field}
                     />
                 }
             )}
-            <button type="submit" className="button" disabled={this.hasChanges()}>Update</button>
+            <button type="submit" className="btn" disabled={this.hasChanges()}>Update</button>
         </form>;
     }
 }
@@ -111,23 +112,17 @@ const RendererPropTypes = {
     onChange: PropTypes.func
 };
 
-function DefaultFieldRenderer({onChange, value}) {
-    return <input className="input" value={value}
-                  onChange={e => onChange(e.target.value)}/>;
+function DefaultFieldRenderer({onChange, value, fieldLabel}) {
+    return <div className="row">
+        <div className="col s12">
+            <label>{fieldLabel}</label>
+            <input className="input" value={value} onChange={e => onChange(e.target.value)}/>
+        </div>
+    </div>
 }
 DefaultFieldRenderer.propTypes = RendererPropTypes;
 
 function DateTimeFieldRenderer({onChange, value}) {
-
-    useEffect(
-        function() {
-            document.querySelectorAll(
-                ".react-datetime-picker input"
-                    +",.react-datetime-picker button"
-                    +",.react-datetime-picker select"
-            ).forEach(entry => entry.classList.add("browser-default"))
-        }
-    );
 
     let updateDateTime = useCallback(
         e => {
@@ -146,6 +141,7 @@ function DateTimeFieldRenderer({onChange, value}) {
 
     return <div className="row">
         <div className="col">
+            <label>Due date</label>
             <input type="datetime-local" value={!!value ? moment(value).format(moment.HTML5_FMT.DATETIME_LOCAL) : ""}
                 onChange={updateDateTime}
             />
