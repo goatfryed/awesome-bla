@@ -119,6 +119,7 @@ public class BucketListController{
         newBucketList.setCreationDate(new Date());
         newBucketList.setLastUpdated(new Date());
         newBucketList.setOwner(userContext.getUser());
+        newBucketList.setVoteCount(0);
         bucketListRepository.save(newBucketList);
     }
 
@@ -127,6 +128,7 @@ public class BucketListController{
     public void upvoteList(@PathVariable BucketList bucketList) {
         final User user = userContext.getUser();
         bucketList.upvote(user);
+        bucketListRepository.save(bucketList);
     }
 
     @PostMapping("/{bucketList}/downvote")
@@ -134,10 +136,11 @@ public class BucketListController{
     public void downvoteList(@PathVariable BucketList bucketList) {
         final User user = userContext.getUser();
         bucketList.downvote(user);
+        bucketListRepository.save(bucketList);
     }
 
     @GetMapping("/{bucketList}/votecount")
     public int getVoteCount(@PathVariable BucketList bucketList) {
-        return bucketList.countVotes();
+        return bucketList.getVoteCount();
     }
 }

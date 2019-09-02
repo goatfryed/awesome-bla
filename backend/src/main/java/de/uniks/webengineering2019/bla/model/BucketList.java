@@ -4,7 +4,6 @@ import java.util.Date;
 import java.util.List;
 import java.util.Set;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
@@ -28,6 +27,7 @@ public class BucketList implements Commentable {
 
     private String title;
     private String description;
+    private Integer voteCount;
 
     @JsonProperty("private")
     private boolean privateList;
@@ -35,7 +35,7 @@ public class BucketList implements Commentable {
     @OneToMany(fetch = FetchType.EAGER, mappedBy = "bucketList", orphanRemoval = true, cascade = CascadeType.REMOVE)
     @OrderBy("created DESC")
     private List<BucketListEntry> entries;
-    private int numEntries;
+    private Integer numEntries;
 
     @ManyToMany(cascade = CascadeType.ALL)
     @JsonProperty("accessed")
@@ -57,20 +57,18 @@ public class BucketList implements Commentable {
         newEntry.setBucketList(this);
         this.numEntries = this.entries.size();
     }
-    @OneToMany
+    @ManyToMany
     private List<User> userUpvote;
-    @OneToMany
+    @ManyToMany
     private List<User> userDownvote;
-
-    private int voteCount;
 
     // upvote and remove downvote
     public void upvote(User user) {
-        if (!this.userUpvote.contains(user)) {
-            this.userUpvote.add(user);
-        }
         if (this.userDownvote.contains(user)) {
             this.userDownvote.remove(user);
+        }
+        if (!this.userUpvote.contains(user)) {
+            this.userUpvote.add(user);
         }
         countVotes();
     }
@@ -78,17 +76,16 @@ public class BucketList implements Commentable {
     // downvote and remove upvote
     public void downvote(User user) {
         if (this.userUpvote.contains(user)) {
-            this.userUpvote.add(user);
+            this.userUpvote.remove(user);
         }
         if (!this.userDownvote.contains(user)) {
-            this.userDownvote.remove(user);
+            this.userDownvote.add(user);
         }
         countVotes();
     }
 
-    public int countVotes() {
-        this.voteCount = this.userUpvote.size() + this.userDownvote.size();
-        return this.voteCount;
+    public void countVotes() {
+        this.voteCount = this.userUpvote.size() - this.userDownvote.size();
     }
 
     @OneToMany
