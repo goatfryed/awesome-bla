@@ -145,6 +145,11 @@ public class BucketListController{
     public int getVoteCount(@PathVariable BucketList bucketList) {
         return bucketList.getVoteCount();
     }
+
+    @GetMapping("/search/{searchterm}")
+    public List<BucketList> searchBucketList(@PathVariable("searchterm") String searchterm) {
+        return bucketListRepository.findByPrivateListOrAccessedUsersContainsOrOwnerAndTitleContains(false, userContext.getUser(),userContext.getUser(), searchterm);
+    }
     
     @PutMapping("/{bucketList}/")
     public BucketList updateBucketList(@PathVariable BucketList bucketList, @RequestBody String update, ObjectMapper mapper) throws IOException {
