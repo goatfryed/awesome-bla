@@ -1,13 +1,14 @@
 package de.uniks.webengineering2019.bla.controllers;
 
-import antlr.StringUtils;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import de.uniks.webengineering2019.bla.api_errors.InsuficientPermissionException;
+import de.uniks.webengineering2019.bla.api_errors.ResourceNotFoundException;
 import de.uniks.webengineering2019.bla.authentication.UserContext;
 import de.uniks.webengineering2019.bla.comments.CommentCreationService;
 import de.uniks.webengineering2019.bla.model.BucketList;
 import de.uniks.webengineering2019.bla.model.Comment;
 import de.uniks.webengineering2019.bla.model.User;
 import de.uniks.webengineering2019.bla.repositories.BucketListRepository;
-import de.uniks.webengineering2019.bla.repositories.CommentRepository;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -15,6 +16,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.IOException;
 import java.util.*;
 
 @CrossOrigin
@@ -45,7 +47,7 @@ public class BucketListController{
         //return bucketListRepository.findByPrivateList(false);
     }
 
-    void changeAccesedUsersByOwnder(Collection<BucketList> bucketListCollection){
+    void changeAccessedUsersByOwner(Collection<BucketList> bucketListCollection){
         for(BucketList bucketList:bucketListCollection){
             if(bucketList.getOwner().getId() != userContext.getUser().getId()){
                 bucketList.getAccessedUsers().clear();
@@ -67,7 +69,7 @@ public class BucketListController{
         }else{
             list = bucketListRepository.findByPrivateList(false,pageable).getContent();
         }
-        changeAccesedUsersByOwnder(list);
+        changeAccessedUsersByOwner(list);
         return list;
 
     }
@@ -75,7 +77,7 @@ public class BucketListController{
     @GetMapping("/{bucketList}/")
     public BucketList get(@PathVariable BucketList bucketList) {
         bucketList.getEntries().clear();
-        changeAccesedUsersByOwnder(Collections.singletonList(bucketList));
+        changeAccessedUsersByOwner(Collections.singletonList(bucketList));
         return bucketList;
     }
 
@@ -92,21 +94,21 @@ public class BucketListController{
     }
 
     @PostMapping("/{bucketList}/privelege/{user}")
-    public ResponseEntity addPriveledUser(@PathVariable BucketList bucketList,@PathVariable User user){
+    public ResponseEntity addPrivilegedUser(@PathVariable BucketList bucketList, @PathVariable User user){
         bucketList.getAccessedUsers().add(user);
         bucketList = bucketListRepository.save(bucketList);
         return ResponseEntity.ok(bucketList.getAccessedUsers());
     }
 
     @PostMapping("/{bucketList}/unprivelege/{user}")
-    public ResponseEntity removePriveledUser(@PathVariable BucketList bucketList,@PathVariable User user){
+    public ResponseEntity removePrivilegedUser(@PathVariable BucketList bucketList, @PathVariable User user){
         bucketList.getAccessedUsers().remove(user);
         bucketList = bucketListRepository.save(bucketList);
         return ResponseEntity.ok(bucketList.getAccessedUsers());
     }
 
     @PostMapping("/{bucketList}/private")
-    public ResponseEntity removePriveledUser(@PathVariable BucketList bucketList,@RequestParam boolean value){
+    public ResponseEntity removePrivilegedUser(@PathVariable BucketList bucketList, @RequestParam boolean value){
         bucketList.setPrivateList(value);
         bucketList = bucketListRepository.save(bucketList);
         return ResponseEntity.ok(bucketList.isPrivateList());
@@ -142,5 +144,19 @@ public class BucketListController{
     @GetMapping("/{bucketList}/votecount")
     public int getVoteCount(@PathVariable BucketList bucketList) {
         return bucketList.getVoteCount();
+    }
+    
+    @PutMapping("/{bucketList}/")
+    public BucketList updateBucketList(@PathVariable BucketList bucketList, @RequestBody String update, ObjectMapper mapper) throws IOException {
+        if (bucketList == null) {
+            throw new ResourceNotFoundException("requested entry unknown");
+        }
+        if (!userContext.getUser().equals(bucketList.getOwner())) {
+            throw new InsuficientPermissionException();
+        }
+        mapper.readerForUpdating(bucketList).readValue(update);
+        BucketList updatedBucketList = bucketListRepository.save(bucketList);
+        changeAccessedUsersByOwner(Collections.singletonList(updatedBucketList));
+        return updatedBucketList;
     }
 }
