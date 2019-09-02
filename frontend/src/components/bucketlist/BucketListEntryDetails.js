@@ -115,7 +115,7 @@ const RendererPropTypes = {
 function DefaultFieldRenderer({onChange, value, fieldLabel}) {
     return <div className="row">
         <div className="col s12">
-            <label>{fieldLabel}</label>
+            <label style={{"text-transform": "capitalize"}}>{fieldLabel}</label>
             <input className="input" value={value} onChange={e => onChange(e.target.value)}/>
         </div>
     </div>
