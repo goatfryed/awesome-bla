@@ -48,7 +48,7 @@ DefaultListHeader.propTypes = {
     bucketList: PropTypes.object,
 };
 
-function BucketListDetails({onLike, bucketList, counter, editUrl, onUpdateBucketList}) {
+function BucketListDetails({bucketList, editUrl, onUpdateBucketList}) {
 
     let cloneLocation = useMemo(
         () => ({
@@ -62,6 +62,25 @@ function BucketListDetails({onLike, bucketList, counter, editUrl, onUpdateBucket
 
     let [editing, setEditing] = useState(false);
     let changedBucketList = useRef(null);
+
+    let [counter, setCounter] = useState(bucketList.voteCount)
+    function upvoteList() {
+        backendFetch.post("/bucketlists/" + bucketList.id + "/upvote/", {});
+        updateVoteCount();
+    }
+
+    function downvoteList() {
+        backendFetch.post("/bucketlists/" + bucketList.id + "/downvote/", {});
+        updateVoteCount();
+    }
+
+    function updateVoteCount(){
+       setTimeout( async function() {
+            let newCounter = await backendFetch.get("/bucketlists/" + bucketList.id + "/votecount");
+            setCounter(newCounter);
+        },100)
+    }
+
 
     let editButtonClass = "waves-effect waves-light btn";
     if (!editUrl) editButtonClass += " disabled";
@@ -110,7 +129,7 @@ function BucketListDetails({onLike, bucketList, counter, editUrl, onUpdateBucket
                     key={bucketList.id} bucketList={bucketList}
                     changedBucketListRef={changedBucketList}
                 /> : <DefaultListHeader bucketList={bucketList} />}
-                <small>{counter} · <a onClick={onLike}>Like</a>
+                <small>{counter} · <a onClick={upvoteList} href="#like">Like</a> | <a onClick={downvoteList} href="#dislike">Dislike</a>
                     · <span>{moment(bucketList.created).fromNow()}</span>
                     · <Link className="button" to={cloneLocation}>Copy</Link>
                 </small>
@@ -133,7 +152,7 @@ BucketListDetails.propTypes = {
     editUrl: PropTypes.string,
 };
 
-function BucketListDefaultView({onLike, bucketList, counter, url, path, onUpdateBucketList}) {
+function BucketListDefaultView({bucketList, url, path, onUpdateBucketList}) {
 
     let renderEntries= useCallback(() => <div className="col"><BucketListEntries id={bucketList.id}/></div>, [bucketList.id]);
     let renderComments= useCallback(() => <div className="col"><BucketListComments bucketList={bucketList} /></div>, [bucketList]);
@@ -145,8 +164,6 @@ function BucketListDefaultView({onLike, bucketList, counter, url, path, onUpdate
         <div className="row">
             <BucketListDetails
                 bucketList={bucketList}
-                counter={counter}
-                onLike={onLike}
                 editUrl={url + "/edit/"}
                 onUpdateBucketList={onUpdateBucketList}
             />
@@ -244,8 +261,6 @@ export function BucketList({match, history}) {
         [id]
     );
 
-    const [counter, setCounter] = React.useState(66);
-    function incrementCounter() { setCounter(i => i+1);}
 
     if (bucketList == null) {
         return <span>Loading</span>;
@@ -256,8 +271,6 @@ export function BucketList({match, history}) {
     return <div className="container">
         <BucketListDefaultView
             bucketList={bucketList}
-            counter={counter}
-            onLike={incrementCounter}
             url={match.url}
             path={match.path}
             update={loadBucketList}
