@@ -19,6 +19,7 @@ import page404 from "./components/pages/Page404"
 import {allUsers} from "./components/pages/allUsers";
 import {AccessedAllBucketLists} from "./components/bucketlist/ShowAccessAllBucketLists";
 import ImportTargetSelection from "./components/Import/ImportTargetSelection";
+import {Unauthorized405} from "./components/pages/Unauthorized405";
 
 
 function App() {
@@ -36,6 +37,7 @@ function App() {
           <Route path="/users" component={allUsers}/>
           <Route path="/" exact component={AllBucketLists}/>
           <Route path="/accessed" exact component={AccessedAllBucketLists}/>
+          <Route path="/405" exact component={Unauthorized405} />
           <Route path="/" component={page404}/>
         </Switch>
       </div>
