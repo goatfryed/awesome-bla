@@ -1,13 +1,14 @@
 package de.uniks.webengineering2019.bla.controllers;
 
-import antlr.StringUtils;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import de.uniks.webengineering2019.bla.api_errors.InsuficientPermissionException;
+import de.uniks.webengineering2019.bla.api_errors.ResourceNotFoundException;
 import de.uniks.webengineering2019.bla.authentication.UserContext;
 import de.uniks.webengineering2019.bla.comments.CommentCreationService;
 import de.uniks.webengineering2019.bla.model.BucketList;
 import de.uniks.webengineering2019.bla.model.Comment;
 import de.uniks.webengineering2019.bla.model.User;
 import de.uniks.webengineering2019.bla.repositories.BucketListRepository;
-import de.uniks.webengineering2019.bla.repositories.CommentRepository;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -15,6 +16,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.IOException;
 import java.util.*;
 
 @CrossOrigin
@@ -45,7 +47,7 @@ public class BucketListController{
         //return bucketListRepository.findByPrivateList(false);
     }
 
-    void changeAccesedUsersByOwnder(Collection<BucketList> bucketListCollection){
+    void changeAccessedUsersByOwner(Collection<BucketList> bucketListCollection){
         for(BucketList bucketList:bucketListCollection){
             if(bucketList.getOwner().getId() != userContext.getUser().getId()){
                 bucketList.getAccessedUsers().clear();
@@ -67,7 +69,7 @@ public class BucketListController{
         }else{
             list = bucketListRepository.findByPrivateList(false,pageable).getContent();
         }
-        changeAccesedUsersByOwnder(list);
+        changeAccessedUsersByOwner(list);
         return list;
 
     }
@@ -75,7 +77,7 @@ public class BucketListController{
     @GetMapping("/{bucketList}/")
     public BucketList get(@PathVariable BucketList bucketList) {
         bucketList.getEntries().clear();
-        changeAccesedUsersByOwnder(Collections.singletonList(bucketList));
+        changeAccessedUsersByOwner(Collections.singletonList(bucketList));
         return bucketList;
     }
 
