@@ -1,7 +1,7 @@
 package de.uniks.webengineering2019.bla.comments;
 
 
-import de.uniks.webengineering2019.bla.controllers.ResourceNotFoundException;
+import de.uniks.webengineering2019.bla.api_errors.ResourceNotFoundException;
 import de.uniks.webengineering2019.bla.model.Comment;
 import org.springframework.http.HttpStatus;
 import org.springframework.lang.NonNull;
