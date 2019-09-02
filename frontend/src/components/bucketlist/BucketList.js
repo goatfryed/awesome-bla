@@ -48,7 +48,7 @@ DefaultListHeader.propTypes = {
     bucketList: PropTypes.object,
 };
 
-function BucketListDetails({onLike, bucketList, counter, editUrl}) {
+function BucketListDetails({onLike, bucketList, counter, editUrl, onUpdateBucketList}) {
 
     let cloneLocation = useMemo(
         () => ({
@@ -68,7 +68,7 @@ function BucketListDetails({onLike, bucketList, counter, editUrl}) {
     let editIconType = editing ? "save" : "edit";
 
     let onSubmit = useCallback(
-        e => {
+        async e => {
             // interesting enough, if we would tougle the button type between submit and button based on editing state
             // the event is only processed after the toggle applied, not before
             if (e !== undefined) {
@@ -86,11 +86,11 @@ function BucketListDetails({onLike, bucketList, counter, editUrl}) {
                 }
             }
             if (isDirty) {
-                console.log("calling server");
+                await onUpdateBucketList(changedBucketList.current);
             }
             setEditing(false);
         },
-        [editing]
+        [editing, onUpdateBucketList]
     );
     let onEditorButtonClicked = useCallback(
         () => {
@@ -133,12 +133,14 @@ BucketListDetails.propTypes = {
     editUrl: PropTypes.string,
 };
 
-function BucketListDefaultView(props) {
+function BucketListDefaultView({onLike, bucketList, counter, url, path, onUpdateBucketList}) {
 
-    let {onLike, bucketList, counter, url, path} = props;
     let renderEntries= useCallback(() => <div className="col"><BucketListEntries id={bucketList.id}/></div>, [bucketList.id]);
     let renderComments= useCallback(() => <div className="col"><BucketListComments bucketList={bucketList} /></div>, [bucketList]);
     let renderSettings= useCallback(() => <ListSettings bucketList={bucketList}/>, [bucketList]);
+
+
+
     return <>
         <div className="row">
             <BucketListDetails
@@ -146,6 +148,7 @@ function BucketListDefaultView(props) {
                 counter={counter}
                 onLike={onLike}
                 editUrl={url + "/edit/"}
+                onUpdateBucketList={onUpdateBucketList}
             />
         </div>
         <div className="row">
@@ -212,7 +215,7 @@ export function BucketList({match, history}) {
     const id = match.params.id;
     const [bucketList, setBucketList] = React.useState(null);
 
-    let update = useCallback(
+    let loadBucketList = useCallback(
         function() {
             backendFetch("/bucketlists/" + id + "/")
                 .then(data => setBucketList(data))
@@ -222,9 +225,21 @@ export function BucketList({match, history}) {
         [id]
     );
 
+    let updateBucketList = useCallback(
+        async update => {
+            let jsonChange = JSON.stringify(update);
+            let data = await backendFetch.put(
+            "/bucketlists/" + id + "/",{
+                body: jsonChange
+            });
+            setBucketList(data);
+        },
+        [id]
+    );
+
     React.useEffect(
         () => {
-            update();
+            loadBucketList();
         },
         [id]
     );
@@ -245,7 +260,8 @@ export function BucketList({match, history}) {
             onLike={incrementCounter}
             url={match.url}
             path={match.path}
-            update={update}
+            update={loadBucketList}
+            onUpdateBucketList={updateBucketList}
         />
     </div>
 }
