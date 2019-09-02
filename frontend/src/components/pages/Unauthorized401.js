@@ -1,6 +1,6 @@
 import React from "react";
 
-export function Unauthorized405 () {
+export function Unauthorized401 () {
     let src = "https://www.youtube.com/embed/7qnd-hdmgfk?"
         + (new URLSearchParams({
             autoplay: 1,
@@ -20,7 +20,7 @@ export function Unauthorized405 () {
     >
         <div className="row center-align">
             <div className="row">
-                <h5>You were not supposed to that! Stop it!</h5>
+                <h5>You were not supposed to do that! Stop it!</h5>
             </div>
             <div className="row">
                 <iframe
