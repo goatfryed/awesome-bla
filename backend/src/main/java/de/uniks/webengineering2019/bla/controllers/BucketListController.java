@@ -159,4 +159,10 @@ public class BucketListController{
         changeAccessedUsersByOwner(Collections.singletonList(updatedBucketList));
         return updatedBucketList;
     }
+
+    @DeleteMapping("/{bucketList}/delete")
+    @ResponseStatus(HttpStatus.ACCEPTED)
+    public void delete(@PathVariable BucketList bucketList) {
+        bucketListRepository.delete(bucketList);
+    }
 }

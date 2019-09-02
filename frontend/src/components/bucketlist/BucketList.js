@@ -46,7 +46,7 @@ DefaultListHeader.propTypes = {
     bucketList: PropTypes.object,
 };
 
-function BucketListDetails({bucketList, onUpdateBucketList}) {
+function BucketListDetails({bucketList, onUpdateBucketList, history}) {
 
     let cloneLocation = useMemo(
         () => ({
@@ -77,6 +77,12 @@ function BucketListDetails({bucketList, onUpdateBucketList}) {
             let newCounter = await backendFetch.get("/bucketlists/" + bucketList.id + "/votecount");
             setCounter(newCounter);
         },100)
+    }
+
+    function deleteList() {
+        backendFetch.delete("/bucketlists/" + bucketList.id + "/delete").then(response => {
+            history.push("/");
+        });
     }
 
     let editIconType = editing ? "save" : "edit";
@@ -123,8 +129,7 @@ function BucketListDetails({bucketList, onUpdateBucketList}) {
         <div className="col s1 valign-wrapper">
             <ul>
                 <li><Button type="submit" disabled={!bucketList.ownList} waves="light"><Icon>{editIconType}</Icon></Button></li>
-                <li style={{marginTop: "5px"}}><Button type="button" disabled className="red"
-                                                       waves="light"><Icon>delete</Icon></Button></li>
+                <li style={{marginTop: "5px"}}><Button onClick={deleteList} type="button" className="red" waves="light"><Icon>delete</Icon></Button></li>
             </ul>
         </div>
     </form>;
@@ -137,7 +142,7 @@ BucketListDetails.propTypes = {
     editUrl: PropTypes.string,
 };
 
-function BucketListDefaultView({bucketList, url, path, onUpdateBucketList}) {
+function BucketListDefaultView({bucketList, url, path, onUpdateBucketList, history}) {
 
     let renderEntries= useCallback(() => <BucketListEntries id={bucketList.id}/>, [bucketList.id]);
     let renderComments= useCallback(() => <BucketListComments bucketList={bucketList} />, [bucketList]);
@@ -151,6 +156,7 @@ function BucketListDefaultView({bucketList, url, path, onUpdateBucketList}) {
                 bucketList={bucketList}
                 editUrl={url + "/edit/"}
                 onUpdateBucketList={onUpdateBucketList}
+                history={history}
             />
         </div>
         <div className="row">
@@ -215,7 +221,7 @@ BucketListDefaultView.propTypes = {
     render2: PropTypes.func
 };
 
-export function BucketList({match}) {
+export function BucketList({match, history}) {
     const id = match.params.id;
     const [bucketList, setBucketList] = React.useState(null);
 
@@ -262,6 +268,7 @@ export function BucketList({match}) {
             path={match.path}
             update={loadBucketList}
             onUpdateBucketList={updateBucketList}
+            history={history}
         />
     </div>
 }
