@@ -212,12 +212,15 @@ export function BucketList({match, history}) {
     const id = match.params.id;
     const [bucketList, setBucketList] = React.useState(null);
 
-    function update() {
-        backendFetch("/bucketlists/" + id + "/")
-            .then(data => setBucketList(data))
-            .catch( () => setBucketList(null))
-        ;
-    }
+    let update = useCallback(
+        function() {
+            backendFetch("/bucketlists/" + id + "/")
+                .then(data => setBucketList(data))
+                .catch( () => setBucketList(null))
+            ;
+        },
+        [id]
+    );
 
     React.useEffect(
         () => {
