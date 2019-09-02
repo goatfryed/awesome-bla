@@ -1,15 +1,20 @@
-import React, {PureComponent} from "react";
+import React, {PureComponent, useEffect,useCallback} from "react";
 import PropTypes from "prop-types";
 import {backendFetch} from "../../api";
+import moment from "moment";
 
 export default class BucketListEntryDetails extends PureComponent {
 
-    static managedFields = ["title", "description"];
+    static managedFields = ["title", "description", "dueDate"];
+
+    static fieldRenderes = {
+        "dueDate": DateTimeFieldRenderer,
+    };
 
     state = {};
 
     constructor({selectedEntry, ...props}) {
-        super({selectedEntry: selectedEntry || {}, props});
+        super({...props, selectedEntry: selectedEntry || {}});
 
         this.state = {
             ...this.entryStateFromProps(this.props)
@@ -68,7 +73,7 @@ export default class BucketListEntryDetails extends PureComponent {
                 this.setState({error});
             })
             .finally(
-                this.setState({loading: false})
+                () => this.setState({loading: false})
             )
         ;
     }
@@ -81,10 +86,16 @@ export default class BucketListEntryDetails extends PureComponent {
         return <form onSubmit={this.onSubmit}
         >
             {BucketListEntryDetails.managedFields.map(
-                field => <input key={field} className="input" value={this.state[field]}
-                                onChange={e => this.setState({[field]: e.target.value})}/>
+                field => {
+                    let FieldRenderer = BucketListEntryDetails.fieldRenderes[field] || DefaultFieldRenderer;
+                    return <FieldRenderer key={field}
+                        value={this.state[field]}
+                        onChange={value => this.setState({[field]: value})}
+                        fieldLabel={field}
+                    />
+                }
             )}
-            <button type="submit" className="button" disabled={this.hasChanges()}>Update</button>
+            <button type="submit" className="btn" disabled={this.hasChanges()}>Update</button>
         </form>;
     }
 }
@@ -94,4 +105,51 @@ BucketListEntryDetails.propTypes = {
     pagePath: PropTypes.string.isRequired,
     selectedEntry: PropTypes.object,
     isLoading: PropTypes.bool,
+};
+
+const RendererPropTypes = {
+    value: PropTypes.string,
+    onChange: PropTypes.func
+};
+
+function DefaultFieldRenderer({onChange, value, fieldLabel}) {
+    return <div className="row">
+        <div className="col s12">
+            <label style={{"text-transform": "capitalize"}}>{fieldLabel}</label>
+            <input className="input" value={value} onChange={e => onChange(e.target.value)}/>
+        </div>
+    </div>
+}
+DefaultFieldRenderer.propTypes = RendererPropTypes;
+
+function DateTimeFieldRenderer({onChange, value}) {
+
+    let updateDateTime = useCallback(
+        e => {
+            let val = e.target.value;
+            if (val === "") {
+                onChange(null);
+            } else {
+                onChange(new Date(val));
+            }
+        },
+        [onChange]
+    );
+
+    console.log(value);
+
+
+    return <div className="row">
+        <div className="col">
+            <label>Due date</label>
+            <input type="datetime-local" value={!!value ? moment(value).format(moment.HTML5_FMT.DATETIME_LOCAL) : ""}
+                onChange={updateDateTime}
+            />
+        </div>
+    </div>
+}
+
+DateTimeFieldRenderer.propTypes = {
+    value: PropTypes.any,
+    onChange: PropTypes.func
 };

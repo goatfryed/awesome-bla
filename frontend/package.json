@@ -17,8 +17,9 @@
 		"react-scripts": "3.0.1",
 		"typescript": "^3.5.3",
 		"prop-types": "latest",
-      "lodash": "latest"
-    },
+		"lodash": "latest",
+		"react-datetime-picker": "^2.7.1"
+	},
 	"scripts": {
 		"start": "react-scripts start",
 		"build": "react-scripts build",

@@ -139,8 +139,8 @@ BucketListDetails.propTypes = {
 
 function BucketListDefaultView({bucketList, url, path, onUpdateBucketList}) {
 
-    let renderEntries= useCallback(() => <div className="col"><BucketListEntries id={bucketList.id}/></div>, [bucketList.id]);
-    let renderComments= useCallback(() => <div className="col"><BucketListComments bucketList={bucketList} /></div>, [bucketList]);
+    let renderEntries= useCallback(() => <BucketListEntries id={bucketList.id}/>, [bucketList.id]);
+    let renderComments= useCallback(() => <BucketListComments bucketList={bucketList} />, [bucketList]);
     let renderSettings= useCallback(() => <ListSettings bucketList={bucketList}/>, [bucketList]);
 
 
@@ -189,15 +189,17 @@ function BucketListDefaultView({bucketList, url, path, onUpdateBucketList}) {
             ]}/>
         </div>
         <div className="row">
-            <Switch>
-                <Route strict path={path + "entries/"}
-                       render={renderEntries}/>
-                <Route strict path={path + "comments/"}
-                       render={renderComments}/>
-                <Route path={path + "settings"}
-                       render={renderSettings}/>
-                <Redirect to={url + "/entries/"}/>
-            </Switch>
+            <div className="col s12">
+                <Switch>
+                    <Route strict path={path + "entries/"}
+                           render={renderEntries}/>
+                    <Route strict path={path + "comments/"}
+                           render={renderComments}/>
+                    <Route path={path + "settings"}
+                           render={renderSettings}/>
+                    <Redirect to={url + "/entries/"}/>
+                </Switch>
+            </div>
         </div>
     </>;
 }
