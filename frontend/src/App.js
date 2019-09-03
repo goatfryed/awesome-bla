@@ -13,6 +13,7 @@ import {ListEntryNew} from "./components/bucketlist/ListEntryNew";
 import {AllBucketLists} from "./components/bucketlist/ShowAllBucketLists"
 import {BucketList} from "./components/bucketlist/BucketList";
 import ListNew from "./components/bucketlist/ListNew";
+import SearchList from "./components/bucketlist/SearchLists"
 
 //Pages
 import page404 from "./components/pages/Page404"
@@ -36,6 +37,7 @@ function App() {
           <Route path="/users" component={allUsers}/>
           <Route path="/" exact component={AllBucketLists}/>
           <Route path="/accessed" exact component={AccessedAllBucketLists}/>
+          <Route path="/search" exact component={SearchList}/>
           <Route path="/" component={page404}/>
         </Switch>
       </div>

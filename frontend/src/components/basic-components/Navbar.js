@@ -58,6 +58,9 @@ export class AppNavbar extends React.Component {
                 <NavLink to="/users" activeClassName="activeLink">
                     Benutzersuche
                 </NavLink>
+                <NavLink to="/search" activeClassName="activeLink">
+                    Listensuche
+                </NavLink>
                 {!Authentication.isAuthenticated() && isDebug && (
                     <NavItem  className="navbar-btn">
                         <input type="text" className="debugInput" placeholder="Test user" defaultValue={this.state.fakeUser} onChange={e => (this.state.fakeUser = e.target.value)} />
