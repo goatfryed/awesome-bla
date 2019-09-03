@@ -1,3 +1,5 @@
 .idea/
 database
 var/
+frontend/build/*
+.vscode/

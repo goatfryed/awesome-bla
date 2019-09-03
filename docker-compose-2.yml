@@ -1,0 +1,26 @@
+version: "3"
+
+services:
+  frontend:
+    image: nginx:1.15-alpine
+    container_name: bucketlist-frontend
+    volumes:
+      - "./develop/nginx/sites:/etc/nginx/conf.d"
+      - "./frontend/build:/frontend"
+    ports:
+      - 81:80
+    restart: always
+  database:
+    image: "postgres:latest"
+    container_name: bucketlist-db
+    environment:
+      POSTGRES_DB: 'bucket'
+      POSTGRES_USER: 'bucket_user'
+      POSTGRES_PASSWORD: 'bucket_pw'
+#    volumes:
+#      - bucket-list-data:/var/lib/postgresql/data
+    ports:
+      - 5433:5432
+volumes:
+  bucket-list-data:
+    external: true
