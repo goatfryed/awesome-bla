@@ -1,4 +1,4 @@
-import React, {Component} from "react";
+import React, {PureComponent} from "react";
 import {Route, Switch, BrowserRouter as Router} from "react-router-dom";
 
 //CSS
@@ -48,7 +48,7 @@ function App() {
   </Router>
 }
 
-class UnauthorizedHandlerComponent extends Component {
+class UnauthorizedHandlerComponent extends PureComponent {
 
     componentDidCatch(error, errorInfo) {
         console.log(error);
