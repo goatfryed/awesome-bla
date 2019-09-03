@@ -7,7 +7,17 @@ const defaultHeaders = {
     'Content-Type': 'application/json',
 };
 
-export async function backendFetch(url, config) {
+const handlers = {};
+
+export function setErrorHandler(code, handler) {
+    handlers[code] = handler;
+}
+
+export function defaultErrorHandler(response) {
+    throw new ApiError(response);
+}
+
+export async function backendFetch(url, {alwaysThrow = false, ...config}) {
 
     const configHeaders = (config && config.headers) || {};
     if (Authentication.isAuthenticated()) {
@@ -27,10 +37,13 @@ export async function backendFetch(url, config) {
     );
 
     if (!response.ok) {
-        throw Error(response.statusText);
-    }
-
-    if (response.status === 200) {
+        if (!alwaysThrow) {
+            let errorHandler = handlers[response.status];
+            errorHandler && errorHandler(response);
+        }
+        defaultErrorHandler(response);
+        // if the default error Handler
+    } else if (response.status === 200) {
         // no clue, why
         if (true) {
             let text = await response.text();
@@ -50,4 +63,12 @@ backendFetch.delete = (url, config) => backendFetch(url, { ...config, method: "D
 
 export function addCommentReply(comment, parentId) {
     return backendFetch.post("/comments/" + parentId + "/", {body: JSON.stringify(comment)})
+}
+
+export class ApiError extends Error {
+    constructor(response) {
+        super(response.statusText);
+        this.response = response;
+        Error.captureStackTrace(this, ApiError);
+    }
 }
