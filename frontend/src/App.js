@@ -1,4 +1,4 @@
-import React, {useEffect, useCallback, Component} from "react";
+import React, {Component} from "react";
 import {Route, Switch, BrowserRouter as Router} from "react-router-dom";
 
 //CSS
@@ -36,7 +36,7 @@ function App() {
               <Route path="/bucketlist/:id/newlistentry/" component={ListEntryNew}/>
               <Route path="/newlist" component={ListNew} />
               {/* https://reacttraining.com/react-router/web/api/Route/render-func */}
-              <Route path="/bucketlist/:id/" render={({match}) => <BucketList match={match} id={match.params.id} />} />
+              <Route path="/bucketlist/:id/" render={({match, history}) => <BucketList match={match} history={history} id={match.params.id} />} />
               <Route path="/users" component={allUsers}/>
               <Route path="/" exact component={AllBucketLists}/>
               <Route path="/accessed" exact component={AccessedAllBucketLists}/>
