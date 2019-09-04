@@ -22,7 +22,7 @@ import java.util.*;
 @CrossOrigin
 @RequestMapping("/bucketlists/")
 @RestController
-public class BucketListController{
+public class BucketListController {
 
     private final BucketListRepository bucketListRepository;
     private final CommentCreationService commentCreationService;
@@ -32,9 +32,9 @@ public class BucketListController{
     private int elementsOnPage;
 
     public BucketListController(
-        BucketListRepository bucketListRepository,
-        CommentCreationService commentCreationService,
-        UserContext userContext
+            BucketListRepository bucketListRepository,
+            CommentCreationService commentCreationService,
+            UserContext userContext
     ) {
         this.bucketListRepository = bucketListRepository;
         this.commentCreationService = commentCreationService;
@@ -42,14 +42,14 @@ public class BucketListController{
     }
 
     @GetMapping("/all")
-    public List<BucketList> getAllLists(){
+    public List<BucketList> getAllLists() {
         return bucketListRepository.findAll();
         //return bucketListRepository.findByPrivateList(false);
     }
 
-    void changeAccessedUsersByOwner(Collection<BucketList> bucketListCollection){
-        for(BucketList bucketList:bucketListCollection){
-            if(bucketList.getOwner().getId() != userContext.getUser().getId()){
+    void changeAccessedUsersByOwner(Collection<BucketList> bucketListCollection) {
+        for (BucketList bucketList : bucketListCollection) {
+            if (bucketList.getOwner().getId() != userContext.getUser().getId()) {
                 bucketList.getAccessedUsers().clear();
             }
             bucketList.setOwnList(bucketList.getOwner().getId() == userContext.getUser().getId());
@@ -57,17 +57,17 @@ public class BucketListController{
     }
 
     @GetMapping("/all2")
-    public List<BucketList> getAllLists2(@RequestParam(defaultValue = "0")int page){
-        if(page<0){
+    public List<BucketList> getAllLists2(@RequestParam(defaultValue = "0") int page) {
+        if (page < 0) {
             page = 0;
         }
-        Pageable pageable = PageRequest.of(page,elementsOnPage);
+        Pageable pageable = PageRequest.of(page, elementsOnPage);
 
         List<BucketList> list;
-        if(userContext.hasUser()){
-            list = bucketListRepository.findByPrivateListOrAccessedUsersContainsOrOwner(false, userContext.getUser(), userContext.getUser(),pageable).getContent();
-        }else{
-            list = bucketListRepository.findByPrivateList(false,pageable).getContent();
+        if (userContext.hasUser()) {
+            list = bucketListRepository.findByPrivateListOrAccessedUsersContainsOrOwner(false, userContext.getUser(), userContext.getUser(), pageable).getContent();
+        } else {
+            list = bucketListRepository.findByPrivateList(false, pageable).getContent();
         }
         changeAccessedUsersByOwner(list);
         return list;
@@ -94,21 +94,21 @@ public class BucketListController{
     }
 
     @PostMapping("/{bucketList}/privelege/{user}")
-    public ResponseEntity addPrivilegedUser(@PathVariable BucketList bucketList, @PathVariable User user){
+    public ResponseEntity addPrivilegedUser(@PathVariable BucketList bucketList, @PathVariable User user) {
         bucketList.getAccessedUsers().add(user);
         bucketList = bucketListRepository.save(bucketList);
         return ResponseEntity.ok(bucketList.getAccessedUsers());
     }
 
     @PostMapping("/{bucketList}/unprivelege/{user}")
-    public ResponseEntity removePrivilegedUser(@PathVariable BucketList bucketList, @PathVariable User user){
+    public ResponseEntity removePrivilegedUser(@PathVariable BucketList bucketList, @PathVariable User user) {
         bucketList.getAccessedUsers().remove(user);
         bucketList = bucketListRepository.save(bucketList);
         return ResponseEntity.ok(bucketList.getAccessedUsers());
     }
 
     @PostMapping("/{bucketList}/private")
-    public ResponseEntity removePrivilegedUser(@PathVariable BucketList bucketList, @RequestParam boolean value){
+    public ResponseEntity removePrivilegedUser(@PathVariable BucketList bucketList, @RequestParam boolean value) {
         bucketList.setPrivateList(value);
         bucketList = bucketListRepository.save(bucketList);
         return ResponseEntity.ok(bucketList.isPrivateList());
@@ -148,9 +148,15 @@ public class BucketListController{
 
     @GetMapping("/search/{searchterm}")
     public List<BucketList> searchBucketList(@PathVariable("searchterm") String searchterm) {
-       return bucketListRepository.findByPrivateListAndTitleContainsIgnoreCase(false, searchterm);
+        List<BucketList> publicResults = bucketListRepository.findByPrivateListAndTitleContainsIgnoreCase(false, searchterm);
+        List<BucketList> accessResults = bucketListRepository.findByAccessedUsersContainsAndTitleContains(userContext.getUser(),searchterm);
+        List<BucketList> ownerResults = bucketListRepository.findByOwnerAndTitleContains(userContext.getUser(),searchterm);
+        List<BucketList> allResults = new ArrayList<BucketList>(publicResults);
+        allResults.addAll(accessResults);
+        allResults.addAll(ownerResults);
+        return allResults;
     }
-    
+
     @PutMapping("/{bucketList}/")
     public BucketList updateBucketList(@PathVariable BucketList bucketList, @RequestBody String update, ObjectMapper mapper) throws IOException {
         if (bucketList == null) {
