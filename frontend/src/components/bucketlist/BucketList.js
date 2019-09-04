@@ -34,10 +34,10 @@ function EditableListHeader({bucketList, changedBucketListRef}) {
 
     return <>
         <input value={title} onChange={e => setTitle(e.target.value)}/>
-        <hr />
+        <hr/>
         <textarea value={description} onChange={e => setDescription(e.target.value)}
-              rows={5}
-              style={{resize: "vertical"}}
+                  rows={5}
+                  style={{resize: "vertical"}}
         />
     </>
 }
@@ -62,21 +62,18 @@ function BucketListDetails({bucketList, onUpdateBucketList, history}) {
     let changedBucketList = useRef(null);
 
     let [counter, setCounter] = useState(bucketList.voteCount)
+
     function upvoteList() {
-        backendFetch.post("/bucketlists/" + bucketList.id + "/upvote/", {});
-        updateVoteCount();
+        backendFetch.post("/bucketlists/" + bucketList.id + "/upvote/", {}).then(updateVoteCount);
     }
 
     function downvoteList() {
-        backendFetch.post("/bucketlists/" + bucketList.id + "/downvote/", {});
-        updateVoteCount();
+        backendFetch.post("/bucketlists/" + bucketList.id + "/downvote/", {}).then(updateVoteCount);
     }
 
-    function updateVoteCount(){
-       setTimeout( async function() {
-            let newCounter = await backendFetch.get("/bucketlists/" + bucketList.id + "/votecount");
-            setCounter(newCounter);
-        },100)
+    async function updateVoteCount() {
+        let newCounter = await backendFetch.get("/bucketlists/" + bucketList.id + "/votecount");
+        setCounter(newCounter);
     }
 
     function deleteList() {
@@ -119,8 +116,9 @@ function BucketListDetails({bucketList, onUpdateBucketList, history}) {
                 {editing ? <EditableListHeader
                     key={bucketList.id} bucketList={bucketList}
                     changedBucketListRef={changedBucketList}
-                /> : <DefaultListHeader bucketList={bucketList} />}
-                <small>{counter} · <a onClick={upvoteList} href="#like">Like</a> | <a onClick={downvoteList} href="#dislike">Dislike</a>
+                /> : <DefaultListHeader bucketList={bucketList}/>}
+                <small>{counter} · <a onClick={upvoteList} href="#like">Like</a> | <a onClick={downvoteList}
+                                                                                      href="#dislike">Dislike</a>
                     · <span>{moment(bucketList.created).fromNow()}</span>
                     · <Link className="button" to={cloneLocation}>Copy</Link>
                 </small>
@@ -128,8 +126,10 @@ function BucketListDetails({bucketList, onUpdateBucketList, history}) {
         </div>
         <div className="col s1 valign-wrapper">
             <ul>
-                <li><Button type="submit" disabled={!bucketList.ownList} waves="light"><Icon>{editIconType}</Icon></Button></li>
-                <li style={{marginTop: "5px"}}><Button onClick={deleteList} type="button" className="red" waves="light"><Icon>delete</Icon></Button></li>
+                <li><Button type="submit" disabled={!bucketList.ownList}
+                            waves="light"><Icon>{editIconType}</Icon></Button></li>
+                <li style={{marginTop: "5px"}}><Button onClick={deleteList} type="button" className="red" waves="light"><Icon>delete</Icon></Button>
+                </li>
             </ul>
         </div>
     </form>;
@@ -144,10 +144,9 @@ BucketListDetails.propTypes = {
 
 function BucketListDefaultView({bucketList, url, path, onUpdateBucketList, history}) {
 
-    let renderEntries= useCallback(() => <BucketListEntries id={bucketList.id}/>, [bucketList.id]);
-    let renderComments= useCallback(() => <BucketListComments bucketList={bucketList} />, [bucketList]);
-    let renderSettings= useCallback(() => <ListSettings bucketList={bucketList}/>, [bucketList]);
-
+    let renderEntries = useCallback(() => <BucketListEntries id={bucketList.id}/>, [bucketList.id]);
+    let renderComments = useCallback(() => <BucketListComments bucketList={bucketList}/>, [bucketList]);
+    let renderSettings = useCallback(() => <ListSettings bucketList={bucketList}/>, [bucketList]);
 
 
     return <>
@@ -194,18 +193,16 @@ function BucketListDefaultView({bucketList, url, path, onUpdateBucketList, histo
                 }
             ]}/>
         </div>
-        <div className="row">
-            <div className="col s12">
-                <Switch>
-                    <Route strict path={path + "entries/"}
-                           render={renderEntries}/>
-                    <Route strict path={path + "comments/"}
-                           render={renderComments}/>
-                    <Route path={path + "settings"}
-                           render={renderSettings}/>
-                    <Redirect to={url + "/entries/"}/>
-                </Switch>
-            </div>
+        <div>
+            <Switch>
+                <Route strict path={path + "entries/"}
+                       render={renderEntries}/>
+                <Route strict path={path + "comments/"}
+                       render={renderComments}/>
+                <Route path={path + "settings"}
+                       render={renderSettings}/>
+                <Redirect to={url + "/entries/"}/>
+            </Switch>
         </div>
     </>;
 }
@@ -226,10 +223,10 @@ export function BucketList({match, history}) {
     const [bucketList, setBucketList] = React.useState(null);
 
     let loadBucketList = useCallback(
-        function() {
+        function () {
             backendFetch.get("/bucketlists/" + id + "/")
                 .then(data => setBucketList(data))
-                .catch( () => {
+                .catch(() => {
                     setBucketList(null)
                 })
             ;
@@ -241,9 +238,9 @@ export function BucketList({match, history}) {
         async update => {
             let jsonChange = JSON.stringify(update);
             let data = await backendFetch.put(
-            "/bucketlists/" + id + "/",{
-                body: jsonChange
-            });
+                "/bucketlists/" + id + "/", {
+                    body: jsonChange
+                });
             setBucketList(data);
         },
         [id]
@@ -260,7 +257,6 @@ export function BucketList({match, history}) {
     if (bucketList == null) {
         return <span>Loading</span>;
     }
-
 
 
     return <div>
