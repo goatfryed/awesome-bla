@@ -9,7 +9,7 @@ ENV REACT_APP_BACKEND_URL $BACKEND_PATH
 RUN npm run build
 
 # Stage 2 - the production environment
-FROM nginx:1.17-alpine
+FROM nginx:1.17
 COPY docker/default.conf.template /etc/nginx/conf.d/default.conf.template
 COPY docker/nginx.conf /etc/nginx/nginx.conf
 COPY --from=build-step /app/build /app
