@@ -56,7 +56,7 @@ public class BucketListController{
         }
     }
 
-    @GetMapping("/all2")
+    @GetMapping("/")
     public PageSupport<BucketList> getAllLists2(@RequestParam(defaultValue = "0")int page){
         if(page<0){
             page = 0;
