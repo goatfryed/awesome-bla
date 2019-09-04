@@ -54,7 +54,7 @@ export class AccessedAllBucketLists extends Component {
 		};
 
 		return (
-			<div className="container">
+			<div>
 				<h5>Bucket Lists</h5>
 				<NavTabs
 					links={[

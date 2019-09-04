@@ -263,7 +263,7 @@ export function BucketList({match, history}) {
 
 
 
-    return <div className="container">
+    return <div>
         <BucketListDefaultView
             bucketList={bucketList}
             url={match.url}
