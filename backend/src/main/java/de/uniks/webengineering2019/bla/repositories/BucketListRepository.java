@@ -11,7 +11,6 @@ import java.util.List;
 public interface BucketListRepository extends CrudRepository<BucketList, Long>{
 
     List<BucketList> findAll();
-    List<BucketList> findByPrivateListOrAccessedUsersContainsOrOwnerAndTitle(boolean privateList, User user, User owner, String title);
     List<BucketList> findByPrivateListAndTitleContainsIgnoreCase(boolean privateList, String title);
     
     Page<BucketList> findByPrivateList(boolean value, Pageable pageable);

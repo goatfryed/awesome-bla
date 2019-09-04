@@ -148,7 +148,7 @@ public class BucketListController{
 
     @GetMapping("/search/{searchterm}")
     public List<BucketList> searchBucketList(@PathVariable("searchterm") String searchterm) {
-        return bucketListRepository.findByPrivateListAndTitleContainsIgnoreCase(false, searchterm);
+       return bucketListRepository.findByPrivateListAndTitleContainsIgnoreCase(false, searchterm);
     }
     
     @PutMapping("/{bucketList}/")
