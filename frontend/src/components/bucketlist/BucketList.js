@@ -1,135 +1,275 @@
-import React from "react";
-import {Redirect} from "react-router-dom";
+import React, {useCallback, useMemo, useState, useRef} from "react";
+import {Link, Redirect} from "react-router-dom";
 import {Route, Switch} from "react-router";
-import {BucketListEntries} from "./BucketListEntries";
 import {backendFetch} from "../../api";
-import {CommentInput, Comments, CommentsBlock} from "./Comments";
-import {ListSettings} from "./ListSettings";
+import {CommentsBlock} from "./Comments";
 import moment from "moment";
 import * as PropTypes from "prop-types";
 import {NavTabs} from "./NavTabs";
+import {Button, Icon} from "react-materialize";
+import {BucketListEntries} from "./BucketListEntries";
+import {ListSettings} from "./ListSettings";
 
-function BucketListDetails(props) {
-    return <article className="media">
-        <figure className="media-left">
-            <p className="image is-64x64">
-                <img src="https://bulma.io/images/placeholders/128x128.png" alt="icon"/>
-            </p>
-        </figure>
-        <div className="media-content">
-            <strong>{props.bucketList.title}({props.bucketList.id})</strong>
-            <br/>
-            <small>{props.counter} · <a onClick={props.onLike}>Like</a>
-                · <span>{moment(props.bucketList.created).fromNow()}</span>
-                · <button onClick={props.onImport}>copy</button>
-            </small>
+function DefaultListHeader({bucketList}) {
+    const {description, title} = bucketList;
+    return <>
+        <h5>{title}</h5>
+        <hr/>
+        <p><strong>{description}</strong></p>
+    </>;
+}
+
+DefaultListHeader.propTypes = {
+    bucketList: PropTypes.object,
+};
+
+function EditableListHeader({bucketList, changedBucketListRef}) {
+
+    let [title, setTitle] = useState(bucketList.title);
+    let [description, setDescription] = useState(bucketList.description || "");
+    changedBucketListRef.current = {
+        title,
+        description
+    };
+
+    return <>
+        <input value={title} onChange={e => setTitle(e.target.value)}/>
+        <hr />
+        <textarea value={description} onChange={e => setDescription(e.target.value)}
+              rows={5}
+              style={{resize: "vertical"}}
+        />
+    </>
+}
+
+DefaultListHeader.propTypes = {
+    bucketList: PropTypes.object,
+};
+
+function BucketListDetails({bucketList, onUpdateBucketList, history}) {
+
+    let cloneLocation = useMemo(
+        () => ({
+            pathname: "/import/",
+            state: {
+                bucketList,
+            }
+        }),
+        [bucketList]
+    );
+
+    let [editing, setEditing] = useState(false);
+    let changedBucketList = useRef(null);
+
+    let [counter, setCounter] = useState(bucketList.voteCount)
+    function upvoteList() {
+        backendFetch.post("/bucketlists/" + bucketList.id + "/upvote/", {});
+        updateVoteCount();
+    }
+
+    function downvoteList() {
+        backendFetch.post("/bucketlists/" + bucketList.id + "/downvote/", {});
+        updateVoteCount();
+    }
+
+    function updateVoteCount(){
+       setTimeout( async function() {
+            let newCounter = await backendFetch.get("/bucketlists/" + bucketList.id + "/votecount");
+            setCounter(newCounter);
+        },100)
+    }
+
+    function deleteList() {
+        backendFetch.delete("/bucketlists/" + bucketList.id + "/delete").then(response => {
+            history.push("/");
+        });
+    }
+
+    let editIconType = editing ? "save" : "edit";
+
+    let onSubmit = useCallback(
+        async e => {
+            // interesting enough, if we would tougle the button type between submit and button based on editing state
+            // the event is only processed after the toggle applied, not before
+            if (e !== undefined) {
+                e.preventDefault()
+            }
+            if (!editing) {
+                setEditing(true);
+                return;
+            }
+            let isDirty = false;
+            for (let field in changedBucketList.current) {
+                if (changedBucketList.current.hasOwnProperty(field) && changedBucketList.current[field] !== bucketList[field]) {
+                    isDirty = true;
+                    break;
+                }
+            }
+            if (isDirty) {
+                await onUpdateBucketList(changedBucketList.current);
+            }
+            setEditing(false);
+        },
+        [editing, onUpdateBucketList, bucketList]
+    );
+
+    return <form className="row" onSubmit={onSubmit}>
+        <div className="col s10 offset-s1">
+            <div>
+                {editing ? <EditableListHeader
+                    key={bucketList.id} bucketList={bucketList}
+                    changedBucketListRef={changedBucketList}
+                /> : <DefaultListHeader bucketList={bucketList} />}
+                <small>{counter} · <a onClick={upvoteList} href="#like">Like</a> | <a onClick={downvoteList} href="#dislike">Dislike</a>
+                    · <span>{moment(bucketList.created).fromNow()}</span>
+                    · <Link className="button" to={cloneLocation}>Copy</Link>
+                </small>
+            </div>
         </div>
-    </article>;
+        <div className="col s1 valign-wrapper">
+            <ul>
+                <li><Button type="submit" disabled={!bucketList.ownList} waves="light"><Icon>{editIconType}</Icon></Button></li>
+                <li style={{marginTop: "5px"}}><Button onClick={deleteList} type="button" className="red" waves="light"><Icon>delete</Icon></Button></li>
+            </ul>
+        </div>
+    </form>;
 }
 
 BucketListDetails.propTypes = {
     bucketList: PropTypes.any,
     counter: PropTypes.number,
     onLike: PropTypes.func,
-    onImport: PropTypes.func
+    editUrl: PropTypes.string,
+};
+
+function BucketListDefaultView({bucketList, url, path, onUpdateBucketList, history}) {
+
+    let renderEntries= useCallback(() => <BucketListEntries id={bucketList.id}/>, [bucketList.id]);
+    let renderComments= useCallback(() => <BucketListComments bucketList={bucketList} />, [bucketList]);
+    let renderSettings= useCallback(() => <ListSettings bucketList={bucketList}/>, [bucketList]);
+
+
+
+    return <>
+        <div className="row">
+            <BucketListDetails
+                bucketList={bucketList}
+                editUrl={url + "/edit/"}
+                onUpdateBucketList={onUpdateBucketList}
+                history={history}
+            />
+        </div>
+        <div className="row">
+            <NavTabs links={bucketList.ownList ? [
+                {
+                    url: url + "/entries/",
+                    title: "Entries",
+                },
+                {
+                    url: url + "/comments/",
+                    title: "Comments",
+                },
+                {
+                    url: url + "/settings",
+                    title: "Settings",
+                },
+                {
+                    url: url + "/newlistentry",
+                    title: "New list entry",
+                    navLinkProps: {target: "_self"},
+                }
+            ] : [
+                {
+                    url: url + "/entries/",
+                    title: "Entries",
+                },
+                {
+                    url: url + "/comments/",
+                    title: "Comments",
+                },
+                {
+                    url: url + "/newlistentry",
+                    title: "New list entry",
+                    navLinkProps: {target: "_self"},
+                }
+            ]}/>
+        </div>
+        <div className="row">
+            <div className="col s12">
+                <Switch>
+                    <Route strict path={path + "entries/"}
+                           render={renderEntries}/>
+                    <Route strict path={path + "comments/"}
+                           render={renderComments}/>
+                    <Route path={path + "settings"}
+                           render={renderSettings}/>
+                    <Redirect to={url + "/entries/"}/>
+                </Switch>
+            </div>
+        </div>
+    </>;
+}
+
+BucketListDefaultView.propTypes = {
+    bucketList: PropTypes.any,
+    counter: PropTypes.number,
+    onLike: PropTypes.func,
+    url: PropTypes.any,
+    path: PropTypes.any,
+    render: PropTypes.func,
+    render1: PropTypes.func,
+    render2: PropTypes.func
 };
 
 export function BucketList({match, history}) {
     const id = match.params.id;
     const [bucketList, setBucketList] = React.useState(null);
 
-    function update() {
-        backendFetch("/bucketlists/" + id + "/")
-            .then(data => setBucketList(data))
-            .catch( () => setBucketList(null))
-        ;
-    }
-
-    React.useEffect(
-        () => {
-            update();
+    let loadBucketList = useCallback(
+        function() {
+            backendFetch("/bucketlists/" + id + "/")
+                .then(data => setBucketList(data))
+                .catch( () => setBucketList(null))
+            ;
         },
         [id]
     );
 
-    const [counter, setCounter] = React.useState(66);
-    function incrementCounter() { setCounter(i => i+1);}
+    let updateBucketList = useCallback(
+        async update => {
+            let jsonChange = JSON.stringify(update);
+            let data = await backendFetch.put(
+            "/bucketlists/" + id + "/",{
+                body: jsonChange
+            });
+            setBucketList(data);
+        },
+        [id]
+    );
+
+    React.useEffect(
+        () => {
+            loadBucketList();
+        },
+        [loadBucketList]
+    );
+
 
     if (bucketList == null) {
         return <span>Loading</span>;
     }
-    console.log(bucketList);
-
-    async function importBucketList() {
-        let targetListId = NaN;
-        while (isNaN(targetListId)) {
-            let input = prompt("id of target bucket list?");
-            if (input === null) {
-                return;
-            }
-            targetListId = parseInt( input);
-        }
-        await backendFetch.post("/bucketlists/" + targetListId + "/entries/cloneList/" + id + "/");
 
 
-        let returnValue = window.confirm("Do you want to see your list?");
-        if (returnValue) {
-            history.push({pathname: "/bucketlist/" + targetListId} + "/entries/");
-        }
-    }
 
     return <div className="container">
-        <div className="row">
-            <BucketListDetails bucketList={bucketList} counter={counter} onLike={incrementCounter}
-                               onImport={importBucketList}/>
-        </div>
-        <div className="row">
-            <NavTabs links={bucketList.ownList?[
-                {
-                    url: match.url + "/entries/",
-                    title: "Entries",
-                },
-                {
-                    url: match.url + "/comments/",
-                    title: "Comments",
-                },
-                {
-                    url: match.url + "/settings",
-                    title: "Settings",
-                },
-                {
-                    url: match.url + "/newlistentry",
-                    title: "New list entry",
-                    navLinkProps: {target: "_self"},
-                }
-            ]:[
-                {
-                    url: match.url + "/entries/",
-                    title: "Entries",
-                },
-                {
-                    url: match.url + "/comments/",
-                    title: "Comments",
-                },
-                {
-                    url: match.url + "/newlistentry",
-                    title: "New list entry",
-                    navLinkProps: {target: "_self"},
-                }
-            ]} />
-        </div>
-        <div className="row">
-            <Switch>
-                <Route strict path={match.path + "entries/"}
-                       render={() => <div className="col"><BucketListEntries id={id}/></div>}/>
-                <Route strict path={match.path + "comments/"}
-                       render={() => <div className="col"><BucketListComments bucketList={bucketList} update={update}/>
-                       </div>}/>
-                <Route path={match.path+"settings"}
-                       render={() => <ListSettings bucketList={bucketList}/>} />
-                <Redirect to={match.url + "/entries/"}/>
-            </Switch>
-        </div>
+        <BucketListDefaultView
+            bucketList={bucketList}
+            url={match.url}
+            path={match.path}
+            update={loadBucketList}
+            onUpdateBucketList={updateBucketList}
+            history={history}
+        />
     </div>
 }
 

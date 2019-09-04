@@ -1,15 +1,16 @@
 import {keyBy} from "lodash/collection";
 import moment from "moment";
 import * as PropTypes from "prop-types";
-import React, {useEffect, useState, useCallback, useReducer} from "react";
+import React, {useEffect, useState, useCallback, useReducer, useMemo} from "react";
 import {Route, Switch, withRouter} from "react-router";
 import {Link} from "react-router-dom";
 
 import BucketListEntryDetails from "./BucketListEntryDetails";
 import {CommentsBlock} from "./Comments";
 import {backendFetch} from "../../api";
+import {Button, Icon} from "react-materialize";
 
-function EntryListView({entries, forceUpdate, onSelect, pagePath, onDelete}) {
+function EntryListView({entries, refresh, onSelect, pagePath, onDelete}) {
 
     if (entries === null) {
         return <span>Loading</span>
@@ -19,11 +20,12 @@ function EntryListView({entries, forceUpdate, onSelect, pagePath, onDelete}) {
 
     return <div className="column">
         <ul className="collection">
-            {entries.map(entry => <BucketListEntry key={entry.id} pagePath={pagePath}
-                                                   entry={entry}
-                                                   forceUpdate={forceUpdate}
-                                                   onSelect={onSelect}
-                                                   onDelete={onDelete}
+            {entries.map(entry => <BucketListEntry
+                    key={entry.id} pagePath={pagePath}
+                    entry={entry}
+                    refresh={refresh}
+                    onSelect={onSelect}
+                    onDelete={onDelete}
                 />
             )}
         </ul>
@@ -31,7 +33,7 @@ function EntryListView({entries, forceUpdate, onSelect, pagePath, onDelete}) {
 }
 
 EntryListView.propTypes = {
-    entries: PropTypes.any.isRequired,
+    entries: PropTypes.any,
     refresh: PropTypes.func.isRequired,
 };
 
@@ -116,27 +118,17 @@ function BucketListEntryView({entry, pagePath, refresh, history,  match, onDelet
             e.preventDefault();
             toggleCompletionState(entry.completed);
         },
-        [toggleCompletionState]
+        [toggleCompletionState, entry.completed]
     );
 
-    let copyEntryToBucketList = useCallback(
-        async function () {
-            let targetListId = NaN;
-            while (isNaN(targetListId)) {
-                let input = prompt("id of target bucket list?");
-                if (input === null) {
-                    return;
-                }
-                targetListId = parseInt( input);
+    let cloneLocation = useMemo(() => ({
+            pathname: "/import/",
+            state: {
+                entry,
+                from: match.url
             }
-            await backendFetch.post("/bucketlists/" + targetListId + "/entries/cloneEntry/" + entry.id + "/");
-
-            let returnValue = window.confirm("Do you want to see your list?");
-            if (returnValue) {
-                history.push({pathname: "/bucketlist/" + targetListId + "/entries/"});
-            }
-        },
-        [entry]
+        }),
+        [entry, match.url]
     );
 
     return <li className="collection-item">
@@ -149,11 +141,10 @@ function BucketListEntryView({entry, pagePath, refresh, history,  match, onDelet
             /><span/></label>
             &nbsp;<Link to={match.url + entry.id + "/"}>{entry.title}</Link>
             <small>
-                 ·
-                {moment(entry.created).fromNow()}
-                 · <button onClick={() => toggleComments(!showComments)}>Talk</button>
-                 · <button onClick={copyEntryToBucketList}>copy</button>
-                 · <button onClick={() => onDelete(entry)}>delete</button>
+                {" · "+ moment(entry.created).fromNow() + " · "}
+                 <Button className="btn-small" onClick={() => toggleComments(!showComments)}><Icon>comment</Icon></Button>
+                 <Link className="btn btn-small" to={cloneLocation}><Icon>import_export</Icon></Link>
+                 <Button className="btn-small red" onClick={() => onDelete(entry)}><Icon>delete</Icon></Button>
             </small>
         </div>
         {showComments && <ExtendedEntry entry={entry} pagePath={pagePath}/>}
@@ -165,14 +156,17 @@ function ExtendedEntry({entry, pagePath}) {
 
     let entryPath = pagePath+"/"+entry.id+"/";
 
-    async function update() {
-        const json = await backendFetch( entryPath);
-        setDetails(json);
-    }
+    let update = useCallback(
+            async function update() {
+            const json = await backendFetch( entryPath);
+            setDetails(json);
+        },
+        [entryPath]
+    );
 
     useEffect(
         function () {update();},
-        [entryPath]
+        [update]
     );
 
     async function onCommentCreation(comment, url) {

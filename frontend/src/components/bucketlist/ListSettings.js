@@ -59,7 +59,7 @@ export class ListSettings extends React.Component {
           </div>
         </div>
         <div>Berechtigungen zuteilen
-          <Users ref="usersRef" text="Zugriff erlauben" onKlick={this.makePriveleged} endPoint={this.state.endPoint}></Users>
+          <Users ref="usersRef" text="Zugriff erlauben" onKlick={this.makePriveleged} endPoint={this.state.endPoint}/>
         </div>
       </div>
     };
@@ -69,7 +69,7 @@ export class ListSettings extends React.Component {
         <span>
           <div>
             <label>
-              <input class="filled-in" type="checkbox" checked={this.state.bucketList.private} onChange={this.privateChanged} />
+              <input className="filled-in" type="checkbox" checked={this.state.bucketList.private} onChange={this.privateChanged} />
               <span>Private Liste</span>
             </label>
           </div>

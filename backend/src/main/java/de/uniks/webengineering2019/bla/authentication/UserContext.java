@@ -1,5 +1,6 @@
 package de.uniks.webengineering2019.bla.authentication;
 
+import de.uniks.webengineering2019.bla.api_errors.UnauthenticatedRequestException;
 import de.uniks.webengineering2019.bla.model.User;
 import org.springframework.stereotype.Component;
 import org.springframework.web.context.annotation.RequestScope;

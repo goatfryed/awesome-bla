@@ -2,6 +2,7 @@ package de.uniks.webengineering2019.bla.controllers;
 
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import de.uniks.webengineering2019.bla.api_errors.ResourceNotFoundException;
 import de.uniks.webengineering2019.bla.comments.CommentCreationService;
 import de.uniks.webengineering2019.bla.model.BucketList;
 import de.uniks.webengineering2019.bla.model.BucketListEntry;
@@ -133,7 +134,7 @@ public class BucketListEntryController {
         final BucketListEntry newEntry = copyEntryToList(targetList, entryToDuplicate);
 
         if (newEntry == null) {
-            ResponseEntity.accepted();
+            return ResponseEntity.accepted().build();
         }
 
         entryRepository.save(newEntry);

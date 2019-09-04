@@ -1,6 +1,4 @@
 import React from "react";
-import {backend} from "../../Configuration";
-import moment from "../bucketlist/BucketListEntries";
 import {backendFetch} from "../../api";
 
 export class Users extends React.Component {
@@ -36,13 +34,16 @@ export class Users extends React.Component {
         if(name.startsWith("#")){
             return;
         }
-        this.state.onLoading=true;
         if (this.state.timeout !== null) {
             clearTimeout(this.state.timeout);
         }
-        this.state.timeout = setTimeout(ev=>{
-            this.searchUsers(name,false);
-        }, 1000);
+        this.setState({
+            onLoading: true,
+            timeout: setTimeout(ev=>{
+                    this.searchUsers(name,false);
+                }, 1000
+            ),
+        });
         this.forceUpdate();
         //this.searchUsers(name);
     }
@@ -53,7 +54,7 @@ export class Users extends React.Component {
         };
 
         const users = this.state.users.map((user, index) => {
-            return <span key={user.id}><li class="active">
+            return <span key={user.id}><li className="active">
                 <b>{user.userName}</b> |&nbsp;
                 <button onClick={this.state.onKlick.bind(this,user)} type="submit">{this.state.text}</button>
             </li>

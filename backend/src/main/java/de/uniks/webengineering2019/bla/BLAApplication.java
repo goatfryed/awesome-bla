@@ -48,6 +48,7 @@ public class BLAApplication implements CommandLineRunner{
 							.description("Beschreibung für generierte Liste "+i)
 							.title("Title für generierte liste "+i)
 							.numEntries(0)
+							.voteCount(0)
 							.id(i)
 							.owner(user).build();
 					bucketListRepository.save(bucketList);
