@@ -11,20 +11,30 @@ export class Users extends React.Component {
             timeout: null,
             onLoading: false,
             text: props.text,
-            onKlick: props.onKlick,
+            onKlick: null,
             endPoint: "/users/find",
+            lastingElements: null,
+            loadedPages: 0
         };
         if(props.endPoint != null){
             this.state.endPoint = props.endPoint;
+        }
+        if(props.onKlick != null){
+            this.state.onKlick = props.onKlick;
+            //this.state.set("onKlick",props.onKlick);
         }
         this.searchUserChanged = this.searchUserChanged.bind(this);
         this.searchUsers = this.searchUsers.bind(this);
         this.getEndPointUrl = this.getEndPointUrl.bind(this);
         this.forcepUpdateRequest = this.forcepUpdateRequest.bind(this);
+        this.loadMore = this.loadMore.bind(this);
     }
 
     searchUserChanged(ev){
         let name = ev.target.value;
+        this.state.users = [];
+        this.state.loadedPages = 0;
+        this.state.lastingElements = null;
         if(name.startsWith("#")){
             return;
         }
@@ -43,10 +53,18 @@ export class Users extends React.Component {
     }
 
     render() {
+        const moreSides = ()=>{
+            return this.state.lastingElements === null ? '':this.state.lastingElements<=0?<div>Kine Weiteren User verfügbar</div>:<div>{this.state.lastingElements} weitere User <button type="submit" onClick={this.loadMore.bind(this,this.state.lastSearch)}>Laden</button></div>
+        };
+
+        const dobutton = (user)=>{
+            return this.state.onKlick !== null?<button onClick={this.state.onKlick.bind(this,user)} type="submit">{this.state.text}</button>:'';
+        };
+
         const users = this.state.users.map((user, index) => {
             return <span key={user.id}><li className="active">
                 <b>{user.userName}</b> |&nbsp;
-                <button onClick={this.state.onKlick.bind(this,user)} type="submit">{this.state.text}</button>
+                {dobutton(user)}
             </li>
             </span>
         });
@@ -58,6 +76,7 @@ export class Users extends React.Component {
                 <ul>
                     {users}
                 </ul>
+                {moreSides()}
             </div>
         )
     }
@@ -68,13 +87,14 @@ export class Users extends React.Component {
 
     getEndPointUrl(name){
         if(this.state.endPoint.includes("?")){
-            return this.state.endPoint+'&name='+name
+            return this.state.endPoint+'&name='+name+"&page="+this.state.loadedPages
         }else{
-            return this.state.endPoint+'?name='+name
+            return this.state.endPoint+'?name='+name+"&page="+this.state.loadedPages
         }
     }
 
     forcepUpdateRequest(){
+        this.state.users = [];
         this.searchUsers(this.state.lastSearch,true);
     }
 
@@ -85,15 +105,21 @@ export class Users extends React.Component {
             return;
         }
         this.state.lastSearch = name;
-        backendFetch.get(this.getEndPointUrl(name))
-            .then((response) => {
-                return response;
-            })
-            .then((data) => {
-                this.setState({
-                    users: data
-            });
+        this.loadMore(name,force);
+    }
 
+    loadMore(name,reload){
+        backendFetch.get(this.getEndPointUrl(name)+(reload==true ? "&reload=true":""))
+        .then((response) => {
+            return response;
+        })
+        .then((response) => {
+            if(response.content.length > 0){
+                this.state.loadedPages++;
+            }
+            this.state.lastingElements = response.lastingElements;
+            this.state.users = this.state.users.concat(response.content);
+            this.forceUpdate();
         })
     }
 

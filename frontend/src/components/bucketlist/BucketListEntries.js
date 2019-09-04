@@ -46,7 +46,7 @@ function BucketListEntriesBase({id, match}) {
 
     let refresh = useCallback(
         async () => {
-        const json = await backendFetch(pagePath + "/");
+        const json = await backendFetch.get(pagePath + "/");
         setEntries(keyBy(json, o => o.id));
         },
         [pagePath]
@@ -158,7 +158,7 @@ function ExtendedEntry({entry, pagePath}) {
 
     let update = useCallback(
             async function update() {
-            const json = await backendFetch( entryPath);
+            const json = await backendFetch.get( entryPath);
             setDetails(json);
         },
         [entryPath]

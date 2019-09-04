@@ -227,9 +227,12 @@ export function BucketList({match, history}) {
 
     let loadBucketList = useCallback(
         function() {
-            backendFetch("/bucketlists/" + id + "/")
+            console.log("REal callse");
+            backendFetch.get("/bucketlists/" + id + "/")
                 .then(data => setBucketList(data))
-                .catch( () => setBucketList(null))
+                .catch( () => {
+                    setBucketList(null)
+                })
             ;
         },
         [id]
@@ -249,6 +252,7 @@ export function BucketList({match, history}) {
 
     React.useEffect(
         () => {
+            console.log("Called now");
             loadBucketList();
         },
         [loadBucketList]
