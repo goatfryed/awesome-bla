@@ -89,6 +89,12 @@ public class BucketListController{
     @GetMapping("/{bucketList}")
     public BucketList get(@PathVariable BucketList bucketList) {
         bucketList.getEntries().clear();
+        if (bucketList.isPrivateList()) {
+            User user = userContext.getUser();
+            if (!user.equals(bucketList.getOwner()) && !bucketList.getAccessedUsers().contains(user)) {
+                throw new InsuficientPermissionException("You can't access this list");
+            }
+        }
         changeAccessedUsersByOwner(Collections.singletonList(bucketList));
         return bucketList;
     }
