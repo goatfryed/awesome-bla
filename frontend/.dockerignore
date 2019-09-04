@@ -1,3 +1,8 @@
 .git
+.gitignore
 node_modules
 build
+Dockerfile
+docker
+*.md
+frontend.iml
