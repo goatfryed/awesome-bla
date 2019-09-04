@@ -3,9 +3,11 @@ import { Route, Switch} from "react-router";
 import { Link, Redirect } from "react-router-dom";
 import { backendFetch } from "../../api";
 import {NavTabs} from "./NavTabs";
-import {Users} from "../basic-components/users";
 
 export class AccessedAllBucketLists extends Component {
+
+	state = {};
+
 	constructor(props) {
 		super(props);
 		this.state = {
@@ -20,17 +22,19 @@ export class AccessedAllBucketLists extends Component {
 	loadMore(){
 		backendFetch.get('/bucketlists/all2?page='+this.state.loadedPages).then(response => {
 			if(response.content.length > 0){
-				this.state.loadedPages++;
+				this.setState({loadedPages: this.state.loadedPages+1});
 			}
-			this.state.lastingElements = response.lastingElements;
-			this.state.bucketLists = this.state.bucketLists.concat(response.content);
+			this.setState({
+				lastingElements: response.lastingElements,
+				bucketLists: this.state.bucketLists.concat(response.content)
+			});
 			this.forceUpdate();
 		});
 	}
 
 	componentDidMount() {
 		this.loadMore = this.loadMore.bind(this);
-		this.state.loadedPages = 0;
+		this.setState({loadedPages: 0});
 		this.loadMore();
 	}
 
