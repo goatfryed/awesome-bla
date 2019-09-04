@@ -3,26 +3,23 @@ import {backendFetch} from "../../api";
 
 export class Users extends React.Component {
 
+    state = {};
+
     constructor(props) {
         super(props);
+        console.log(props.endPoint);
         this.state = {
             users: [],
             lastSearch: null,
             timeout: null,
             onLoading: false,
             text: props.text,
-            onKlick: null,
-            endPoint: "/users/find",
+            endPoint: props.endPoint === undefined ? "/users/find":props.endPoint,
             lastingElements: null,
-            loadedPages: 0
+            loadedPages: 0,
+            onKlick: props.onKlick === undefined ? null : props.onKlick
         };
-        if(props.endPoint != null){
-            this.state.endPoint = props.endPoint;
-        }
-        if(props.onKlick != null){
-            this.state.onKlick = props.onKlick;
-            //this.state.set("onKlick",props.onKlick);
-        }
+
         this.searchUserChanged = this.searchUserChanged.bind(this);
         this.searchUsers = this.searchUsers.bind(this);
         this.getEndPointUrl = this.getEndPointUrl.bind(this);
@@ -32,9 +29,11 @@ export class Users extends React.Component {
 
     searchUserChanged(ev){
         let name = ev.target.value;
-        this.state.users = [];
-        this.state.loadedPages = 0;
-        this.state.lastingElements = null;
+        this.setState({
+            users: [],
+            loadedPages: 0,
+            lastingElements: null
+        });
         if(name.startsWith("#")){
             return;
         }
@@ -49,7 +48,6 @@ export class Users extends React.Component {
             ),
         });
         this.forceUpdate();
-        //this.searchUsers(name);
     }
 
     render() {
@@ -104,7 +102,7 @@ export class Users extends React.Component {
         {
             return;
         }
-        this.state.lastSearch = name;
+        this.setState({lastSearch: name});
         this.loadMore(name,force);
     }
 
@@ -115,10 +113,12 @@ export class Users extends React.Component {
         })
         .then((response) => {
             if(response.content.length > 0){
-                this.state.loadedPages++;
+                this.setState({loadedPages: this.state.loadedPages+1})
             }
-            this.state.lastingElements = response.lastingElements;
-            this.state.users = this.state.users.concat(response.content);
+            this.setState({
+                lastingElements: response.lastingElements,
+                users: this.state.users.concat(response.content)
+            });
             this.forceUpdate();
         })
     }

@@ -66,7 +66,7 @@ public class AuthenticationFilter implements Filter {
         boolean valid = parseToken(httpReq);
 
         // In our case we do not permit any HTTP requests which are POST.
-        if (httpReq.getMethod().equals("POST")) {
+        if (!httpReq.getMethod().equals("GET")) {
             if (!valid) {
                 LOG.warn("Unauthorized request to {}", ((HttpServletRequest) req).getRequestURI());
                 httpResp.setStatus(HttpStatus.UNAUTHORIZED.value());
