@@ -46,7 +46,7 @@ export class AppNavbar extends React.Component {
 
     //------------------
     render() {
-        const logo = <a href="/"><img src="/logo/Logo_transparent2.png" className="navbar-logo" alt="logo"></img><span className="logo-text">Awesome Bucket List</span></a>;
+        const logo = <a href="/"><img src="/logo/Logo_transparent2.PNG" className="navbar-logo" alt="logo"/><span className="logo-text">Awesome Bucket List</span></a>;
         return (
             <Navbar brand={logo} className="light-blue app-navbar">
                 <NavLink exact to="/accessed" activeClassName="activeLink">
