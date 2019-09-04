@@ -1,5 +1,5 @@
 import React, {PureComponent} from "react";
-import {Route, Switch, BrowserRouter as Router} from "react-router-dom";
+import {Route, Switch, BrowserRouter as Router, Redirect} from "react-router-dom";
 
 //CSS
 import './styles.scss';
@@ -17,7 +17,7 @@ import ListNew from "./components/bucketlist/ListNew";
 //Pages
 import page404 from "./components/pages/Page404"
 import {allUsers} from "./components/pages/allUsers";
-import {AccessedAllBucketLists} from "./components/bucketlist/ShowAccessAllBucketLists";
+import {BucketListBoard} from "./components/bucketlist/BucketListBoard";
 import ImportTargetSelection from "./components/Import/ImportTargetSelection";
 import {Unauthorized401} from "./components/pages/Unauthorized401";
 import {withRouter} from "react-router";
