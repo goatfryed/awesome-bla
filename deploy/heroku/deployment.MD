@@ -36,6 +36,7 @@ via ``--build-arg BACKEND_PATH=https:\\my-crazy-backend.net``
 
 The container itself is a nginx installation that simply serves our static pages. Note, nginx needs to
 configure the port to listen on at boot time, not at build time.
+The server tries to serve the requested file or will fallback to the index.html in which case react takes over.
 
 * See [heroku-docker-nginx-example](https://github.com/rjoonas/heroku-docker-nginx-example) for more on the nginx setup.
 * See [Create React App + Docker - multi-stage build example](https://medium.com/@shakyShane/lets-talk-about-docker-artifacts-27454560384f)
@@ -43,3 +44,6 @@ for the suggestion of multi stage docker builds
 * See [Adding custom environment variables](https://create-react-app.dev/docs/adding-custom-environment-variables) to understand
 how the build process of our frontend can be configured via appropriate environment variables. Not that this must be done at
 build, not at serve time.
+
+Note, that the recommended nginx.conf isn't used currently, because it overrides all defaults and - for example - doesn't load the mime types.
+While we could configure it properly, the default config seems fine anyway.
