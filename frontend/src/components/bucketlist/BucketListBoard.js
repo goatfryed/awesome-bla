@@ -20,7 +20,7 @@ export class BucketListBoard extends PureComponent {
 	}
 
 	loadMore(){
-		backendFetch.get('/bucketlists/all2?page='+this.state.loadedPages).then(response => {
+		backendFetch.get('/bucketlists/?page='+this.state.loadedPages).then(response => {
 			if(response.content.length > 0){
 				this.setState({loadedPages: this.state.loadedPages+1});
 			}
