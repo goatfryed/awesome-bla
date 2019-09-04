@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
 
+set -e
 cd "$(dirname "$0")"
 echo "Deploying the frontend"
 cd ../../frontend
