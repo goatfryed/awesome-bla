@@ -27,7 +27,7 @@ BucketListProvider.propTypes = {
 
 export function AllBucketLists(){
 	return (
-		<div className="container">
+		<div>
 			<h5>Bucket Lists</h5>
 			<NavTabs
 				links={[
