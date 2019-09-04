@@ -46,20 +46,17 @@ export class AppNavbar extends React.Component {
 
     //------------------
     render() {
-        const logo = <a href="/"><img src="/logo/Logo_transparent2.PNG" className="navbar-logo" alt="logo"/><span className="logo-text">Awesome Bucket List</span></a>;
+        const logo = <Link to="/home"><img src="/logo/Logo_transparent2.PNG" className="navbar-logo" alt="logo"/><span className="logo-text">Awesome Bucket List</span></Link>;
         return (
             <Navbar brand={logo} className="light-blue app-navbar">
-                <NavLink exact to="/accessed" activeClassName="activeLink">
-                    Access Bucket Lists
-                </NavLink>
-                <NavLink exact to="/" activeClassName="activeLink">
+                <NavLink exact to="/home" activeClassName="activeLink">
                     Home
-                </NavLink>
-                <NavLink to="/users" activeClassName="activeLink">
-                    Benutzersuche
                 </NavLink>
                 <NavLink to="/search" activeClassName="activeLink">
                     Listensuche
+                </NavLink>
+                <NavLink to="/users" activeClassName="activeLink">
+                    Benutzersuche
                 </NavLink>
                 {!Authentication.isAuthenticated() && isDebug && (
                     <NavItem  className="navbar-btn">

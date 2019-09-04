@@ -41,10 +41,10 @@ function App() {
               {/* https://reacttraining.com/react-router/web/api/Route/render-func */}
               <Route path="/bucketlist/:id/" render={({match, history}) => <BucketList match={match} history={history} id={match.params.id} />} />
               <Route path="/users" component={allUsers}/>
-              <Route path="/" exact component={AllBucketLists}/>
-              <Route path="/accessed" exact component={AccessedAllBucketLists}/>
+              <Route path="/home" component={BucketListBoard}/>
               <Route path="/search" exact component={ListSearch}/>
-              <Route path="/401" exact component={Unauthorized401} />
+              <Route path="/401" strict exact component={Unauthorized401} />
+              <Route path="/" exact><Redirect to="/home" /></Route>
               <Route path="/" component={page404}/>
             </Switch>
           </div>
