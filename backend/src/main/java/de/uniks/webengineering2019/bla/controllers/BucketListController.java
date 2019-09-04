@@ -9,7 +9,9 @@ import de.uniks.webengineering2019.bla.model.BucketList;
 import de.uniks.webengineering2019.bla.model.Comment;
 import de.uniks.webengineering2019.bla.model.User;
 import de.uniks.webengineering2019.bla.repositories.BucketListRepository;
+import de.uniks.webengineering2019.bla.utils.PageSupport;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
@@ -18,11 +20,12 @@ import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @CrossOrigin
 @RequestMapping("/bucketlists/")
 @RestController
-public class BucketListController {
+public class BucketListController{
 
     private final BucketListRepository bucketListRepository;
     private final CommentCreationService commentCreationService;
@@ -42,14 +45,14 @@ public class BucketListController {
     }
 
     @GetMapping("/all")
-    public List<BucketList> getAllLists() {
+    public List<BucketList> getAllLists(){
         return bucketListRepository.findAll();
         //return bucketListRepository.findByPrivateList(false);
     }
 
-    void changeAccessedUsersByOwner(Collection<BucketList> bucketListCollection) {
-        for (BucketList bucketList : bucketListCollection) {
-            if (bucketList.getOwner().getId() != userContext.getUser().getId()) {
+    void changeAccessedUsersByOwner(Collection<BucketList> bucketListCollection){
+        for(BucketList bucketList:bucketListCollection){
+            if(bucketList.getOwner().getId() != userContext.getUser().getId()){
                 bucketList.getAccessedUsers().clear();
             }
             bucketList.setOwnList(bucketList.getOwner().getId() == userContext.getUser().getId());
@@ -57,24 +60,30 @@ public class BucketListController {
     }
 
     @GetMapping("/all2")
-    public List<BucketList> getAllLists2(@RequestParam(defaultValue = "0") int page) {
-        if (page < 0) {
+    public PageSupport<BucketList> getAllLists2(@RequestParam(defaultValue = "0")int page){
+        if(page<0){
             page = 0;
         }
-        Pageable pageable = PageRequest.of(page, elementsOnPage);
+        Pageable pageable = PageRequest.of(page,elementsOnPage);
 
-        List<BucketList> list;
-        if (userContext.hasUser()) {
-            list = bucketListRepository.findByPrivateListOrAccessedUsersContainsOrOwner(false, userContext.getUser(), userContext.getUser(), pageable).getContent();
-        } else {
-            list = bucketListRepository.findByPrivateList(false, pageable).getContent();
+
+        Page<BucketList> pageRessult;
+
+        if(userContext.hasUser()){
+            pageRessult = bucketListRepository.findByPrivateListOrAccessedUsersContainsOrOwner(false, userContext.getUser(), userContext.getUser(),pageable);
+        }else{
+            pageRessult = bucketListRepository.findByPrivateList(false,pageable);
         }
-        changeAccessedUsersByOwner(list);
-        return list;
 
+        int lasting = (int)pageRessult.getTotalElements() - (page+1) * elementsOnPage;
+        if(lasting < 0){
+            lasting = 0;
+        }
+        changeAccessedUsersByOwner(pageRessult.getContent());
+        return new PageSupport<BucketList>(pageRessult.getContent(),lasting);
     }
 
-    @GetMapping("/{bucketList}/")
+    @GetMapping("/{bucketList}")
     public BucketList get(@PathVariable BucketList bucketList) {
         bucketList.getEntries().clear();
         changeAccessedUsersByOwner(Collections.singletonList(bucketList));
@@ -94,21 +103,21 @@ public class BucketListController {
     }
 
     @PostMapping("/{bucketList}/privelege/{user}")
-    public ResponseEntity addPrivilegedUser(@PathVariable BucketList bucketList, @PathVariable User user) {
+    public ResponseEntity addPrivilegedUser(@PathVariable BucketList bucketList, @PathVariable User user){
         bucketList.getAccessedUsers().add(user);
         bucketList = bucketListRepository.save(bucketList);
         return ResponseEntity.ok(bucketList.getAccessedUsers());
     }
 
     @PostMapping("/{bucketList}/unprivelege/{user}")
-    public ResponseEntity removePrivilegedUser(@PathVariable BucketList bucketList, @PathVariable User user) {
+    public ResponseEntity removePrivilegedUser(@PathVariable BucketList bucketList, @PathVariable User user){
         bucketList.getAccessedUsers().remove(user);
         bucketList = bucketListRepository.save(bucketList);
         return ResponseEntity.ok(bucketList.getAccessedUsers());
     }
 
     @PostMapping("/{bucketList}/private")
-    public ResponseEntity removePrivilegedUser(@PathVariable BucketList bucketList, @RequestParam boolean value) {
+    public ResponseEntity removePrivilegedUser(@PathVariable BucketList bucketList, @RequestParam boolean value){
         bucketList.setPrivateList(value);
         bucketList = bucketListRepository.save(bucketList);
         return ResponseEntity.ok(bucketList.isPrivateList());
@@ -154,7 +163,8 @@ public class BucketListController {
         List<BucketList> allResults = new ArrayList<BucketList>(publicResults);
         allResults.addAll(accessResults);
         allResults.addAll(ownerResults);
-        return allResults;
+
+        return allResults.stream().distinct().collect(Collectors.toList());
     }
 
     @PutMapping("/{bucketList}/")
@@ -177,3 +187,4 @@ public class BucketListController {
         bucketListRepository.delete(bucketList);
     }
 }
+
