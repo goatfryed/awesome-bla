@@ -44,12 +44,6 @@ public class BucketListController{
         this.userContext = userContext;
     }
 
-    @GetMapping("/all")
-    public List<BucketList> getAllLists(){
-        return bucketListRepository.findAll();
-        //return bucketListRepository.findByPrivateList(false);
-    }
-
     void changeAccessedUsersByOwner(Collection<BucketList> bucketListCollection){
         if (!userContext.hasUser()) {
             return;
