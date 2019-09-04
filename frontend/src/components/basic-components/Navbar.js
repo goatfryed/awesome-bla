@@ -60,7 +60,7 @@ export class AppNavbar extends React.Component {
                 </NavLink>
                 {!Authentication.isAuthenticated() && isDebug && (
                     <NavItem  className="navbar-btn">
-                        <input type="text" className="debugInput" placeholder="Test user" defaultValue={this.state.fakeUser} onChange={e => (this.state.fakeUser = e.target.value)} />
+                        <input type="text" className="debugInput" placeholder="Test user" defaultValue={this.state.fakeUser} onChange={e => (this.setState({fakeUser: e.target.value}))} />
                         <Button waves="light" onClick={this.fakeLogin}>Debug</Button>
                     </NavItem>
                 )}
