@@ -23,6 +23,7 @@ import {Unauthorized401} from "./components/pages/Unauthorized401";
 import {withRouter} from "react-router";
 import {ApiError, setErrorHandler} from "./api";
 import * as PropTypes from "prop-types";
+import {Login} from "./authentication/Login";
 
 
 function App() {
@@ -31,6 +32,7 @@ function App() {
           <AppNavbar/>
           <div className="container">
             <Switch>
+              <Route path="/login" component={Login} />
               <Route path="/callback" component={AuthenticationCallback}/>
               <Route strict exact path="/import/" component={ImportTargetSelection} />
               <Route path="/bucketlist/:id/newlistentry/" component={ListEntryNew}/>

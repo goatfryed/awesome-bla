@@ -1,6 +1,6 @@
 import React from "react";
 import Authentication from "../../authentication/Authentication";
-import { NavLink } from "react-router-dom";
+import {Link, NavLink} from "react-router-dom";
 import { backend, isDebug } from "../../Configuration";
 import { Navbar, Icon } from "react-materialize";
 import Button from "react-materialize/lib/Button";
@@ -73,9 +73,9 @@ export class AppNavbar extends React.Component {
                 )}
                 {!Authentication.isAuthenticated() && (
                     <NavItem className="navbar-btn">
-                        <Button waves="light" href={this.state.url}>
+                        <Link waves="light" to="/login">
                             <strong>Login</strong>
-                        </Button>
+                        </Link>
                     </NavItem>
                 )}
                 {Authentication.isAuthenticated() && (
