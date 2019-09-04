@@ -51,7 +51,7 @@ public class BucketListController{
     }
 
     void changeAccessedUsersByOwner(Collection<BucketList> bucketListCollection){
-        if(!userContext.hasUser()){
+        if (!userContext.hasUser()) {
             return;
         }
         for(BucketList bucketList:bucketListCollection){
@@ -190,4 +190,3 @@ public class BucketListController{
         bucketListRepository.delete(bucketList);
     }
 }
-

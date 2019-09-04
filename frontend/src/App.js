@@ -24,6 +24,7 @@ import {withRouter} from "react-router";
 import {ApiError, setErrorHandler} from "./api";
 import * as PropTypes from "prop-types";
 import ListSearch from "./components/bucketlist/SearchLists";
+import {Login} from "./authentication/Login";
 
 
 function App() {
@@ -32,6 +33,7 @@ function App() {
           <AppNavbar/>
           <div className="container">
             <Switch>
+              <Route path="/login" component={Login} />
               <Route path="/callback" component={AuthenticationCallback}/>
               <Route strict exact path="/import/" component={ImportTargetSelection} />
               <Route path="/bucketlist/:id/newlistentry/" component={ListEntryNew}/>
