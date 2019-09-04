@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @CrossOrigin
 @RequestMapping("/bucketlists/")
@@ -34,9 +35,9 @@ public class BucketListController{
     private int elementsOnPage;
 
     public BucketListController(
-        BucketListRepository bucketListRepository,
-        CommentCreationService commentCreationService,
-        UserContext userContext
+            BucketListRepository bucketListRepository,
+            CommentCreationService commentCreationService,
+            UserContext userContext
     ) {
         this.bucketListRepository = bucketListRepository;
         this.commentCreationService = commentCreationService;
@@ -153,7 +154,19 @@ public class BucketListController{
     public int getVoteCount(@PathVariable BucketList bucketList) {
         return bucketList.getVoteCount();
     }
-    
+
+    @GetMapping("/search/{searchterm}")
+    public List<BucketList> searchBucketList(@PathVariable("searchterm") String searchterm) {
+        List<BucketList> publicResults = bucketListRepository.findByPrivateListAndTitleContainsIgnoreCase(false, searchterm);
+        List<BucketList> accessResults = bucketListRepository.findByAccessedUsersContainsAndTitleContainsIgnoreCase(userContext.getUser(),searchterm);
+        List<BucketList> ownerResults = bucketListRepository.findByOwnerAndTitleContainsIgnoreCase(userContext.getUser(),searchterm);
+        List<BucketList> allResults = new ArrayList<BucketList>(publicResults);
+        allResults.addAll(accessResults);
+        allResults.addAll(ownerResults);
+
+        return allResults.stream().distinct().collect(Collectors.toList());
+    }
+
     @PutMapping("/{bucketList}/")
     public BucketList updateBucketList(@PathVariable BucketList bucketList, @RequestBody String update, ObjectMapper mapper) throws IOException {
         if (bucketList == null) {
@@ -174,3 +187,4 @@ public class BucketListController{
         bucketListRepository.delete(bucketList);
     }
 }
+

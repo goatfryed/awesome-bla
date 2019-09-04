@@ -23,6 +23,7 @@ import {Unauthorized401} from "./components/pages/Unauthorized401";
 import {withRouter} from "react-router";
 import {ApiError, setErrorHandler} from "./api";
 import * as PropTypes from "prop-types";
+import ListSearch from "./components/bucketlist/SearchLists";
 
 
 function App() {
@@ -40,6 +41,7 @@ function App() {
               <Route path="/users" component={allUsers}/>
               <Route path="/" exact component={AllBucketLists}/>
               <Route path="/accessed" exact component={AccessedAllBucketLists}/>
+              <Route path="/search" exact component={ListSearch}/>
               <Route path="/401" exact component={Unauthorized401} />
               <Route path="/" component={page404}/>
             </Switch>
