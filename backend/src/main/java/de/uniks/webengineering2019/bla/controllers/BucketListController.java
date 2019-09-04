@@ -51,6 +51,9 @@ public class BucketListController{
     }
 
     void changeAccessedUsersByOwner(Collection<BucketList> bucketListCollection){
+        if(!userContext.hasUser()){
+            return;
+        }
         for(BucketList bucketList:bucketListCollection){
             if(bucketList.getOwner().getId() != userContext.getUser().getId()){
                 bucketList.getAccessedUsers().clear();
