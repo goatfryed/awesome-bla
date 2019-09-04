@@ -44,7 +44,7 @@ export class Authentication {
     }
 
     isAuthenticated() {
-        return this.token !== undefined;
+        return this.token != undefined;
     }
 
     getToken() {
