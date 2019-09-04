@@ -44,12 +44,6 @@ public class BucketListController{
         this.userContext = userContext;
     }
 
-    @GetMapping("/all")
-    public List<BucketList> getAllLists(){
-        return bucketListRepository.findAll();
-        //return bucketListRepository.findByPrivateList(false);
-    }
-
     void changeAccessedUsersByOwner(Collection<BucketList> bucketListCollection){
         if (!userContext.hasUser()) {
             return;
@@ -62,7 +56,7 @@ public class BucketListController{
         }
     }
 
-    @GetMapping("/all2")
+    @GetMapping("/")
     public PageSupport<BucketList> getAllLists2(@RequestParam(defaultValue = "0")int page){
         if(page<0){
             page = 0;
@@ -89,6 +83,12 @@ public class BucketListController{
     @GetMapping("/{bucketList}")
     public BucketList get(@PathVariable BucketList bucketList) {
         bucketList.getEntries().clear();
+        if (bucketList.isPrivateList()) {
+            User user = userContext.getUser();
+            if (!user.equals(bucketList.getOwner()) && !bucketList.getAccessedUsers().contains(user)) {
+                throw new InsuficientPermissionException("You can't access this list");
+            }
+        }
         changeAccessedUsersByOwner(Collections.singletonList(bucketList));
         return bucketList;
     }
