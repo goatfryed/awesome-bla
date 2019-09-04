@@ -4,8 +4,8 @@ WORKDIR /app
 COPY package*.json ./
 RUN npm install
 COPY . ./
-ARG BACKEND_PATH="https://awesome-bla.herokuapp.com"
-ENV REACT_APP_BACKEND_URL $BACKEND_PATH
+ARG BACKEND_URL="https://localhost:8080"
+ENV REACT_APP_BACKEND_URL $BACKEND_URL
 RUN npm run build
 
 # Stage 2 - the production environment
