@@ -11,7 +11,7 @@ export class allUsers extends React.Component {
     render() {
         return (
             <div>
-                <Users text={"Bucketlisten anzeigen"} onKlick={this.showBucketLists}></Users>
+                <Users text={"Bucketlisten anzeigen"}/>
             </div>
         );
     }

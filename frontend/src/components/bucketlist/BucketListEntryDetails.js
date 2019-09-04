@@ -65,7 +65,7 @@ export default class BucketListEntryDetails extends PureComponent {
                 body: JSON.stringify(update)
             })
             .then(() => {
-                this.setState({loading: false})
+                this.setState({loading: false});
                 this.props.refresh();
             })
             .catch(error => {

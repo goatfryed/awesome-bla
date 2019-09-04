@@ -11,13 +11,17 @@ export class Users extends React.Component {
             timeout: null,
             onLoading: false,
             text: props.text,
-            onKlick: props.onKlick,
+            onKlick: null,
             endPoint: "/users/find",
             lastingElements: null,
             loadedPages: 0
         };
         if(props.endPoint != null){
             this.state.endPoint = props.endPoint;
+        }
+        if(props.onKlick != null){
+            this.state.onKlick = props.onKlick;
+            //this.state.set("onKlick",props.onKlick);
         }
         this.searchUserChanged = this.searchUserChanged.bind(this);
         this.searchUsers = this.searchUsers.bind(this);
@@ -50,13 +54,17 @@ export class Users extends React.Component {
 
     render() {
         const moreSides = ()=>{
-            return this.state.lastingElements == null ? '':this.state.lastingElements<=0?<div>Kine Weiteren User verfügbar</div>:<div>{this.state.lastingElements} weitere User <button type="submit" onClick={this.loadMore.bind(this,this.state.lastSearch)}>Laden</button></div>
+            return this.state.lastingElements === null ? '':this.state.lastingElements<=0?<div>Kine Weiteren User verfügbar</div>:<div>{this.state.lastingElements} weitere User <button type="submit" onClick={this.loadMore.bind(this,this.state.lastSearch)}>Laden</button></div>
+        };
+
+        const dobutton = (user)=>{
+            return this.state.onKlick !== null?<button onClick={this.state.onKlick.bind(this,user)} type="submit">{this.state.text}</button>:'';
         };
 
         const users = this.state.users.map((user, index) => {
             return <span key={user.id}><li className="active">
                 <b>{user.userName}</b> |&nbsp;
-                <button onClick={this.state.onKlick.bind(this,user)} type="submit">{this.state.text}</button>
+                {dobutton(user)}
             </li>
             </span>
         });

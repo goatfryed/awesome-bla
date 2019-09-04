@@ -82,7 +82,7 @@ public class BucketListController{
         return new PageSupport<BucketList>(pageRessult.getContent(),lasting);
     }
 
-    @GetMapping("/{bucketList}/")
+    @GetMapping("/{bucketList}")
     public BucketList get(@PathVariable BucketList bucketList) {
         bucketList.getEntries().clear();
         changeAccessedUsersByOwner(Collections.singletonList(bucketList));
