@@ -7,6 +7,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
 import java.util.Date;
 import java.util.List;
 
@@ -58,5 +59,11 @@ public class BucketListEntry implements Commentable {
     public List<Comment> getComments()
     {
         return comments;
+    }
+
+    @JsonIgnore
+    @Override
+    public Long getCommentableRootListId() {
+        return bucketList.getId();
     }
 }
