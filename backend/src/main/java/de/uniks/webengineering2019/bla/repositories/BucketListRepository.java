@@ -20,5 +20,5 @@ public interface BucketListRepository extends CrudRepository<BucketList, Long>{
     Page<BucketList> findByPrivateListOrAccessedUsersContainsOrOwnerOrderByCreationDateDescIdDesc(boolean privateList, User user, User owner, Pageable pageable);
 
     @Query("select b from BucketList b join b.owner o where o.userName = ?2 and (b.privateList = false or b.owner = ?1 or ?1 member of b.accessedUsers)")
-    Page<BucketList> findForUserByOwnerUserName(User user, String userName);
+    Page<BucketList> findForUserByOwnerUserName(User user, String userName, Pageable pageable);
 }
