@@ -32,7 +32,7 @@ export function BucketListBoard({match}) {
 				{
 					Authentication.isAuthenticated() &&
 					<Route path={match.path + "/personal"} exact strict
-						   render={() => <BucketListView owner={{userName: Authentication.getUser().sub}}/>}
+						   render={() => <BucketListView key="personal" owner={{userName: Authentication.getUser().sub}}/>}
 					/>
 				}
 				<Redirect to={match.path + "/public"} />
