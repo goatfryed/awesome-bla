@@ -44,7 +44,7 @@ public class BucketListController{
         this.userContext = userContext;
     }
 
-    void changeAccessedUsersByOwner(Collection<BucketList> bucketListCollection){
+    void setUserDependendListFlags(Collection<BucketList> bucketListCollection){
         if (!userContext.hasUser()) {
             return;
         }
@@ -57,7 +57,7 @@ public class BucketListController{
     }
 
     @GetMapping("/")
-    public PageSupport<BucketList> getAllLists2(@RequestParam(defaultValue = "0")int page){
+    public PageSupport<BucketList> getPublicLists(@RequestParam(defaultValue = "0")int page){
         if(page<0){
             page = 0;
         }
@@ -67,16 +67,16 @@ public class BucketListController{
         Page<BucketList> pageRessult;
 
         if(userContext.hasUser()){
-            pageRessult = bucketListRepository.findByPrivateListOrAccessedUsersContainsOrOwner(false, userContext.getUser(), userContext.getUser(),pageable);
+            pageRessult = bucketListRepository.findByPrivateListOrAccessedUsersContainsOrOwnerOrderByCreationDateDescIdDesc(false, userContext.getUser(), userContext.getUser(),pageable);
         }else{
-            pageRessult = bucketListRepository.findByPrivateList(false,pageable);
+            pageRessult = bucketListRepository.findByPrivateListOrderByCreationDateDescIdDesc(false,pageable);
         }
 
         int lasting = (int)pageRessult.getTotalElements() - (page+1) * elementsOnPage;
         if(lasting < 0){
             lasting = 0;
         }
-        changeAccessedUsersByOwner(pageRessult.getContent());
+        setUserDependendListFlags(pageRessult.getContent());
         return new PageSupport<BucketList>(pageRessult.getContent(),lasting);
     }
 
@@ -89,7 +89,7 @@ public class BucketListController{
                 throw new InsuficientPermissionException("You can't access this list");
             }
         }
-        changeAccessedUsersByOwner(Collections.singletonList(bucketList));
+        setUserDependendListFlags(Collections.singletonList(bucketList));
         return bucketList;
     }
 
@@ -180,7 +180,7 @@ public class BucketListController{
         }
         mapper.readerForUpdating(bucketList).readValue(update);
         BucketList updatedBucketList = bucketListRepository.save(bucketList);
-        changeAccessedUsersByOwner(Collections.singletonList(updatedBucketList));
+        setUserDependendListFlags(Collections.singletonList(updatedBucketList));
         return updatedBucketList;
     }
 
