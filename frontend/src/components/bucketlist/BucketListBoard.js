@@ -12,12 +12,12 @@ export function BucketListBoard({match}) {
 			<NavTabs
 				links={[
 					{
-						url: "/home/personal",
-						title: "Personal",
-					},
-					{
 						url: "/home/public",
 						title: "All",
+					},
+					{
+						url: "/home/personal",
+						title: "Personal",
 					},
 					{
 						url: "/newlist",
