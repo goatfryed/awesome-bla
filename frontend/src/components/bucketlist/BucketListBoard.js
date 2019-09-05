@@ -6,17 +6,18 @@ import {NavTabs} from "./NavTabs";
 import Authentication from "../../authentication/Authentication";
 
 export function BucketListBoard({match}) {
-
-
-
 	return (
 		<div>
 			<h5>Bucket Lists</h5>
 			<NavTabs
 				links={[
 					{
-						url: "/",
-						title: "Lists",
+						url: "/home/personal",
+						title: "Personal",
+					},
+					{
+						url: "/home/public",
+						title: "All",
 					},
 					{
 						url: "/newlist",
