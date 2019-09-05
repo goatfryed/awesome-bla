@@ -185,11 +185,6 @@ function BucketListDefaultView({bucketList, url, path, onUpdateBucketList, histo
                 {
                     url: url + "/comments/",
                     title: "Comments",
-                },
-                {
-                    url: url + "/newlistentry",
-                    title: "New list entry",
-                    navLinkProps: {target: "_self"},
                 }
             ]}/>
         </div>

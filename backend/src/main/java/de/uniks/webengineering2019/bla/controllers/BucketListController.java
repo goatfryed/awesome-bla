@@ -85,7 +85,8 @@ public class BucketListController{
         bucketList.getEntries().clear();
         if (bucketList.isPrivateList()) {
             User user = userContext.getUser();
-            if (!user.equals(bucketList.getOwner()) && !bucketList.getAccessedUsers().contains(user)) {
+            if (!user.getId().equals(bucketList.getOwner().getId()) && bucketList.getAccessedUsers().stream().filter(u->u.getId().equals(user.getId())).collect(Collectors.toList()).isEmpty())
+            {
                 throw new InsuficientPermissionException("You can't access this list");
             }
         }

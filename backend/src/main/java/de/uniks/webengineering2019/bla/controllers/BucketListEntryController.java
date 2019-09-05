@@ -2,11 +2,14 @@ package de.uniks.webengineering2019.bla.controllers;
 
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import de.uniks.webengineering2019.bla.api_errors.InsuficientPermissionException;
 import de.uniks.webengineering2019.bla.api_errors.ResourceNotFoundException;
+import de.uniks.webengineering2019.bla.authentication.UserContext;
 import de.uniks.webengineering2019.bla.comments.CommentCreationService;
 import de.uniks.webengineering2019.bla.model.BucketList;
 import de.uniks.webengineering2019.bla.model.BucketListEntry;
 import de.uniks.webengineering2019.bla.model.Comment;
+import de.uniks.webengineering2019.bla.model.User;
 import de.uniks.webengineering2019.bla.repositories.BucketListEntryRepository;
 import de.uniks.webengineering2019.bla.repositories.BucketListRepository;
 import org.slf4j.Logger;
@@ -20,6 +23,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @CrossOrigin
 @RequestMapping("/bucketlists/{bucketList}/entries")
@@ -36,17 +40,29 @@ public class BucketListEntryController {
     private final CommentCreationService commentCreationService;
     @NonNull
     private final ObjectMapper objectMapper;
+    @NonNull
+    private final UserContext userContext;
 
     public BucketListEntryController(
             @NonNull BucketListEntryRepository entryRepository,
             @NonNull BucketListRepository bucketListRepository,
             @NonNull CommentCreationService commentCreationService,
-            @NonNull ObjectMapper objectMapper
+            @NonNull ObjectMapper objectMapper,
+            @NonNull UserContext userContext
     ) {
         this.entryRepository = entryRepository;
         this.bucketListRepository = bucketListRepository;
         this.commentCreationService = commentCreationService;
         this.objectMapper = objectMapper;
+        this.userContext = userContext;
+    }
+
+    void checkAcces(BucketList bucketList){
+        User user = userContext.getUser();
+        if (!user.getId().equals(bucketList.getOwner().getId()))
+        {
+            throw new InsuficientPermissionException("You can't access this list");
+        }
     }
 
     @GetMapping("/api/bucketlists/entries")
@@ -87,6 +103,8 @@ public class BucketListEntryController {
             throw new ResourceNotFoundException("requested bucketlist does not exist");
         }
 
+        checkAcces(updatedBucketList.get());
+
         final BucketList bucketList = updatedBucketList.get();
         // save entry into list
         bucketList.addEntry(newEntry);
@@ -100,6 +118,7 @@ public class BucketListEntryController {
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deleteEntry(@PathVariable BucketList bucketList, @PathVariable BucketListEntry entry)
     {
+        checkAcces(entry.getBucketList());//check if user or admin
         bucketList.getEntries().remove(entry);
         entryRepository.delete(entry);
     }
@@ -115,6 +134,7 @@ public class BucketListEntryController {
             throw new ResourceNotFoundException("requested entry unknown");
         }
 
+        checkAcces(entry.getBucketList());
         mapper.readerForUpdating(entry).readValue(updateJson);
         entryRepository.save(entry);
     }
