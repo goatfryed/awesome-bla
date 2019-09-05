@@ -1,5 +1,4 @@
 
-import React from "react";
 import {isDebug,backend} from "../Configuration";
 import jwt_decode from 'jwt-decode';
 

@@ -161,10 +161,10 @@ BucketListDetails.propTypes = {
     editUrl: PropTypes.string,
 };
 
-function BucketListDefaultView({bucketList, url, path, onUpdateBucketList, history}) {
+function BucketListDefaultView({bucketList, url, path, onUpdateBucketList, history, refresh}) {
 
     let renderEntries = useCallback(() => <BucketListEntries id={bucketList.id}/>, [bucketList.id]);
-    let renderComments = useCallback(() => <BucketListComments bucketList={bucketList}/>, [bucketList]);
+    let renderComments = useCallback(() => <BucketListComments refresh={refresh} bucketList={bucketList}/>, [bucketList]);
     let renderSettings = useCallback(() => <ListSettings bucketList={bucketList}/>, [bucketList]);
 
 
@@ -278,26 +278,26 @@ export function BucketList({match, history}) {
             bucketList={bucketList}
             url={match.url}
             path={match.path}
-            update={loadBucketList}
+            refresh={loadBucketList}
             onUpdateBucketList={updateBucketList}
             history={history}
         />
     </div>
 }
 
-function BucketListComments({bucketList, update}) {
+function BucketListComments({bucketList, refresh}) {
 
     async function addCommentToBucketList(comment) {
         await backendFetch.post(
             "/bucketlists/" + bucketList.id + "/comments/",
             {body: JSON.stringify(comment)}
         );
-        update();
+        refresh();
     }
 
     return <CommentsBlock
         onRootCommentCreation={addCommentToBucketList}
-        onReplyCreated={update}
+        onReplyCreated={refresh}
         comments={bucketList.comments}
     />
 }

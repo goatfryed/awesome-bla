@@ -17,7 +17,7 @@ body {
     .navbar-logo {
       max-height: 50px;
       margin-right: 7px;
-      margin-left: 7px;
+      margin-left: 15px;
       position: relative;
       top: 50%;
       transform: translateY(-50%);
@@ -54,9 +54,6 @@ body {
       float: right;
     }
   }
-
-  max-width: 1280px;
-  margin: 0 auto;
 }
 
 nav,
@@ -122,7 +119,7 @@ h2 {
 
 //Mobile Friendly
 @media screen and (max-width: 600px) {
-  .btn-small , .btn{
+  .btn-small, .btn {
     padding: 0 12px;
 
   }
@@ -152,9 +149,12 @@ h2 {
       }
     }
   }
-  .tabs .tab a{
+  .tabs .tab a {
     padding: 0 2px;
     font-size: 12px;
+  }
+  #mainContainer{
+    width: 100%;
   }
 }
 
@@ -209,4 +209,20 @@ h2 {
 
 .mt2rem {
   margin-top: 2rem;
+}
+
+//background
+body {
+  background: url("/background.jpg");
+}
+html, body, #root, #mainContainer{
+  min-height: 100vh;
+
+}
+#mainContainer {
+  background: white;
+  box-shadow: 0 0 12px #00000094;
+}
+#contentWrapper {
+  padding: 0 20px;
 }

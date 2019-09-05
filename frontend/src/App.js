@@ -27,28 +27,32 @@ import {Login} from "./authentication/Login";
 
 
 function App() {
-  return <Router>
-      <UnauthorizedHandler>
-          <AppNavbar/>
-          <div className="container">
-            <Switch>
-              <Route path="/login" component={Login} />
-              <Route path="/callback" component={AuthenticationCallback}/>
-              <Route strict exact path="/import/" component={ImportTargetSelection} />
-              <Route path="/bucketlist/:id/newlistentry/" component={ListEntryNew}/>
-              <Route path="/newlist" component={ListNew} />
-              {/* https://reacttraining.com/react-router/web/api/Route/render-func */}
-              <Route path="/bucketlist/:id/" render={({match, history}) => <BucketList match={match} history={history} id={match.params.id} />} />
-              <Route path="/users" component={allUsers}/>
-              <Route path="/home" component={BucketListBoard}/>
-              <Route path="/search" exact component={ListSearch}/>
-              <Route path="/401" strict exact component={Unauthorized401} />
-              <Route path="/" exact><Redirect to="/home" /></Route>
-              <Route path="/" component={page404}/>
-            </Switch>
-          </div>
-      </UnauthorizedHandler>
-  </Router>
+    return <Router>
+        <UnauthorizedHandler>
+            <div id="mainContainer" className="container">
+                <AppNavbar/>
+                <div id="contentWrapper">
+                    <Switch>
+                        <Route path="/login" component={Login}/>
+                        <Route path="/callback" component={AuthenticationCallback}/>
+                        <Route strict exact path="/import/" component={ImportTargetSelection}/>
+                        <Route path="/bucketlist/:id/newlistentry/" component={ListEntryNew}/>
+                        <Route path="/newlist" component={ListNew}/>
+                        {/* https://reacttraining.com/react-router/web/api/Route/render-func */}
+                        <Route path="/bucketlist/:id/"
+                               render={({match, history}) => <BucketList match={match} history={history}
+                                                                         id={match.params.id}/>}/>
+                        <Route path="/users" component={allUsers}/>
+                        <Route path="/home" component={BucketListBoard}/>
+                        <Route path="/search" exact component={ListSearch}/>
+                        <Route path="/401" strict exact component={Unauthorized401}/>
+                        <Route path="/" exact><Redirect to="/home"/></Route>
+                        <Route path="/" component={page404}/>
+                    </Switch>
+                </div>
+            </div>
+        </UnauthorizedHandler>
+    </Router>
 }
 
 class UnauthorizedHandlerComponent extends PureComponent {
