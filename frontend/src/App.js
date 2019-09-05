@@ -10,7 +10,6 @@ import {AuthenticationCallback} from "./authentication/AuthenticationCallback";
 
 //Components
 import {ListEntryNew} from "./components/bucketlist/ListEntryNew";
-import {AllBucketLists} from "./components/bucketlist/ShowAllBucketLists"
 import {BucketList} from "./components/bucketlist/BucketList";
 import ListNew from "./components/bucketlist/ListNew";
 
