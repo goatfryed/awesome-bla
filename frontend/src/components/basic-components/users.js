@@ -1,5 +1,6 @@
 import React from "react";
 import {backendFetch} from "../../api";
+import {Button} from "react-materialize"
 
 export class Users extends React.Component {
 
@@ -52,16 +53,16 @@ export class Users extends React.Component {
 
     render() {
         const moreSides = ()=>{
-            return this.state.lastingElements === null ? '':this.state.lastingElements<=0?<div>Kine Weiteren User verfügbar</div>:<div>{this.state.lastingElements} weitere User <button type="submit" onClick={this.loadMore.bind(this,this.state.lastSearch)}>Laden</button></div>
+            return this.state.lastingElements === null ? '':this.state.lastingElements<=0?<div>No more Users available</div>:<div>{this.state.lastingElements} weitere User <button type="submit" onClick={this.loadMore.bind(this,this.state.lastSearch)}>Laden</button></div>
         };
 
         const dobutton = (user)=>{
-            return this.state.onKlick !== null?<button onClick={this.state.onKlick.bind(this,user)} type="submit">{this.state.text}</button>:'';
+            return this.state.onKlick !== null?<Button small className="floatRight allowAccessBtn" onClick={this.state.onKlick.bind(this,user)} type="submit">{this.state.text}</Button>:'';
         };
 
         const users = this.state.users.map((user, index) => {
-            return <span key={user.id}><li className="active">
-                <b>{user.userName}</b> |&nbsp;
+            return <span key={user.id}><li className="collection-item grey lighten-3">
+                <b>{user.userName}</b>
                 {dobutton(user)}
             </li>
             </span>
@@ -72,7 +73,7 @@ export class Users extends React.Component {
                 <h2>Search users:</h2>
                 <input type="text" defaultValue="#Username" onChange={this.searchUserChanged}/>
                 {this.state.onLoading?"Loading...":""}
-                <ul>
+                <ul className="collection grey lighten-1">
                     {users}
                 </ul>
                 {moreSides()}

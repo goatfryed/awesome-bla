@@ -65,13 +65,13 @@ export class ListSettings extends React.Component {
 
     const privateOptions = ()=>{
       return <div>
-        <div>Berechtiget user
+        <div>Allowed users
           <div>
             {priv_users}
           </div>
         </div>
         <div>Berechtigungen zuteilen
-          <Users ref="usersRef" text="Zugriff erlauben" onKlick={this.makePriveleged} endPoint={this.state.endPoint}/>
+          <Users ref="usersRef" text="Allow access" onKlick={this.makePriveleged} endPoint={this.state.endPoint}/>
         </div>
       </div>
     };
@@ -82,7 +82,7 @@ export class ListSettings extends React.Component {
           <div>
             <label>
               <input className="filled-in" type="checkbox" checked={this.state.bucketList.private} onChange={this.privateChanged} />
-              <span>Private Liste</span>
+              <span>Private list</span>
             </label>
           </div>
           {this.state.bucketList.private?privateOptions():""}

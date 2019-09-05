@@ -109,9 +109,29 @@ h2 {
     background-color: lighten(red, 20%);
   }
 }
+//BucketListDetails Page
+.checkboxEntry {
+  top: 7px;
+}
+ //users
+.allowAccessBtn {
+  transform: translateY(-20%);
+}
 
 
 //Generic Classes
+.floatRight {
+  float: right;
+}
+
 .ml05 {
   margin-left: 5px;
+}
+
+.mt05{
+  margin-top: 5px;
+}
+
+.mt2rem{
+  margin-top: 2rem;
 }
