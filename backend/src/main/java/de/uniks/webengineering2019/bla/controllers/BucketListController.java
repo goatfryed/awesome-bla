@@ -47,7 +47,7 @@ public class BucketListController{
     void modifyBucketListByRequestingUser(Collection<BucketList> bucketListCollection){
         User user = userContext.getUserOrNull();
         for(BucketList bucketList:bucketListCollection){
-            boolean userIsOwner = user != null && user.equals(bucketList.getOwner());
+            boolean userIsOwner = user != null && user.getId().equals(bucketList.getOwner().getId());
             bucketList.setOwnList(userIsOwner);
             if (userIsOwner) {
                 continue;
@@ -100,7 +100,7 @@ public class BucketListController{
         bucketList.getEntries().clear();
         if (bucketList.isPrivateList()) {
             User user = userContext.getUserOrThrow();
-            if (!user.equals(bucketList.getOwner()) && !bucketList.getAccessedUsers().contains(user)) {
+            if (!user.getId().equals(bucketList.getOwner().getId()) && bucketList.getAccessedUsers().stream().filter(u->u.getId().equals(user.getId())).collect(Collectors.toList()).isEmpty()) {
                 throw new InsuficientPermissionException("You can't access this list");
             }
         }
@@ -174,15 +174,21 @@ public class BucketListController{
     }
 
     @GetMapping("/search/{searchterm}")
-    public List<BucketList> searchBucketList(@PathVariable("searchterm") String searchterm) {
-        List<BucketList> publicResults = bucketListRepository.findByPrivateListAndTitleContainsIgnoreCaseOrderByCreationDateDescIdDesc(false, searchterm);
-        List<BucketList> accessResults = bucketListRepository.findByAccessedUsersContainsAndTitleContainsIgnoreCaseOrderByCreationDateDescIdDesc(userContext.getUserOrThrow(),searchterm);
-        List<BucketList> ownerResults = bucketListRepository.findByOwnerAndTitleContainsIgnoreCaseOrderByCreationDateDescIdDesc(userContext.getUserOrThrow(),searchterm);
-        List<BucketList> allResults = new ArrayList<BucketList>(publicResults);
-        allResults.addAll(accessResults);
-        allResults.addAll(ownerResults);
+    public List<BucketList> searchBucketList(@PathVariable("searchterm") String searchterm) {//
+        if(userContext.hasUser()){
+            String userPattern = "%"+searchterm.toLowerCase()+"%";
+            return bucketListRepository.findByNameAndPrivelege(userContext.getUserOrThrow().getId(),userPattern);
+        }
+        return bucketListRepository.findByPrivateListAndTitleContainingIgnoreCaseOrderByCreationDateDescIdDesc(false,searchterm);
 
-        return allResults.stream().distinct().collect(Collectors.toList());
+//      List<BucketList> publicResults = bucketListRepository.findByPrivateListAndTitleContainsIgnoreCaseOrderByCreationDateDescIdDesc(false, searchterm);
+//      List<BucketList> accessResults = bucketListRepository.findByAccessedUsersContainsAndTitleContainsIgnoreCaseOrderByCreationDateDescIdDesc(userContext.getUserOrThrow(),searchterm);
+//      List<BucketList> ownerResults = bucketListRepository.findByOwnerAndTitleContainsIgnoreCaseOrderByCreationDateDescIdDesc(userContext.getUserOrThrow(),searchterm);
+//      List<BucketList> allResults = new ArrayList<BucketList>(publicResults);
+//      allResults.addAll(accessResults);
+//      allResults.addAll(ownerResults);
+//
+//      return allResults.stream().distinct().collect(Collectors.toList());
     }
 
     @PutMapping("/{bucketList}/")

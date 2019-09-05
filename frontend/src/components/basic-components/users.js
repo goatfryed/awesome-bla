@@ -53,7 +53,7 @@ export class Users extends React.Component {
 
     render() {
         const moreSides = ()=>{
-            return this.state.lastingElements === null ? '':this.state.lastingElements<=0?<div>No more Users available</div>:<div>{this.state.lastingElements} weitere User <button type="submit" onClick={this.loadMore.bind(this,this.state.lastSearch)}>Laden</button></div>
+            return this.state.lastingElements === null ? '':this.state.lastingElements<=0?<div>No more Users available</div>:<div>{this.state.lastingElements} weitere User <Button type="submit" onClick={this.loadMore.bind(this,this.state.lastSearch)}>Laden</Button></div>
         };
 
         const dobutton = (user)=>{

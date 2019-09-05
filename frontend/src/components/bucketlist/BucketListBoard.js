@@ -5,6 +5,7 @@ import { backendFetch } from "../../api";
 import {NavTabs} from "./NavTabs";
 import Authentication from "../../authentication/Authentication";
 import PropTypes from "prop-types";
+import {Button} from "react-materialize"
 
 export function BucketListBoard({match}) {
 	return (
@@ -95,7 +96,7 @@ export class BucketListView extends PureComponent {
 
 	render() {
 		const moreSides = ()=>{
-			return this.state.lastingElements == null ? '':this.state.lastingElements<=0?<div>Kine Weiteren Listen verfügbar</div>:<div>{this.state.lastingElements} weiter Listen <button type="submit" onClick={this.loadMore.bind(this)}>Laden</button></div>
+			return this.state.lastingElements == null ? '':this.state.lastingElements<=0?<div>Kine Weiteren Listen verfügbar</div>:<div>{this.state.lastingElements} weiter Listen <Button type="submit" onClick={this.loadMore.bind(this)}>Laden</Button></div>
 		};
 
 		return <>
