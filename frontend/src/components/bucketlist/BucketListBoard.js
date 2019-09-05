@@ -75,7 +75,10 @@ function BucketListEntry({bucketList}) {
 		<div className="row" style={{marginBottom: "initial"}}>
 			<div className="col">
 				<span className="title"><Link to={"/bucketlist/" + bucketList.id}>{bucketList.title}</Link></span>
-				<p>by {bucketList.ownList ? "you" : bucketList.owner.userName}</p>
+				<p>{
+					bucketList.ownList ? <span>your List</span>
+						: <span>{bucketList.privateList ? "shared by" : "by"} {bucketList.owner.userName}</span>
+				}</p>
 			</div>
 			<div className="col">
 				<span>{bucketList.description}</span>
