@@ -17,7 +17,7 @@ export function defaultErrorHandler(response) {
     throw new ApiError(response);
 }
 
-export async function backendFetch(url, {alwaysThrow = false, ...config}) {
+export async function backendFetch(url, {alwaysThrow = false, ...config} = {}) {
 
     const configHeaders = (config && config.headers) || {};
     if (Authentication.isAuthenticated()) {

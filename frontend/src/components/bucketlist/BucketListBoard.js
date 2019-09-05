@@ -1,10 +1,10 @@
-import React, { Component } from 'react';
+import React, { PureComponent } from 'react';
 import { Route, Switch} from "react-router";
 import { Link, Redirect } from "react-router-dom";
 import { backendFetch } from "../../api";
 import {NavTabs} from "./NavTabs";
 
-export class AccessedAllBucketLists extends Component {
+export class BucketListBoard extends PureComponent {
 
 	state = {};
 
@@ -20,7 +20,7 @@ export class AccessedAllBucketLists extends Component {
 	}
 
 	loadMore(){
-		backendFetch.get('/bucketlists/all2?page='+this.state.loadedPages).then(response => {
+		backendFetch.get('/bucketlists/?page='+this.state.loadedPages).then(response => {
 			if(response.content.length > 0){
 				this.setState({loadedPages: this.state.loadedPages+1});
 			}
