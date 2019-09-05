@@ -61,7 +61,7 @@ public class BucketListController{
     @GetMapping("/")
     public PageSupport<BucketList> getPublicLists(
         @RequestParam(defaultValue = "0")int page,
-        @Nullable @RequestParam(required = false) String userName
+        @RequestParam(required = false) String userName
     ){
         if(page<0){
             page = 0;
