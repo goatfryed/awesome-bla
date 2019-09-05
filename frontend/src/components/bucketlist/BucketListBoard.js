@@ -39,16 +39,6 @@ export class BucketListBoard extends PureComponent {
 	}
 
 	render() {
-		const bucketLists = this.state.bucketLists.map(bucketList => {
-			return (
-				<div>
-					<Link to={"/bucketlist/" + bucketList.id} className="collection-item grey lighten-3">
-						{bucketList.title} {bucketList.ownList?"(Eigene Liste)":""}
-					</Link>
-				</div>
-			);
-		});
-
 		const moreSides = ()=>{
 			return this.state.lastingElements == null ? '':this.state.lastingElements<=0?<div>Kine Weiteren Listen verfügbar</div>:<div>{this.state.lastingElements} weiter Listen <button type="submit" onClick={this.loadMore.bind(this)}>Laden</button></div>
 		};
@@ -70,7 +60,7 @@ export class BucketListBoard extends PureComponent {
 					]}
 				/>
 				<Switch>
-					<Route path="/" render={() => <Lists bucketLists={ bucketLists } />} />
+					<Route path="/" render={() => <Lists bucketLists={ this.state.bucketLists } />} />
 					<Redirect to="/newlist" />
 				</Switch>
 				{moreSides()}
@@ -79,10 +69,27 @@ export class BucketListBoard extends PureComponent {
 	}
 }
 
-const Lists = ({ bucketLists }) => {
-	return (
-		<div className="collection grey lighten-1">
-			{ bucketLists }
+function BucketListEntry({bucketList}) {
+	return <li className="collection-item avatar" style={{minHeight: "initial"}}>
+		<i className="material-icons circle green">playlist_add_check</i>
+		<div className="row" style={{marginBottom: "initial"}}>
+			<div className="col">
+				<span className="title"><Link to={"/bucketlist/" + bucketList.id}>{bucketList.title}</Link></span>
+				<p>by {bucketList.ownList ? "you" : bucketList.owner.userName}</p>
+			</div>
+			<div className="col">
+				<span>{bucketList.description}</span>
+			</div>
 		</div>
-	);
+		<Link to={"/bucketlist/" + bucketList.id} className="secondary-content"><i
+			className="material-icons">send</i></Link>
+	</li>;
+}
+
+const Lists = ({ bucketLists }) => {
+	return <ul className="collection lighten-1">
+		{
+			bucketLists.map(bucketList => <BucketListEntry  key={bucketList.id}  bucketList={bucketList}/>)
+		}
+	</ul>
 };
