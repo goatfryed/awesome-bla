@@ -45,16 +45,14 @@ public class BucketListController{
     }
 
     void modifyBucketListByRequestingUser(Collection<BucketList> bucketListCollection){
-        if (!userContext.hasUser()) {
-            return;
-        }
-        User user = userContext.getUserOrThrow();
+        User user = userContext.getUserOrNull();
         for(BucketList bucketList:bucketListCollection){
-            boolean userIsOwner = user.equals(bucketList.getOwner();
+            boolean userIsOwner = user != null && user.equals(bucketList.getOwner());
             bucketList.setOwnList(userIsOwner);
             if (userIsOwner) {
                 continue;
             }
+            bucketList.setShared(bucketList.getAccessedUsers().contains(user));
             bucketList.getAccessedUsers().clear();
         }
     }
