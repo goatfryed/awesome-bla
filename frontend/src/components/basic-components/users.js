@@ -15,7 +15,7 @@ export class Users extends React.Component {
             timeout: null,
             onLoading: false,
             text: props.text,
-            endPoint: props.endPoint === undefined ? "/users/find":props.endPoint,
+            endPoint: props.endPoint === undefined ? "/users/find":props.endPoint,//no endpoint ? -> search all users
             lastingElements: null,
             loadedPages: 0,
             onKlick: props.onKlick === undefined ? null : props.onKlick
@@ -43,7 +43,7 @@ export class Users extends React.Component {
         }
         this.setState({
             onLoading: true,
-            timeout: setTimeout(ev=>{
+            timeout: setTimeout(ev=>{//timeout so request is only send when user stopped typing for 1 sec
                     this.searchUsers(name,false);
                 }, 1000
             ),
@@ -52,11 +52,11 @@ export class Users extends React.Component {
     }
 
     render() {
-        const moreSides = ()=>{
+        const moreSides = ()=>{//ony show button when more sides are avaliable
             return this.state.lastingElements === null ? '':this.state.lastingElements<=0?<div>No more Users available</div>:<div>{this.state.lastingElements} weitere User <Button type="submit" onClick={this.loadMore.bind(this,this.state.lastSearch)}>Laden</Button></div>
         };
 
-        const dobutton = (user)=>{
+        const dobutton = (user)=>{//ony show button when callback ist set
             return this.state.onKlick !== null?<Button small className="floatRight allowAccessBtn" onClick={this.state.onKlick.bind(this,user)} type="submit">{this.state.text}</Button>:'';
         };
 
@@ -108,6 +108,7 @@ export class Users extends React.Component {
         this.loadMore(name,force);
     }
 
+    //reload is needet when user in priveled lists is added ore removed because page is unknown so reload all sides known til now (a bit ugly but found no better way)
     loadMore(name,reload){
         backendFetch.get(this.getEndPointUrl(name)+(reload==true ? "&reload=true":""))
         .then((response) => {

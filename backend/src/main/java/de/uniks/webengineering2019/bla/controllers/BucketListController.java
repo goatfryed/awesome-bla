@@ -45,6 +45,7 @@ public class BucketListController{
     }
 
     void modifyBucketListByRequestingUser(Collection<BucketList> bucketListCollection){
+        //set ownList flag in bucketlist wenn it is so frontend knowns wich buttons and menues to show
         User user = userContext.getUserOrNull();
         for(BucketList bucketList:bucketListCollection){
             boolean userIsOwner = user != null && user.getId().equals(bucketList.getOwner().getId());
@@ -68,12 +69,11 @@ public class BucketListController{
         }
         Pageable pageable = PageRequest.of(page,elementsOnPage);
 
-
         Page<BucketList> pageRessult;
 
         if (userName != null) {
             pageRessult = bucketListRepository.findForUserByOwnerUserName(userContext.getUserOrNull(), userName, pageable);
-        }else if(specUser != null){
+        }else if(specUser != null){//find all bucketlists from this user
             if(userContext.hasUser()) {
                 pageRessult = bucketListRepository.findByownerIdandPriveleged(specUser,userContext.getUserOrThrow().getId(),pageable);
             }else{
@@ -176,6 +176,7 @@ public class BucketListController{
     @GetMapping("/search/{searchterm}")
     public List<BucketList> searchBucketList(@PathVariable("searchterm") String searchterm) {//
         if(userContext.hasUser()){
+            //make srachTerm ready for serach in database with "LIKE"
             String userPattern = "%"+searchterm.toLowerCase()+"%";
             return bucketListRepository.findByNameAndPrivelege(userContext.getUserOrThrow().getId(),userPattern);
         }

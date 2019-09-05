@@ -41,8 +41,10 @@ public class UserService{
     public PageSupport<User> findUserNotPrivelegedAndName(final String user, final BucketList list, final int page,boolean reload){
         Pageable pageable = PageRequest.of(page,elementsOnPage);
         if(reload){
+            //change pagesizet to size of all known elements of user
             pageable = PageRequest.of(0,page*elementsOnPage);
         }
+        //make srachTerm ready for serach in database with "LIKE"
         String userPattern = "%"+user+"%";
         Page<User> pageResult  = userRepository.findByUserNameAndNotAccesdByBucketlist(list.getId(),list.getOwner().getId(),userPattern,pageable);
         return new PageSupport<>(pageResult,page,elementsOnPage);

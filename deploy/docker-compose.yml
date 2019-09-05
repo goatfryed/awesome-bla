@@ -35,6 +35,7 @@ services:
       - "../backend/build/libs:/dist"
 #      - "/home/lukas/workspace/awesome-bucket-list/backend/docker/res:/res"
       - "./res:/res"
+#   sleep needet for backend to come up on first start (clean database)
     command: bash -c 'sleep 10 && java -jar /dist/bla-0.0.1-SNAPSHOT.jar --spring.datasource.url=jdbc:postgresql://prod-bucketlist-db:5432/bucket --spring.datasource.data=file:/res/sample-list-entries.sql --spring.datasource.initialization-mode=always'
 #    command: bash -c 'sleep 5 && java -jar /dist/bla-0.0.1-SNAPSHOT.jar --spring.datasource.url=jdbc:postgresql://prod-bucketlist-db:5432/bucket'
     working_dir: /res
@@ -50,4 +51,5 @@ networks:
    config:
    - subnet: 10.5.6.0/24
   driver_opts:
+#  need for allowing in iptables
    com.docker.network.bridge.name: br-buck

@@ -57,6 +57,7 @@ public class BucketListEntryController {
         this.userContext = userContext;
     }
 
+    //throws 401 back if user is not permitted for deleting or creating or changing an entry
     void checkAcces(BucketList bucketList){
         User user = userContext.getUserOrThrow();
         if (!user.getId().equals(bucketList.getOwner().getId()))
