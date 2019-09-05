@@ -44,13 +44,13 @@ class ListSearch extends Component {
 			<>
 				<form onSubmit={this.handleSubmit}>
 					<div>
-						<h2>Nach Listen suchen</h2>
+						<h2>Search lists</h2>
 						<div>
 							<input
 								className="input"
 								type="text"
 								name="searchterm"
-								placeholder="Listen nach Namen suchen..."
+								placeholder="Search lists by title..."
 								autoComplete="off"
 								autoFocus={true}
 								value={this.state.searchterm}

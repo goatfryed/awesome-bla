@@ -69,7 +69,7 @@ export class Users extends React.Component {
 
         return (
             <div>
-                <h2>Benutzersuche:</h2>
+                <h2>Search users:</h2>
                 <input type="text" defaultValue="#Username" onChange={this.searchUserChanged}/>
                 {this.state.onLoading?"Loading...":""}
                 <ul>

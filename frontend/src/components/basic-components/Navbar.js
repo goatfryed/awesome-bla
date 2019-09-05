@@ -56,10 +56,10 @@ export class AppNavbar extends React.Component {
                     Home
                 </NavLink>
                 <NavLink to="/search" activeClassName="activeLink">
-                    Listensuche
+                    Search Lists
                 </NavLink>
                 <NavLink to="/users" activeClassName="activeLink">
-                    Benutzersuche
+                    Search Users
                 </NavLink>
                 {!Authentication.isAuthenticated() && isDebug && (
                     <NavItem>

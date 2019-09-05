@@ -53,11 +53,11 @@ export class ListEntryNew extends React.Component {
     render() {
         return (
             <>
-                <h2>Neuen Listeneintrag erstellen</h2>
+                <h2>Create new listentry</h2>
                 <form onSubmit={this.handleSubmit} className="new-post">
                     <div className="field">
                         <div className="control">
-                            <input className="input" type="text" name="title" placeholder="Titel eingeben..."
+                            <input className="input" type="text" name="title" placeholder="Enter title..."
                                    autoFocus={true}
                                    value={this.state.title} onChange={this.handleChange} maxLength={1024}/>
                         </div>
@@ -68,7 +68,7 @@ export class ListEntryNew extends React.Component {
                             onChange={this.handleChange}
                             name="description"
                             maxLength={4096}
-                            placeholder="Beschreibung eingeben..."
+                            placeholder="Enter description..."
                             s={12}
                             m={12}
                             l={12}
@@ -77,12 +77,12 @@ export class ListEntryNew extends React.Component {
                     </div>
                     <div className="field is-grouped">
                         <Button type="submit" waves="light" className="submitBtn">
-                            Erstellen
+                            Create
                             <Icon right>
                                 send
                             </Icon>
                         </Button>
-                        <Button className="red" onClick={this.cancelForm}>Abbrechen</Button>
+                        <Button className="red" onClick={this.cancelForm}>Cancel</Button>
                     </div>
                 </form>
             </>
