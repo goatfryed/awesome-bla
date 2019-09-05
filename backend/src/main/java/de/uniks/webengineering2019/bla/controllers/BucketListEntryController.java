@@ -58,7 +58,7 @@ public class BucketListEntryController {
     }
 
     void checkAcces(BucketList bucketList){
-        User user = userContext.getUser();
+        User user = userContext.getUserOrThrow();
         if (!user.getId().equals(bucketList.getOwner().getId()))
         {
             throw new InsuficientPermissionException("You can't access this list");
