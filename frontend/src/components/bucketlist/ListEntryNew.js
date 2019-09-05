@@ -1,5 +1,6 @@
 import React from "react";
 import {backendFetch} from "../../api";
+import {Button, Icon, Textarea} from "react-materialize";
 
 export class ListEntryNew extends React.Component {
     constructor(props) {
@@ -46,41 +47,42 @@ export class ListEntryNew extends React.Component {
 
     cancelForm = (event) => {
         event.preventDefault();
-        this.props.history.push("/bucketlist/"+this.state.listID);
+        this.props.history.push("/bucketlist/" + this.state.listID);
     }
 
     render() {
         return (
             <>
-                <h2>Neuen Listeneintrag erstellen</h2>
+                <h2>Create new listentry</h2>
                 <form onSubmit={this.handleSubmit} className="new-post">
                     <div className="field">
                         <div className="control">
-                            <input className="input" type="text" name="title" placeholder="Enter Title..."
+                            <input className="input" type="text" name="title" placeholder="Enter title..."
                                    autoFocus={true}
                                    value={this.state.title} onChange={this.handleChange} maxLength={1024}/>
                         </div>
                     </div>
                     <div className="field">
-                        <label className="label">Description</label>
-                        <div className="control">
-                            <textarea
-                                className="textarea"
-                                name="description"
-                                value={this.state.description}
-                                onChange={this.handleChange}
-                                // We will later use a value from the backend instead of a hardcoded one.
-                                maxLength={4096}
-                            />
-                        </div>
+                        <Textarea
+                            value={this.state.description}
+                            onChange={this.handleChange}
+                            name="description"
+                            maxLength={4096}
+                            placeholder="Enter description..."
+                            s={12}
+                            m={12}
+                            l={12}
+                            xl={12}
+                        />
                     </div>
                     <div className="field is-grouped">
-                        <div className="control">
-                            <input type="submit" className="button is-link" value="Submit"/>
-                        </div>
-                        <div className="control">
-                            <button className="button is-text" onClick={this.cancelForm}>Cancel</button>
-                        </div>
+                        <Button type="submit" waves="light" className="submitBtn">
+                            Create
+                            <Icon right>
+                                send
+                            </Icon>
+                        </Button>
+                        <Button className="red" onClick={this.cancelForm}>Cancel</Button>
                     </div>
                 </form>
             </>

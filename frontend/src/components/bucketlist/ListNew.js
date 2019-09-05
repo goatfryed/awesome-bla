@@ -1,5 +1,6 @@
 import React, {Component} from 'react';
 import {backendFetch} from "../../api";
+import {Button, Icon, Textarea} from "react-materialize";
 
 class ListNew extends Component {
     state = {
@@ -27,14 +28,14 @@ class ListNew extends Component {
     }
 
     cancelForm = (event) => {
-    	event.preventDefault();
-    	this.props.history.push("/")
-	}
+        event.preventDefault();
+        this.props.history.push("/")
+    }
 
     render() {
         return (
             <>
-                <h2>Neue Liste erstellen</h2>
+                <h2>Create new list</h2>
                 <form onSubmit={this.handleSubmit}>
                     <div>
                         <div>
@@ -42,7 +43,7 @@ class ListNew extends Component {
                                 className="input"
                                 type="text"
                                 name="title"
-                                placeholder="Enter Title..."
+                                placeholder="Enter title...."
                                 autoFocus={true}
                                 value={this.state.title}
                                 onChange={this.handleChange}
@@ -51,24 +52,26 @@ class ListNew extends Component {
                         </div>
                     </div>
                     <div>
-                        <label>Description</label>
-                        <div>
-						<textarea
-                            className="textarea"
-                            name="description"
+                        <Textarea
                             value={this.state.description}
                             onChange={this.handleChange}
+                            name="description"
                             maxLength={4096}
+                            placeholder="Enter description..."
+                            s={12}
+                            m={12}
+                            l={12}
+                            xl={12}
                         />
-                        </div>
                     </div>
-                    <div>
-                        <div>
-                            <input type="submit" value="Submit"/>
-                        </div>
-                        <div>
-                            <button onClick={this.cancelForm}>Cancel</button>
-                        </div>
+                    <div className="row">
+                        <Button type="submit" waves="light" className="submitBtn">
+                            Create
+                            <Icon right>
+                                send
+                            </Icon>
+                        </Button>
+                        <Button className="cancelBtn" onClick={this.cancelForm}>Cancel</Button>
                     </div>
                 </form>
             </>

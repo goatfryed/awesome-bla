@@ -20,10 +20,6 @@ import java.util.stream.Collectors;
 
 @Service
 public class UserService{
-
-    @Autowired
-    UserContext userContext;
-
     @Autowired
     UserRepository userRepository;
 

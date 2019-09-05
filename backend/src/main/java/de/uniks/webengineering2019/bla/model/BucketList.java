@@ -4,12 +4,15 @@ import java.util.Date;
 import java.util.List;
 import java.util.Set;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import lombok.*;
+import org.springframework.context.annotation.Lazy;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
 
 @Setter
 @Getter
@@ -101,5 +104,11 @@ public class BucketList implements Commentable {
     public List<Comment> getComments()
     {
         return comments;
+    }
+
+    @Override
+    @JsonIgnore
+    public Long getCommentableRootListId() {
+        return this.getId();
     }
 }
