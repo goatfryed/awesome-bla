@@ -10,6 +10,7 @@ import de.uniks.webengineering2019.bla.model.Comment;
 import de.uniks.webengineering2019.bla.model.User;
 import de.uniks.webengineering2019.bla.repositories.BucketListRepository;
 import de.uniks.webengineering2019.bla.utils.PageSupport;
+import jdk.internal.jline.internal.Nullable;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -60,7 +61,7 @@ public class BucketListController{
     @GetMapping("/")
     public PageSupport<BucketList> getPublicLists(
         @RequestParam(defaultValue = "0")int page,
-        @RequestParam String userName
+        @Nullable @RequestParam(required = false) String userName
     ){
         if(page<0){
             page = 0;
@@ -71,7 +72,7 @@ public class BucketListController{
         Page<BucketList> pageRessult;
 
         if (userName != null) {
-            pageRessult = bucketListRepository.findForUserByOwnerUserName(null, userName);
+            pageRessult = bucketListRepository.findForUserByOwnerUserName(userContext.getUserOrNull(), userName, pageable);
         } else {
             if(userContext.hasUser()){
                 pageRessult = bucketListRepository.findByPrivateListOrAccessedUsersContainsOrOwnerOrderByCreationDateDescIdDesc(false, userContext.getUserOrThrow(), userContext.getUserOrThrow(),pageable);
