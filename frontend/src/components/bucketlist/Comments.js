@@ -56,12 +56,12 @@ export function CommentInput({onCommentCreation}) {
 
     return <form onSubmit={onSubmit}>
         <div className="row">
-            <div className="col s10 noPadding">
+            <div className="col s8 m10 noPadding">
                 <input type="text" value={comment} placeholder="Comment something"
                        onChange={e => setComment(e.target.value)}/>
             </div>
-            <div className="col s2">
-                <Button type="submit">Submit</Button>
+            <div className="col s4 m2">
+                <Button className="fullWidth" type="submit">Submit</Button>
             </div>
         </div>
     </form>

@@ -143,11 +143,11 @@ function BucketListEntryView({entry, pagePath, refresh, history,  match, onDelet
             <small>
                 {" · "+ moment(entry.created).fromNow()}
             </small>
-            <span className="floatRight">
+            <div className="entryButtons">
                  <Button small className="ml05" onClick={() => toggleComments(!showComments)}><Icon>comment</Icon></Button>
                  <Link className="btn btn-small ml05" to={cloneLocation}><Icon>import_export</Icon></Link>
                  <Button small className="red ml05" onClick={() => onDelete(entry)}><Icon>delete</Icon></Button>
-            </span>
+            </div>
         </div>
         {showComments && <ExtendedEntry entry={entry} pagePath={pagePath}/>}
     </li>;

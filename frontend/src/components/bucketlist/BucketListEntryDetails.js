@@ -138,14 +138,12 @@ function DateTimeFieldRenderer({onChange, value}) {
     console.log(value);
 
 
-    return <div className="row">
-        <div className="col">
-            <label>Due date</label>
-            <input type="datetime-local" value={!!value ? moment(value).format(moment.HTML5_FMT.DATETIME_LOCAL) : ""}
-                   onChange={updateDateTime}
-            />
-        </div>
-    </div>
+    return <>
+        <label>Due date</label>
+        <input type="datetime-local" value={!!value ? moment(value).format(moment.HTML5_FMT.DATETIME_LOCAL) : ""}
+               onChange={updateDateTime}
+        />
+    </>
 }
 
 DateTimeFieldRenderer.propTypes = {
