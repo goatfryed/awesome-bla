@@ -2,13 +2,14 @@ import React, {useState} from "react";
 import {addCommentReply} from "../../api";
 import Authentication from "../../authentication/Authentication";
 import moment from "moment";
+import {Button} from "react-materialize"
 
 export function CommentsBlock({onRootCommentCreation, onReplyCreated, comments}) {
     return <div className="content">
         <CommentInput onCommentCreation={onRootCommentCreation}/>
         {
             comments.length === 0 ? <span>No comments yet</span>
-            : <Comments comments={comments} onCommentReplyCreated={onReplyCreated}/>
+                : <Comments comments={comments} onCommentReplyCreated={onReplyCreated}/>
         }
     </div>
 }
@@ -54,7 +55,14 @@ export function CommentInput({onCommentCreation}) {
     }
 
     return <form onSubmit={onSubmit}>
-        <input type="text" value={comment} placeholder="Comment something" onChange={e => setComment(e.target.value)}/>
-        <button type="submit">submit</button>
+        <div className="row">
+            <div className="col s10">
+                <input type="text" value={comment} placeholder="Comment something"
+                       onChange={e => setComment(e.target.value)}/>
+            </div>
+            <div className="col s2">
+                <Button type="submit">Submit</Button>
+            </div>
+        </div>
     </form>
 }

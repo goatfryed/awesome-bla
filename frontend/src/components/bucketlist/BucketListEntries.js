@@ -138,14 +138,16 @@ function BucketListEntryView({entry, pagePath, refresh, history,  match, onDelet
                 type="checkbox"
                 checked={!!entry.completed}
                 onChange={toggleCompleted}
-            /><span/></label>
+            /><span className="checkboxEntry"/></label>
             &nbsp;<Link to={match.url + entry.id + "/"}>{entry.title}</Link>
             <small>
-                {" · "+ moment(entry.created).fromNow() + " · "}
-                 <Button className="btn-small" onClick={() => toggleComments(!showComments)}><Icon>comment</Icon></Button>
-                 <Link className="btn btn-small" to={cloneLocation}><Icon>import_export</Icon></Link>
-                 <Button className="btn-small red" onClick={() => onDelete(entry)}><Icon>delete</Icon></Button>
+                {" · "+ moment(entry.created).fromNow()}
             </small>
+            <span className="floatRight">
+                 <Button small className="ml05" onClick={() => toggleComments(!showComments)}><Icon>comment</Icon></Button>
+                 <Link className="btn btn-small ml05" to={cloneLocation}><Icon>import_export</Icon></Link>
+                 <Button small className="red ml05" onClick={() => onDelete(entry)}><Icon>delete</Icon></Button>
+            </span>
         </div>
         {showComments && <ExtendedEntry entry={entry} pagePath={pagePath}/>}
     </li>;

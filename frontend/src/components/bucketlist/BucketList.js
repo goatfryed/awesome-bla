@@ -11,11 +11,11 @@ import {BucketListEntries} from "./BucketListEntries";
 import {ListSettings} from "./ListSettings";
 
 function DefaultListHeader({bucketList}) {
-    const {description, title} = bucketList;
+    const {description, title, created, owner} = bucketList;
     return <>
-        <h5>{title}</h5>
+        <h2>{title} from {owner.userName}</h2>
         <hr/>
-        <p><strong>{description}</strong></p>
+        <p><strong>{description}</strong> • created {moment(created).fromNow()}</p>
     </>;
 }
 
@@ -63,11 +63,13 @@ function BucketListDetails({bucketList, onUpdateBucketList, history}) {
 
     let [counter, setCounter] = useState(bucketList.voteCount)
 
-    function upvoteList() {
+    function upvoteList(event) {
+        event.preventDefault();
         backendFetch.post("/bucketlists/" + bucketList.id + "/upvote/", {}).then(updateVoteCount);
     }
 
-    function downvoteList() {
+    function downvoteList(event) {
+        event.preventDefault();
         backendFetch.post("/bucketlists/" + bucketList.id + "/downvote/", {}).then(updateVoteCount);
     }
 
@@ -111,28 +113,28 @@ function BucketListDetails({bucketList, onUpdateBucketList, history}) {
     );
 
     return <form className="row" onSubmit={onSubmit}>
-        <div className="col s10 offset-s1">
+        <div className="col s2">
+            <img className="mt2rem" src="/list.svg" alt="ListIcon"/>
+        </div>
+        <div className="col s9">
             <div>
                 {editing ? <EditableListHeader
                     key={bucketList.id} bucketList={bucketList}
                     changedBucketListRef={changedBucketList}
                 /> : <DefaultListHeader bucketList={bucketList}/>}
-                <small>{counter} · <a onClick={upvoteList} href="#like">Like</a> | <a onClick={downvoteList}
-                                                                                      href="#dislike">Dislike</a>
-                    · <span>{moment(bucketList.created).fromNow()}</span>
-                    · <Link className="button" to={cloneLocation}>Copy</Link>
-                </small>
+                <span className="btn-small">{counter} Votes</span>
+                <Button waves="light" small className="ml05" onClick={upvoteList}><Icon>arrow_upward</Icon></Button>
+                <Button waves="light" small className="cancelBtn ml05" onClick={downvoteList}><Icon>arrow_downward</Icon></Button>
+                <Link to={cloneLocation}><Button waves="light" small className="ml05 light-blue"><Icon left>content_copy</Icon>Copy</Button></Link>
             </div>
         </div>
-        <div className="col s1 valign-wrapper">
-            <ul>
-                <li><Button type="submit" disabled={!bucketList.ownList}
-                            waves="light"><Icon>{editIconType}</Icon></Button></li>
-                <li style={{marginTop: "5px"}}><Button onClick={deleteList} type="button" className="red" waves="light"><Icon>delete</Icon></Button>
-                </li>
-            </ul>
+        <div className="col s1">
+            <Button className="mt2rem" type="submit" disabled={!bucketList.ownList}
+                    waves="light"><Icon>{editIconType}</Icon></Button>
+            <Button disabled={!bucketList.ownList} onClick={deleteList} type="button" className="red mt05" waves="light"><Icon>delete</Icon></Button>
         </div>
-    </form>;
+    </form>
+        ;
 }
 
 BucketListDetails.propTypes = {
