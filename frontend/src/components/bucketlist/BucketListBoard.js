@@ -30,6 +30,7 @@ export function BucketListBoard({match}) {
 					   component={BucketListView}
 				/>
 				{
+				    // key forces mount of a new bucket list view. didn't want to rewrite the component (yet)
 					Authentication.isAuthenticated() &&
 					<Route path={match.path + "/personal"} exact strict
 						   render={() => <BucketListView key="personal" owner={{userName: Authentication.getUser().sub}}/>}
