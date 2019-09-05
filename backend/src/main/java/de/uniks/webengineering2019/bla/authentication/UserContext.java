@@ -23,7 +23,7 @@ public class UserContext {
     /**
      * @throws UnauthenticatedRequestException if no user was set prior to calling get
      */
-    public User getUser() {
+    public User geUserOrThrow() {
         if (!hasUser()) {
             throw new UnauthenticatedRequestException("the request requires a fully authenticated user, but was made anonymous");
         }

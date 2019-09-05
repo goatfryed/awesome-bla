@@ -44,15 +44,18 @@ public class BucketListController{
         this.userContext = userContext;
     }
 
-    void setUserDependendListFlags(Collection<BucketList> bucketListCollection){
+    void modifyBucketListByRequestingUser(Collection<BucketList> bucketListCollection){
         if (!userContext.hasUser()) {
             return;
         }
+        User user = userContext.geUserOrThrow();
         for(BucketList bucketList:bucketListCollection){
-            if(bucketList.getOwner().getId() != userContext.getUser().getId()){
-                bucketList.getAccessedUsers().clear();
+            boolean userIsOwner = user.equals(bucketList.getOwner();
+            bucketList.setOwnList(userIsOwner);
+            if (userIsOwner) {
+                continue;
             }
-            bucketList.setOwnList(bucketList.getOwner().getId() == userContext.getUser().getId());
+            bucketList.getAccessedUsers().clear();
         }
     }
 
@@ -67,7 +70,7 @@ public class BucketListController{
         Page<BucketList> pageRessult;
 
         if(userContext.hasUser()){
-            pageRessult = bucketListRepository.findByPrivateListOrAccessedUsersContainsOrOwnerOrderByCreationDateDescIdDesc(false, userContext.getUser(), userContext.getUser(),pageable);
+            pageRessult = bucketListRepository.findByPrivateListOrAccessedUsersContainsOrOwnerOrderByCreationDateDescIdDesc(false, userContext.geUserOrThrow(), userContext.geUserOrThrow(),pageable);
         }else{
             pageRessult = bucketListRepository.findByPrivateListOrderByCreationDateDescIdDesc(false,pageable);
         }
@@ -76,7 +79,7 @@ public class BucketListController{
         if(lasting < 0){
             lasting = 0;
         }
-        setUserDependendListFlags(pageRessult.getContent());
+        modifyBucketListByRequestingUser(pageRessult.getContent());
         return new PageSupport<BucketList>(pageRessult.getContent(),lasting);
     }
 
@@ -84,12 +87,12 @@ public class BucketListController{
     public BucketList get(@PathVariable BucketList bucketList) {
         bucketList.getEntries().clear();
         if (bucketList.isPrivateList()) {
-            User user = userContext.getUser();
+            User user = userContext.geUserOrThrow();
             if (!user.equals(bucketList.getOwner()) && !bucketList.getAccessedUsers().contains(user)) {
                 throw new InsuficientPermissionException("You can't access this list");
             }
         }
-        setUserDependendListFlags(Collections.singletonList(bucketList));
+        modifyBucketListByRequestingUser(Collections.singletonList(bucketList));
         return bucketList;
     }
 
@@ -132,7 +135,7 @@ public class BucketListController{
     public void addList(@RequestBody BucketList newBucketList) {
         newBucketList.setCreationDate(new Date());
         newBucketList.setLastUpdated(new Date());
-        newBucketList.setOwner(userContext.getUser());
+        newBucketList.setOwner(userContext.geUserOrThrow());
         newBucketList.setVoteCount(0);
         bucketListRepository.save(newBucketList);
     }
@@ -140,7 +143,7 @@ public class BucketListController{
     @PostMapping("/{bucketList}/upvote")
     @ResponseStatus(HttpStatus.CREATED)
     public void upvoteList(@PathVariable BucketList bucketList) {
-        final User user = userContext.getUser();
+        final User user = userContext.geUserOrThrow();
         bucketList.upvote(user);
         bucketListRepository.save(bucketList);
     }
@@ -148,7 +151,7 @@ public class BucketListController{
     @PostMapping("/{bucketList}/downvote")
     @ResponseStatus(HttpStatus.CREATED)
     public void downvoteList(@PathVariable BucketList bucketList) {
-        final User user = userContext.getUser();
+        final User user = userContext.geUserOrThrow();
         bucketList.downvote(user);
         bucketListRepository.save(bucketList);
     }
@@ -161,8 +164,8 @@ public class BucketListController{
     @GetMapping("/search/{searchterm}")
     public List<BucketList> searchBucketList(@PathVariable("searchterm") String searchterm) {
         List<BucketList> publicResults = bucketListRepository.findByPrivateListAndTitleContainsIgnoreCase(false, searchterm);
-        List<BucketList> accessResults = bucketListRepository.findByAccessedUsersContainsAndTitleContainsIgnoreCase(userContext.getUser(),searchterm);
-        List<BucketList> ownerResults = bucketListRepository.findByOwnerAndTitleContainsIgnoreCase(userContext.getUser(),searchterm);
+        List<BucketList> accessResults = bucketListRepository.findByAccessedUsersContainsAndTitleContainsIgnoreCase(userContext.geUserOrThrow(),searchterm);
+        List<BucketList> ownerResults = bucketListRepository.findByOwnerAndTitleContainsIgnoreCase(userContext.geUserOrThrow(),searchterm);
         List<BucketList> allResults = new ArrayList<BucketList>(publicResults);
         allResults.addAll(accessResults);
         allResults.addAll(ownerResults);
@@ -175,12 +178,12 @@ public class BucketListController{
         if (bucketList == null) {
             throw new ResourceNotFoundException("requested entry unknown");
         }
-        if (!userContext.getUser().equals(bucketList.getOwner())) {
+        if (!userContext.geUserOrThrow().equals(bucketList.getOwner())) {
             throw new InsuficientPermissionException();
         }
         mapper.readerForUpdating(bucketList).readValue(update);
         BucketList updatedBucketList = bucketListRepository.save(bucketList);
-        setUserDependendListFlags(Collections.singletonList(updatedBucketList));
+        modifyBucketListByRequestingUser(Collections.singletonList(updatedBucketList));
         return updatedBucketList;
     }
 

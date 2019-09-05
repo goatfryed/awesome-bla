@@ -22,7 +22,7 @@ public class CommentCreationService {
     }
 
     public void addComment(Comment comment, Commentable parent) {
-        final User user = userContext.getUser();
+        final User user = userContext.geUserOrThrow();
         comment.setUser(user);
         parent.getComments().add(comment);
         commentRepository.save(comment);
