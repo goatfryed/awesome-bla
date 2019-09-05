@@ -55,16 +55,16 @@ export class BucketListBoard extends PureComponent {
 
 		return (
 			<div>
-				<h5>Bucket Lists</h5>
+				<h2>Bucket Listen</h2>
 				<NavTabs
 					links={[
 						{
 							url: "/",
-							title: "Lists",
+							title: "Listen",
 						},
 						{
 							url: "/newlist",
-							title: "New List",
+							title: "Neue Liste erstellen",
 							navLinkProps: {target: "_self"},
 						},
 					]}

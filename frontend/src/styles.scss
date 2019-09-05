@@ -3,81 +3,109 @@
 @import "../node_modules/materialize-css/sass/materialize.scss";
 
 body {
-    font-family: "Raleway", sans-serif;
+  font-family: "Raleway", sans-serif;
 }
-.navbar-btn{
+
+.navbar-btn {
   .btn {
     padding: 0 10px;
   }
 }
+
 .app-navbar {
-    .navbar-icons {
-        line-height: inherit;
-        height:100%;
-        margin-right: 10px;
+  .navbar-icons {
+    line-height: inherit;
+    height: 100%;
+    margin-right: 10px;
+  }
+
+  .brand-logo {
+    .navbar-logo {
+      max-height: 50px;
+      margin-right: 7px;
+      margin-left: 7px;
+      position: relative;
+      top: 50%;
+      transform: translateY(-50%);
     }
-    
-    .brand-logo {
-        .navbar-logo {
-            max-height: 50px;
-            margin-right: 7px;
-            margin-left: 7px;
-            position: relative;
-            top: 50%;
-            transform: translateY(-50%);
-        }
-        .logo-text {
-            margin-right: 7px;
-        }
-        @media screen and (min-width: 992px) {
-            float: left;
-            position: relative;
-        }
-        @media screen and (max-width: 600px) {
-            .navbar-logo {
-                max-height: 40px;
-                margin-left: 0;
-            }
-            .logo-text {
-                font-size: 0.9rem;
-                margin-right: 0;
-            }
-        }
-        
-        display: inline-flex;
-        font-size: 1.2rem;
-        height: inherit;
+
+    .logo-text {
+      margin-right: 7px;
     }
-    ul {
-        width: 100%;
-        //Login Items float right
-        li:nth-last-child(-n + 5) {
-            float: right;
-        }
+
+    @media screen and (min-width: 992px) {
+      float: left;
+      position: relative;
     }
-    max-width: 1280px;
-    margin: 0 auto;
+    @media screen and (max-width: 600px) {
+      .navbar-logo {
+        max-height: 40px;
+        margin-left: 0;
+      }
+      .logo-text {
+        font-size: 0.9rem;
+        margin-right: 0;
+      }
+    }
+
+    display: inline-flex;
+    font-size: 1.2rem;
+    height: inherit;
+  }
+
+  ul {
+    width: 100%;
+    //Login Items float right
+    li:nth-last-child(-n + 5) {
+      float: right;
+    }
+  }
+
+  max-width: 1280px;
+  margin: 0 auto;
 }
 
 nav,
 #mobile-nav {
-    .activeLink {
-        color: black;
-    }
-    .debugInput {
-        width: unset !important;
-        margin-right: 10px !important;
-    }
+  .activeLink {
+    color: black;
+  }
+
+  .debugInput {
+    width: unset !important;
+    margin-right: 10px !important;
+  }
 }
 
 //headings
 h2 {
-    font-size: 2rem;
-    line-height: 1;
-    margin: 2rem 0 1rem;
+  font-size: 2rem;
+  line-height: 1;
+  margin: 2rem 0 1rem;
 }
+
+//Tabs
+.tabs .tab a:hover, .tabs .tab a.active {
+  color: color("light-blue", "base");
+  font-weight: 600;
+}
+
+.tabs .tab a {
+  color: color("light-blue", "base");
+}
+
+.tabs .indicator {
+  background-color: color("light-blue", "base");
+}
+
+
+//Buttons
+.submitBtn {
+  margin-right: 1rem;
+}
+
 
 //Generic Classes
 .ml05 {
-    margin-left: 5px;
+  margin-left: 5px;
 }
