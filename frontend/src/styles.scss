@@ -6,12 +6,6 @@ body {
   font-family: "Raleway", sans-serif;
 }
 
-.navbar-btn {
-  .btn {
-    padding: 0 10px;
-  }
-}
-
 .app-navbar {
   .navbar-icons {
     line-height: inherit;
@@ -75,6 +69,10 @@ nav,
     width: unset !important;
     margin-right: 10px !important;
   }
+}
+
+.loginBtn {
+  font-weight: 700;
 }
 
 //headings

@@ -1,8 +1,8 @@
 import React from "react";
 import Authentication from "../../authentication/Authentication";
 import {Link, NavLink} from "react-router-dom";
-import { backend, isDebug } from "../../Configuration";
-import { Navbar, Icon } from "react-materialize";
+import {backend, isDebug} from "../../Configuration";
+import {Navbar, Icon} from "react-materialize";
 import Button from "react-materialize/lib/Button";
 import NavItem from "react-materialize/lib/NavItem";
 
@@ -13,15 +13,17 @@ export class AppNavbar extends React.Component {
         this.authenticated = this.authenticated.bind(this);
         Authentication.addAuthenticationListener(this);
 
-        this.state = { url: "" };
+        this.state = {url: ""};
         this.fakeLogin = this.fakeLogin.bind(this);
     }
+
     componentDidMount() {
         // Retrieve URL for GithHub authentication from the backend.
         Authentication.getAuthenticationURL(url => {
-            this.setState({ url });
+            this.setState({url});
         });
     }
+
     authenticated() {
         this.forceUpdate();
     }
@@ -46,7 +48,8 @@ export class AppNavbar extends React.Component {
 
     //------------------
     render() {
-        const logo = <Link to="/home"><img src="/logo/Logo_transparent2.PNG" className="navbar-logo" alt="logo"/><span className="logo-text">Awesome Bucket List</span></Link>;
+        const logo = <Link to="/home"><img src="/logo/Logo_transparent2.PNG" className="navbar-logo" alt="logo"/><span
+            className="logo-text">Awesome Bucket List</span></Link>;
         return (
             <Navbar brand={logo} className="light-blue app-navbar">
                 <NavLink exact to="/home" activeClassName="activeLink">
@@ -59,42 +62,37 @@ export class AppNavbar extends React.Component {
                     Benutzersuche
                 </NavLink>
                 {!Authentication.isAuthenticated() && isDebug && (
-                    <NavItem  className="navbar-btn">
-                        <input type="text" className="debugInput" placeholder="Test user" defaultValue={this.state.fakeUser} onChange={e => (this.setState({fakeUser: e.target.value}))} />
+                    <NavItem>
+                        <input type="text" className="debugInput" placeholder="Test user"
+                               defaultValue={this.state.fakeUser}
+                               onChange={e => (this.setState({fakeUser: e.target.value}))}/>
                         <Button waves="light" onClick={this.fakeLogin}>Debug</Button>
                     </NavItem>
                 )}
                 {Authentication.isAuthenticated() && (
-                    <NavItem className="navbar-btn">
-                        <Button waves="light" onClick={Authentication.logout}>
-                            <strong>Logout</strong>
-                        </Button>
-                    </NavItem>
+                    <NavLink className="loginBtn" onClick={Authentication.logout}>
+                        Logout
+                    </NavLink>
                 )}
                 {!Authentication.isAuthenticated() && (
-                    <NavItem className="navbar-btn">
-                        <Link waves="light" to="/login">
-                            <strong>Login</strong>
-                        </Link>
-                    </NavItem>
+                    <NavLink className="loginBtn" to="/login">
+                        Login
+                    </NavLink>
                 )}
                 {Authentication.isAuthenticated() && (
-                    <NavItem className="navbar-btn">
-                        <Button waves="light">
-                            <Icon className="navbar-icons" left>
-                                assignment_ind
-                            </Icon>
-                            <strong>{Authentication.getUser().sub}</strong>
-                        </Button>
-                    </NavItem>
+                    <NavLink>
+                        <Icon className="navbar-icons" left>
+                            assignment_ind
+                        </Icon>
+                        <strong>{Authentication.getUser().sub}</strong>
+                    </NavLink>
                 )}
                 {isDebug && (
-                    <NavItem className="navbar-btn">
-                        <Button waves="light" onClick={this.testAcces}>Test Authentication</Button>
-                    </NavItem>
+                    <NavLink onClick={this.testAcces}>Test Authentication</NavLink>
                 )}
             </Navbar>
         );
     }
 }
+
 export default Navbar;
