@@ -58,7 +58,10 @@ public class BucketListController{
     }
 
     @GetMapping("/")
-    public PageSupport<BucketList> getPublicLists(@RequestParam(defaultValue = "0")int page){
+    public PageSupport<BucketList> getPublicLists(
+        @RequestParam(defaultValue = "0")int page,
+        @RequestParam String userName
+    ){
         if(page<0){
             page = 0;
         }
@@ -67,13 +70,17 @@ public class BucketListController{
 
         Page<BucketList> pageRessult;
 
-        if(userContext.hasUser()){
-            pageRessult = bucketListRepository.findByPrivateListOrAccessedUsersContainsOrOwnerOrderByCreationDateDescIdDesc(false, userContext.getUserOrThrow(), userContext.getUserOrThrow(),pageable);
-        }else{
-            pageRessult = bucketListRepository.findByPrivateListOrderByCreationDateDescIdDesc(false,pageable);
+        if (userName != null) {
+            pageRessult = bucketListRepository.findForUserByOwnerUserName(null, userName);
+        } else {
+            if(userContext.hasUser()){
+                pageRessult = bucketListRepository.findByPrivateListOrAccessedUsersContainsOrOwnerOrderByCreationDateDescIdDesc(false, userContext.getUserOrThrow(), userContext.getUserOrThrow(),pageable);
+            }else{
+                pageRessult = bucketListRepository.findByPrivateListOrderByCreationDateDescIdDesc(false,pageable);
+            }
         }
 
-        int lasting = (int)pageRessult.getTotalElements() - (page+1) * elementsOnPage;
+        int lasting = (int) pageRessult.getTotalElements() - (page+1) * elementsOnPage;
         if(lasting < 0){
             lasting = 0;
         }
