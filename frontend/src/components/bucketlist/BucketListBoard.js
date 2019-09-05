@@ -55,13 +55,11 @@ export class BucketListBoard extends PureComponent {
 						{
 							url: "/newlist",
 							title: "New List",
-							navLinkProps: {target: "_self"},
 						},
 					]}
 				/>
 				<Switch>
 					<Route path="/" render={() => <Lists bucketLists={ this.state.bucketLists } />} />
-					<Redirect to="/newlist" />
 				</Switch>
 				{moreSides()}
 			</div>
