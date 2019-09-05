@@ -112,7 +112,7 @@ h2 {
 
 //BucketListDetails Page
 .checkboxEntry {
-  top: 7px;
+  top: 4px;
 }
 
 //users
@@ -120,8 +120,77 @@ h2 {
   transform: translateY(-20%);
 }
 
+//Mobile Friendly
+@media screen and (max-width: 600px) {
+  .btn-small , .btn{
+    padding: 0 12px;
+
+  }
+  i.left {
+    margin-right: 5px;
+  }
+  #mobile_buttonBar {
+    display: flex !important;
+  }
+  #desktop_buttonBar {
+    display: none;
+  }
+  .entryButtons {
+    float: none !important;
+    display: flex;
+    align-items: stretch;
+    margin-top: 5px;
+
+    .btn-small {
+      flex: 1 1 33.3333%;
+      white-space: nowrap;
+      flex-grow: 1;
+      flex-basis: 0;
+
+      &:first-child {
+        margin-left: 0;
+      }
+    }
+  }
+  .tabs .tab a{
+    padding: 0 2px;
+    font-size: 12px;
+  }
+}
+
+@media screen and (max-width: 500px) {
+
+  h2 {
+    font-size: 18px;
+  }
+  .collection .collection-item {
+    padding: 10px 10px;
+  }
+}
+
+#mobile_buttonBar {
+  align-items: stretch;
+  display: none;
+  margin-top: -20px;
+
+  .btn-small {
+    flex: 1 1 25%;
+    white-space: nowrap;
+    flex-grow: 1;
+    flex-basis: 0;
+  }
+}
+
+.entryButtons {
+  float: right;
+}
+
 
 //Generic Classes
+.fullWidth {
+  width: 100%;
+}
+
 .noPadding {
   padding: 0 !important;
 }

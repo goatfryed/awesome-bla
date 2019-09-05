@@ -112,28 +112,45 @@ function BucketListDetails({bucketList, onUpdateBucketList, history}) {
         [editing, onUpdateBucketList, bucketList]
     );
 
-    return <form className="row" onSubmit={onSubmit}>
-        <div className="col s2 noPadding">
-            <img className="mt2rem" src="/list.svg" alt="ListIcon"/>
-        </div>
-        <div className="col s9">
-            <div>
-                {editing ? <EditableListHeader
-                    key={bucketList.id} bucketList={bucketList}
-                    changedBucketListRef={changedBucketList}
-                /> : <DefaultListHeader bucketList={bucketList}/>}
-                <span className="btn-small">{counter} Votes</span>
-                <Button waves="light" small className="ml05" onClick={upvoteList}><Icon>arrow_upward</Icon></Button>
-                <Button waves="light" small className="cancelBtn ml05" onClick={downvoteList}><Icon>arrow_downward</Icon></Button>
-                <Link to={cloneLocation}><Button waves="light" small className="ml05 light-blue"><Icon left>content_copy</Icon>Copy</Button></Link>
+    const buttonBar =
+        <>
+            <span className="btn-small">{counter} Votes</span>
+            <Button waves="light" small className="ml05" onClick={upvoteList}><Icon>arrow_upward</Icon></Button>
+            <Button waves="light" small className="cancelBtn ml05"
+                    onClick={downvoteList}><Icon>arrow_downward</Icon></Button>
+            <Link to={cloneLocation}><Button waves="light" small className="ml05 light-blue"><Icon
+                left>content_copy</Icon>Copy</Button></Link>
+        </>
+    ;
+
+    return <>
+        <form className="row" onSubmit={onSubmit}>
+            <div className="col s2 noPadding">
+                <img className="mt2rem" src="/list.svg" alt="ListIcon"/>
             </div>
+            <div className="col s8 m9">
+                <div>
+                    {editing ? <EditableListHeader
+                        key={bucketList.id} bucketList={bucketList}
+                        changedBucketListRef={changedBucketList}
+                    /> : <DefaultListHeader bucketList={bucketList}/>}
+                    <div id="desktop_buttonBar">
+                        {buttonBar}
+                    </div>
+                </div>
+            </div>
+            <div className="col s2 m1 noPadding">
+                <Button className="mt2rem fullWidth" type="submit" disabled={!bucketList.ownList}
+                        waves="light"><Icon>{editIconType}</Icon></Button>
+                <Button disabled={!bucketList.ownList} onClick={deleteList} type="button" className="red mt05 fullWidth"
+                        waves="light"><Icon>delete</Icon></Button>
+            </div>
+        </form>
+
+        <div id="mobile_buttonBar">
+            {buttonBar}
         </div>
-        <div className="col s1">
-            <Button className="mt2rem" type="submit" disabled={!bucketList.ownList}
-                    waves="light"><Icon>{editIconType}</Icon></Button>
-            <Button disabled={!bucketList.ownList} onClick={deleteList} type="button" className="red mt05" waves="light"><Icon>delete</Icon></Button>
-        </div>
-    </form>
+    </>
         ;
 }
 
