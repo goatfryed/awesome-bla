@@ -3,8 +3,44 @@ import {Route, Switch} from "react-router";
 import { Link, Redirect } from "react-router-dom";
 import { backendFetch } from "../../api";
 import {NavTabs} from "./NavTabs";
+import Authentication from "../../authentication/Authentication";
 
-export class BucketListBoard extends PureComponent {
+export function BucketListBoard({match}) {
+
+
+
+	return (
+		<div>
+			<h5>Bucket Lists</h5>
+			<NavTabs
+				links={[
+					{
+						url: "/",
+						title: "Lists",
+					},
+					{
+						url: "/newlist",
+						title: "New List",
+					},
+				]}
+			/>
+			<Switch>
+				<Route path={match.path + "/public"} exact strict
+					   component={BucketListView}
+				/>
+				{
+					Authentication.isAuthenticated() &&
+					<Route path={match.path + "/personal"} exact strict
+						   render={() => <BucketListView owner={{userName: Authentication.getUser().sub}}/>}
+					/>
+				}
+				<Redirect to={match.path + "/public"} />
+			</Switch>
+		</div>
+	);
+}
+
+export class BucketListView extends PureComponent {
 
 	state = {};
 
@@ -20,7 +56,13 @@ export class BucketListBoard extends PureComponent {
 	}
 
 	loadMore(){
-		backendFetch.get('/bucketlists/?page='+this.state.loadedPages).then(response => {
+		let query = new URLSearchParams({
+			page: this.state.loadedPages,
+		});
+		if (this.props.owner) {
+			query.append("userName", this.props.owner.userName);
+		}
+		backendFetch.get('/bucketlists/?' + query.toString()).then(response => {
 			if(response.content.length > 0){
 				this.setState({loadedPages: this.state.loadedPages+1});
 			}
@@ -43,27 +85,10 @@ export class BucketListBoard extends PureComponent {
 			return this.state.lastingElements == null ? '':this.state.lastingElements<=0?<div>Kine Weiteren Listen verfügbar</div>:<div>{this.state.lastingElements} weiter Listen <button type="submit" onClick={this.loadMore.bind(this)}>Laden</button></div>
 		};
 
-		return (
-			<div>
-				<h5>Bucket Lists</h5>
-				<NavTabs
-					links={[
-						{
-							url: "/",
-							title: "Lists",
-						},
-						{
-							url: "/newlist",
-							title: "New List",
-						},
-					]}
-				/>
-				<Switch>
-					<Route path="/" render={() => <Lists bucketLists={ this.state.bucketLists } />} />
-				</Switch>
-				{moreSides()}
-			</div>
-		);
+		return <>
+			<Lists bucketLists={ this.state.bucketLists } />
+			{moreSides()}
+		</>
 	}
 }
 
