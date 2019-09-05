@@ -48,6 +48,6 @@ public class AuthenticationController {
     @PostMapping("/test")
     @GetMapping("/test")
     public ResponseEntity test(){
-        return ResponseEntity.ok(userContext.geUserOrThrow().toString());
+        return ResponseEntity.ok(userContext.getUserOrThrow().toString());
     }
 }
