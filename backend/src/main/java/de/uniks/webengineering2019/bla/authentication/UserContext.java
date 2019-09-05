@@ -2,6 +2,8 @@ package de.uniks.webengineering2019.bla.authentication;
 
 import de.uniks.webengineering2019.bla.api_errors.UnauthenticatedRequestException;
 import de.uniks.webengineering2019.bla.model.User;
+import org.springframework.lang.NonNull;
+import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Component;
 import org.springframework.web.context.annotation.RequestScope;
 
@@ -23,10 +25,16 @@ public class UserContext {
     /**
      * @throws UnauthenticatedRequestException if no user was set prior to calling get
      */
+    @NonNull
     public User getUserOrThrow() {
         if (!hasUser()) {
             throw new UnauthenticatedRequestException("the request requires a fully authenticated user, but was made anonymous");
         }
+        return user;
+    }
+
+    @Nullable
+    public User getUserOrNull() {
         return user;
     }
 
