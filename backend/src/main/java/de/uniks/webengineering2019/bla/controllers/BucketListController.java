@@ -169,9 +169,9 @@ public class BucketListController{
 
     @GetMapping("/search/{searchterm}")
     public List<BucketList> searchBucketList(@PathVariable("searchterm") String searchterm) {
-        List<BucketList> publicResults = bucketListRepository.findByPrivateListAndTitleContainsIgnoreCase(false, searchterm);
-        List<BucketList> accessResults = bucketListRepository.findByAccessedUsersContainsAndTitleContainsIgnoreCase(userContext.getUserOrThrow(),searchterm);
-        List<BucketList> ownerResults = bucketListRepository.findByOwnerAndTitleContainsIgnoreCase(userContext.getUserOrThrow(),searchterm);
+        List<BucketList> publicResults = bucketListRepository.findByPrivateListAndTitleContainsIgnoreCaseOrderByCreationDateDescIdDesc(false, searchterm);
+        List<BucketList> accessResults = bucketListRepository.findByAccessedUsersContainsAndTitleContainsIgnoreCaseOrderByCreationDateDescIdDesc(userContext.getUserOrThrow(),searchterm);
+        List<BucketList> ownerResults = bucketListRepository.findByOwnerAndTitleContainsIgnoreCaseOrderByCreationDateDescIdDesc(userContext.getUserOrThrow(),searchterm);
         List<BucketList> allResults = new ArrayList<BucketList>(publicResults);
         allResults.addAll(accessResults);
         allResults.addAll(ownerResults);
