@@ -1,7 +1,6 @@
 
 import React from "react";
 import {withRouter} from "react-router";
-import {BucketListProvider} from "../bucketlist/ShowAllBucketLists";
 import {backendFetch} from "../../api";
 
 let ImportTargetSelection = withRouter(ImportBase);
