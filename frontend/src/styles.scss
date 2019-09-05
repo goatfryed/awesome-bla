@@ -104,6 +104,14 @@ h2 {
   margin-right: 1rem;
 }
 
+.cancelBtn {
+  background-color: red;
+
+  &:hover {
+    background-color: lighten(red, 20%);
+  }
+}
+
 
 //Generic Classes
 .ml05 {
