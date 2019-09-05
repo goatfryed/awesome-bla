@@ -1,4 +1,4 @@
-import React, {PureComponent, useEffect, useCallback} from "react";
+import React, {PureComponent, useCallback} from "react";
 import PropTypes from "prop-types";
 import {backendFetch} from "../../api";
 import moment from "moment";
