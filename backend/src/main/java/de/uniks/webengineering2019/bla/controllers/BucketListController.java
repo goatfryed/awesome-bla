@@ -60,7 +60,8 @@ public class BucketListController{
     @GetMapping("/")
     public PageSupport<BucketList> getPublicLists(
         @RequestParam(defaultValue = "0")int page,
-        @RequestParam(required = false) String userName
+        @RequestParam(required = false) String userName,
+        @RequestParam(required = false) Long specUser
     ){
         if(page<0){
             page = 0;
@@ -72,7 +73,13 @@ public class BucketListController{
 
         if (userName != null) {
             pageRessult = bucketListRepository.findForUserByOwnerUserName(userContext.getUserOrNull(), userName, pageable);
-        } else {
+        }else if(specUser != null){
+            if(userContext.hasUser()) {
+                pageRessult = bucketListRepository.findByownerIdandPriveleged(specUser,userContext.getUserOrThrow().getId(),pageable);
+            }else{
+                pageRessult = bucketListRepository.findByOwnerIdAndPrivateList(specUser, false, pageable);
+            }
+        }else {
             if(userContext.hasUser()){
                 pageRessult = bucketListRepository.findByPrivateListOrAccessedUsersContainsOrOwnerOrderByCreationDateDescIdDesc(false, userContext.getUserOrThrow(), userContext.getUserOrThrow(),pageable);
             }else{

@@ -31,10 +31,17 @@ export function BucketListBoard({match}) {
 					   component={BucketListView}
 				/>
 				{
-				    // key forces mount of a new bucket list view. didn't want to rewrite the component (yet)
+					// key forces mount of a new bucket list view. didn't want to rewrite the component (yet)
 					Authentication.isAuthenticated() &&
 					<Route path={match.path + "/personal"} exact strict
-						   render={() => <BucketListView key="personal" owner={{userName: Authentication.getUser().sub}}/>}
+						   render={() => <BucketListView key="personal"
+														 owner={{userName: Authentication.getUser().sub}}/>}
+					/>
+				}
+				{
+					// key forces mount of a new bucket list view. didn't want to rewrite the component (yet)
+					<Route path={match.path + "/user/:id"} exact strict
+					render={(props) => <BucketListView key="personal" specUser={props.match.params.id}/>}
 					/>
 				}
 				<Redirect to={match.path + "/public"} />
@@ -64,6 +71,9 @@ export class BucketListView extends PureComponent {
 		});
 		if (this.props.owner) {
 			query.append("userName", this.props.owner.userName);
+		}
+		if (this.props.specUser) {
+			query.append("specUser", this.props.specUser);
 		}
 		backendFetch.get('/bucketlists/?' + query.toString()).then(response => {
 			if(response.content.length > 0){
@@ -96,6 +106,7 @@ export class BucketListView extends PureComponent {
 }
 BucketListView.propTypes = {
 	owner: PropTypes.object,
+	specUser: PropTypes.object,
 };
 
 function BucketListIcon({bucketList}) {
