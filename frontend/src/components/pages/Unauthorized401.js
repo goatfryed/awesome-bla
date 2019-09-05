@@ -24,6 +24,7 @@ export function Unauthorized401 () {
             </div>
             <div className="row">
                 <iframe
+                    title="I'm afraid you can't do that, Dave"
                     style={{
                         margin: "0 auto"
                     }}
