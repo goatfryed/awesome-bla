@@ -94,9 +94,29 @@ export class BucketListView extends PureComponent {
 	}
 }
 
+function BucketListIcon({bucketList}) {
+	let iconDescriptor;
+	if (bucketList.private) {
+		iconDescriptor = {
+			icon: "lock_outline",
+			class: "black",
+			title: "This list is private",
+		};
+	} else {
+		iconDescriptor = {
+			icon: "playlist_add_check",
+			class: "green",
+			title: "This list is public",
+		}
+	}
+	return <i title={iconDescriptor.title} className={"material-icons circle "+iconDescriptor.class} >{iconDescriptor.icon}</i>;
+}
+
 function BucketListEntry({bucketList}) {
+
+
 	return <li className="collection-item avatar" style={{minHeight: "initial"}}>
-		<i className="material-icons circle green">playlist_add_check</i>
+		<Link to={"/bucketlist/" + bucketList.id}><BucketListIcon bucketList={bucketList}/></Link>
 		<div className="row" style={{marginBottom: "initial"}}>
 			<div className="col">
 				<span className="title"><Link to={"/bucketlist/" + bucketList.id}>{bucketList.title}</Link></span>
