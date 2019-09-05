@@ -109,17 +109,23 @@ h2 {
     background-color: lighten(red, 20%);
   }
 }
+
 //BucketListDetails Page
 .checkboxEntry {
   top: 7px;
 }
- //users
+
+//users
 .allowAccessBtn {
   transform: translateY(-20%);
 }
 
 
 //Generic Classes
+.noPadding {
+  padding: 0 !important;
+}
+
 .floatRight {
   float: right;
 }
@@ -128,10 +134,10 @@ h2 {
   margin-left: 5px;
 }
 
-.mt05{
+.mt05 {
   margin-top: 5px;
 }
 
-.mt2rem{
+.mt2rem {
   margin-top: 2rem;
 }

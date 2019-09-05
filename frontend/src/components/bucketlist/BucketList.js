@@ -113,7 +113,7 @@ function BucketListDetails({bucketList, onUpdateBucketList, history}) {
     );
 
     return <form className="row" onSubmit={onSubmit}>
-        <div className="col s2">
+        <div className="col s2 noPadding">
             <img className="mt2rem" src="/list.svg" alt="ListIcon"/>
         </div>
         <div className="col s9">
