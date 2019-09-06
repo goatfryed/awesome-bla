@@ -23,7 +23,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @CrossOrigin
 @RequestMapping("/bucketlists/{bucketList}/entries")
@@ -58,7 +57,7 @@ public class BucketListEntryController {
     }
 
     //throws 401 back if user is not permitted for deleting or creating or changing an entry
-    void checkAcces(BucketList bucketList){
+    void checkUserCanModify(BucketList bucketList){
         User user = userContext.getUserOrThrow();
         if (!user.getId().equals(bucketList.getOwner().getId()))
         {
@@ -78,7 +77,7 @@ public class BucketListEntryController {
     public BucketListEntry comments(@PathVariable BucketListEntry entry)
     {
         guardUnknownEntry(entry);
-        checkAcces(entry.getBucketList());
+        checkUserCanModify(entry.getBucketList());
         return entry;
     }
 
@@ -87,7 +86,7 @@ public class BucketListEntryController {
     public void addComment(@RequestBody Comment comment, @PathVariable BucketListEntry entry)
     {
         guardUnknownEntry(entry);
-        checkAcces(entry.getBucketList());
+        checkUserCanModify(entry.getBucketList());
         commentCreationService.addComment(comment, entry);
     }
 
@@ -100,7 +99,7 @@ public class BucketListEntryController {
             throw new ResourceNotFoundException("requested bucketlist does not exist");
         }
 
-        checkAcces(updatedBucketList.get());
+        checkUserCanModify(updatedBucketList.get());
 
         final BucketList bucketList = updatedBucketList.get();
         // save entry into list
@@ -117,7 +116,7 @@ public class BucketListEntryController {
     {
         guardUnknownBucketList(bucketList);
         guardUnknownEntry(entry);
-        checkAcces(entry.getBucketList());//check if user or admin
+        checkUserCanModify(entry.getBucketList());//check if user or admin
         bucketList.getEntries().remove(entry);
         entryRepository.delete(entry);
     }
@@ -143,7 +142,7 @@ public class BucketListEntryController {
     ) throws IOException {
         guardUnknownEntry(entry);
 
-        checkAcces(entry.getBucketList());
+        checkUserCanModify(entry.getBucketList());
         mapper.readerForUpdating(entry).readValue(updateJson);
         entryRepository.save(entry);
     }
