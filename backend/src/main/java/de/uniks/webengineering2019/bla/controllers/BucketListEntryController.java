@@ -65,6 +65,21 @@ public class BucketListEntryController {
         }
     }
 
+    /**
+     * throws, if the bucket list is not visible for the current user
+     * @param bucketList
+     */
+    void guardUserCanView(BucketList bucketList) {
+        if (!bucketList.isPrivateList()) {
+            return;
+        }
+        User user = userContext.getUserOrThrow();
+
+        if (!user.equals(bucketList.getOwner()) && !bucketList.getAccessedUsers().contains(user)) {
+            throw new InsuficientPermissionException("You can't access this list");
+        }
+    }
+
     @GetMapping("/")
     public List<BucketListEntry> list(@PathVariable BucketList bucketList)
     {
