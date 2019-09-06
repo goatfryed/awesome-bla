@@ -194,7 +194,7 @@ BucketListDetails.propTypes = {
 
 function BucketListDefaultView({bucketList, url, path, onUpdateBucketList, history, refresh}) {
 
-    let renderEntries = useCallback(() => <BucketListEntries bucketList={bucketList}/>, [bucketList.id]);
+    let renderEntries = useCallback(() => <BucketListEntries bucketList={bucketList}/>, [bucketList]);
     let renderComments = useCallback(() => <BucketListComments refresh={refresh}
                                                                bucketList={bucketList}/>, [bucketList, refresh]);
     let renderSettings = useCallback(() => <ListSettings bucketList={bucketList}/>, [bucketList]);

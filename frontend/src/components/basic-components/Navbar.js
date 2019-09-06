@@ -61,6 +61,9 @@ export class AppNavbar extends React.Component {
                 <NavLink to="/users" activeClassName="activeLink">
                     Search Users
                 </NavLink>
+                <NavLink to="/about" activeClassName="activeLink">
+                    About
+                </NavLink>
                 {!Authentication.isAuthenticated() && isDebug && (
                     <NavItem>
                         <input type="text" className="debugInput" placeholder="Test user"

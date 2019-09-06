@@ -1,18 +1,14 @@
 import React, {PureComponent} from "react";
-import {Route, Switch, BrowserRouter as Router, Redirect} from "react-router-dom";
-
+import {BrowserRouter as Router, Redirect, Route, Switch} from "react-router-dom";
 //CSS
 import './styles.scss';
-
 //Basic Components
 import {AppNavbar} from "./components/basic-components/Navbar";
 import {AuthenticationCallback} from "./authentication/AuthenticationCallback";
-
 //Components
 import {ListEntryNew} from "./components/bucketlist/ListEntryNew";
 import {BucketList} from "./components/bucketlist/BucketList";
 import ListNew from "./components/bucketlist/ListNew";
-
 //Pages
 import page404 from "./components/pages/Page404"
 import {allUsers} from "./components/pages/allUsers";
@@ -24,7 +20,7 @@ import {ApiError, setErrorHandler} from "./api";
 import * as PropTypes from "prop-types";
 import ListSearch from "./components/bucketlist/SearchLists";
 import {Login} from "./authentication/Login";
-
+import {About} from "./pages/about";
 
 function App() {
     return <Router>
@@ -33,6 +29,7 @@ function App() {
                 <AppNavbar/>
                 <div id="contentWrapper">
                     <Switch>
+                        <Route path="/about" component={About} />
                         <Route path="/login" component={Login}/>
                         <Route path="/callback" component={AuthenticationCallback}/>
                         <Route strict exact path="/import/" component={ImportTargetSelection}/>
