@@ -66,11 +66,6 @@ public class BucketListEntryController {
         }
     }
 
-    @GetMapping("/api/bucketlists/entries")
-    public List<BucketListEntry> listAll() {
-        return entryRepository.findAll();
-    }
-
     @GetMapping("/")
     public List<BucketListEntry> list(@PathVariable BucketList bucketList)
     {
