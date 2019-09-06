@@ -64,6 +64,8 @@ function BucketListDetails({bucketList, onUpdateBucketList, history}) {
 
     let [counter, setCounter] = useState(bucketList.voteCount)
 
+    let user = Authentication.getUser();
+
     function upvoteList(event) {
         event.preventDefault();
         backendFetch.post("/bucketlists/" + bucketList.id + "/upvote/", {}).then(updateVoteCount);
@@ -166,7 +168,7 @@ function BucketListDetails({bucketList, onUpdateBucketList, history}) {
                         changedBucketListRef={changedBucketList}
                     /> : <DefaultListHeader bucketList={bucketList}/>}
                     <div id="desktop_buttonBar">
-                        {buttonBar}
+                        {user != null ? buttonBar : null}
                     </div>
                 </div>
             </div>
