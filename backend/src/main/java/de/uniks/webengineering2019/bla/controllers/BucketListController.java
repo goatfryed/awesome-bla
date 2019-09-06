@@ -97,6 +97,8 @@ public class BucketListController{
 
     @GetMapping("/{bucketList}")
     public BucketList get(@PathVariable BucketList bucketList) {
+        guardUnknownBucketList(bucketList);
+
         bucketList.getEntries().clear();
         if (bucketList.isPrivateList()) {
             User user = userContext.getUserOrThrow();
@@ -108,20 +110,28 @@ public class BucketListController{
         return bucketList;
     }
 
+    private void guardUnknownBucketList(BucketList bucketList) {
+        if (bucketList == null) {
+            throw new ResourceNotFoundException("The requested bucket list does not exists");
+        }
+    }
+
     @PostMapping("/{bucketList}/comments/")
     @ResponseStatus(HttpStatus.CREATED)
     public void addComment(
             @RequestBody Comment comment,
             @PathVariable BucketList bucketList
     ) {
-        if (bucketList == null) {
-            throw new ResourceNotFoundException("requested entry unknown");
-        }
+        guardUnknownBucketList(bucketList);
+
         commentCreationService.addComment(comment, bucketList);
     }
 
     @PostMapping("/{bucketList}/privelege/{user}")
     public ResponseEntity addPrivilegedUser(@PathVariable BucketList bucketList, @PathVariable User user){
+        guardUnknownBucketList(bucketList);
+        if (user == null) throw new ResourceNotFoundException("The requested user does not exist");
+
         bucketList.getAccessedUsers().add(user);
         bucketList = bucketListRepository.save(bucketList);
         return ResponseEntity.ok(bucketList.getAccessedUsers());
@@ -129,6 +139,9 @@ public class BucketListController{
 
     @PostMapping("/{bucketList}/unprivelege/{user}")
     public ResponseEntity removePrivilegedUser(@PathVariable BucketList bucketList, @PathVariable User user){
+        guardUnknownBucketList(bucketList);
+        if (user == null) throw new ResourceNotFoundException("The requested user does not exist");
+
         bucketList.getAccessedUsers().remove(user);
         bucketList = bucketListRepository.save(bucketList);
         return ResponseEntity.ok(bucketList.getAccessedUsers());
@@ -136,6 +149,8 @@ public class BucketListController{
 
     @PostMapping("/{bucketList}/private")
     public ResponseEntity removePrivilegedUser(@PathVariable BucketList bucketList, @RequestParam boolean value){
+        guardUnknownBucketList(bucketList);
+
         bucketList.setPrivateList(value);
         bucketList = bucketListRepository.save(bucketList);
         return ResponseEntity.ok(bucketList.isPrivateList());
@@ -155,6 +170,8 @@ public class BucketListController{
     @PostMapping("/{bucketList}/upvote")
     @ResponseStatus(HttpStatus.CREATED)
     public void upvoteList(@PathVariable BucketList bucketList) {
+        guardUnknownBucketList(bucketList);
+
         final User user = userContext.getUserOrThrow();
         bucketList.upvote(user);
         bucketListRepository.save(bucketList);
@@ -163,6 +180,8 @@ public class BucketListController{
     @PostMapping("/{bucketList}/downvote")
     @ResponseStatus(HttpStatus.CREATED)
     public void downvoteList(@PathVariable BucketList bucketList) {
+        guardUnknownBucketList(bucketList);
+
         final User user = userContext.getUserOrThrow();
         bucketList.downvote(user);
         bucketListRepository.save(bucketList);
@@ -170,6 +189,8 @@ public class BucketListController{
 
     @GetMapping("/{bucketList}/votecount")
     public int getVoteCount(@PathVariable BucketList bucketList) {
+        guardUnknownBucketList(bucketList);
+
         return bucketList.getVoteCount();
     }
 
@@ -194,9 +215,8 @@ public class BucketListController{
 
     @PutMapping("/{bucketList}/")
     public BucketList updateBucketList(@PathVariable BucketList bucketList, @RequestBody String update, ObjectMapper mapper) throws IOException {
-        if (bucketList == null) {
-            throw new ResourceNotFoundException("requested entry unknown");
-        }
+        guardUnknownBucketList(bucketList);
+
         if (!userContext.getUserOrThrow().equals(bucketList.getOwner())) {
             throw new InsuficientPermissionException();
         }
@@ -209,6 +229,8 @@ public class BucketListController{
     @DeleteMapping("/{bucketList}/delete")
     @ResponseStatus(HttpStatus.ACCEPTED)
     public void delete(@PathVariable BucketList bucketList) {
+        guardUnknownBucketList(bucketList);
+
         bucketListRepository.delete(bucketList);
     }
 }
