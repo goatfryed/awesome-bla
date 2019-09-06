@@ -9,6 +9,7 @@ import {NavTabs} from "./NavTabs";
 import {Button, Icon} from "react-materialize";
 import {BucketListEntries} from "./BucketListEntries";
 import {ListSettings} from "./ListSettings";
+import Authentication from "../../authentication/Authentication";
 
 function DefaultListHeader({bucketList}) {
     const {description, title, created, owner} = bucketList;
@@ -66,11 +67,15 @@ function BucketListDetails({bucketList, onUpdateBucketList, history}) {
     function upvoteList(event) {
         event.preventDefault();
         backendFetch.post("/bucketlists/" + bucketList.id + "/upvote/", {}).then(updateVoteCount);
+        setdownVoted(false);
+        setupVoted(true);
     }
 
     function downvoteList(event) {
         event.preventDefault();
         backendFetch.post("/bucketlists/" + bucketList.id + "/downvote/", {}).then(updateVoteCount);
+        setdownVoted(true);
+        setupVoted(false);
     }
 
     async function updateVoteCount() {
@@ -112,17 +117,38 @@ function BucketListDetails({bucketList, onUpdateBucketList, history}) {
         [editing, onUpdateBucketList, bucketList]
     );
 
+    let [downVoted, setdownVoted] = useState(downVotedAlready);
+    let [upVoted, setupVoted] = useState(upvotedAlready);
+
+    function upvotedAlready() {
+        for (var i = 0; i < bucketList.userUpvote.length; i++) {
+            if (bucketList.userUpvote[i].userName === Authentication.getUser().sub) {
+                return true
+            }
+        }
+        return false;
+    }
+
+    function downVotedAlready() {
+        for (var i = 0; i < bucketList.userDownvote.length; i++) {
+            if (bucketList.userDownvote[i].userName === Authentication.getUser().sub) {
+                return true
+            }
+        }
+        return false;
+    }
+
     const buttonBar =
         <>
             <span className="btn-small">{counter} Votes</span>
-            <Button waves="light" small className="ml05" onClick={upvoteList}><Icon>arrow_upward</Icon></Button>
-            <Button waves="light" small className="cancelBtn ml05"
+            <Button waves="light" small className="ml05" disabled={upVoted}
+                    onClick={upvoteList}><Icon>arrow_upward</Icon></Button>
+            <Button waves="light" small className="cancelBtn ml05" disabled={downVoted}
                     onClick={downvoteList}><Icon>arrow_downward</Icon></Button>
             <Link to={cloneLocation}><Button waves="light" small className="ml05 light-blue"><Icon
                 left>content_copy</Icon>Copy</Button></Link>
         </>
     ;
-
     return <>
         <form className="row" onSubmit={onSubmit}>
             <div className="col s2 noPadding">
@@ -164,7 +190,8 @@ BucketListDetails.propTypes = {
 function BucketListDefaultView({bucketList, url, path, onUpdateBucketList, history, refresh}) {
 
     let renderEntries = useCallback(() => <BucketListEntries id={bucketList.id}/>, [bucketList.id]);
-    let renderComments = useCallback(() => <BucketListComments refresh={refresh} bucketList={bucketList}/>, [bucketList]);
+    let renderComments = useCallback(() => <BucketListComments refresh={refresh}
+                                                               bucketList={bucketList}/>, [bucketList]);
     let renderSettings = useCallback(() => <ListSettings bucketList={bucketList}/>, [bucketList]);
 
 
