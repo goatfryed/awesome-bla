@@ -75,6 +75,7 @@ public class BucketListController{
             pageRessult = bucketListRepository.findForUserByOwnerUserName(userContext.getUserOrNull(), userName, pageable);
         }else if(specUser != null){//find all bucketlists from this user
             if(userContext.hasUser()) {
+                User user = userContext.getUserOrThrow();
                 pageRessult = bucketListRepository.findByownerIdandPriveleged(specUser,userContext.getUserOrThrow().getId(),pageable);
             }else{
                 pageRessult = bucketListRepository.findByOwnerIdAndPrivateList(specUser, false, pageable);

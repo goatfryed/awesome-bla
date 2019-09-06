@@ -55,8 +55,8 @@ export function BucketListBoard({match}) {
 				}
 				{
 					// key forces mount of a new bucket list view. didn't want to rewrite the component (yet)
-					<Route path={match.path + "/user/:id"} exact strict
-					render={(props) => <BucketListView key="personal" specUser={props.match.params.id}/>}
+					<Route path={match.path + "/user/:name"} exact strict
+					render={(props) => <BucketListView key="personal" owner={{userName:props.match.params.name}}/>}
 					/>
 				}
 				<Redirect to={match.path + "/public"} />

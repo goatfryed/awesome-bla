@@ -18,6 +18,6 @@ export class allUsers extends React.Component {
 
     showBucketLists(user){
         //console.log("Show Bucketliststs");
-        this.props.history.push("/home/user/"+user.id);
+        this.props.history.push("/home/user/"+user.userName);
     }
 }
