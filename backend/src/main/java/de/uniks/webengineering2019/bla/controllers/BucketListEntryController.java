@@ -77,6 +77,8 @@ public class BucketListEntryController {
     @GetMapping("/{entry}/")
     public BucketListEntry comments(@PathVariable BucketListEntry entry)
     {
+        guardUnknownEntry(entry);
+        checkAcces(entry.getBucketList());
         return entry;
     }
 
@@ -84,9 +86,8 @@ public class BucketListEntryController {
     @ResponseStatus(HttpStatus.CREATED)
     public void addComment(@RequestBody Comment comment, @PathVariable BucketListEntry entry)
     {
-        if (entry == null) {
-            throw new ResourceNotFoundException("requested entry unknown");
-        }
+        guardUnknownEntry(entry);
+        checkAcces(entry.getBucketList());
         commentCreationService.addComment(comment, entry);
     }
 
@@ -114,9 +115,23 @@ public class BucketListEntryController {
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deleteEntry(@PathVariable BucketList bucketList, @PathVariable BucketListEntry entry)
     {
+        guardUnknownBucketList(bucketList);
+        guardUnknownEntry(entry);
         checkAcces(entry.getBucketList());//check if user or admin
         bucketList.getEntries().remove(entry);
         entryRepository.delete(entry);
+    }
+
+    private void guardUnknownBucketList(@PathVariable BucketList bucketList) {
+        guardUnknownEntity(bucketList == null, "the requested bucket list does not exist");
+    }
+
+    private void guardUnknownEntry(@PathVariable BucketListEntry entry) {
+        guardUnknownEntity(entry, "the requested entry does not exist");
+    }
+
+    private void guardUnknownEntity(Object entity, String errorMessage) {
+        if (entity == null) throw new ResourceNotFoundException(errorMessage);
     }
 
     @PutMapping("/{entry}/")
@@ -126,9 +141,7 @@ public class BucketListEntryController {
             @PathVariable BucketListEntry entry,
             ObjectMapper mapper
     ) throws IOException {
-        if (entry == null) {
-            throw new ResourceNotFoundException("requested entry unknown");
-        }
+        guardUnknownEntry(entry);
 
         checkAcces(entry.getBucketList());
         mapper.readerForUpdating(entry).readValue(updateJson);
@@ -140,12 +153,8 @@ public class BucketListEntryController {
         @PathVariable("bucketList") BucketList targetList,
         @PathVariable("entry") BucketListEntry entryToDuplicate
     ) {
-        if (targetList == null) {
-            throw new ResourceNotFoundException("requested bucketlist unknown");
-        }
-        if (entryToDuplicate == null) {
-            throw new ResourceNotFoundException("requested entry unknown");
-        }
+        guardUnknownBucketList(targetList);
+        guardUnknownEntry(entryToDuplicate);
 
         final BucketListEntry newEntry = copyEntryToList(targetList, entryToDuplicate);
 
@@ -165,12 +174,8 @@ public class BucketListEntryController {
             @PathVariable("bucketList") BucketList targetList,
             @PathVariable("sourceList") BucketList sourceList
     ) {
-        if (targetList == null) {
-            throw new ResourceNotFoundException("target bucketlist unknown");
-        }
-        if (sourceList == null) {
-            throw new ResourceNotFoundException("source bucketlist unknown");
-        }
+        guardUnknownEntity(targetList,"target bucketlist unknown");
+        guardUnknownEntity(sourceList, "source bucketlist unknown");
 
         for (BucketListEntry entry : sourceList.getEntries()) {
             final BucketListEntry newEntry = copyEntryToList(targetList, entry);
