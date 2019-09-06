@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { backendFetch } from "../../api";
 
+//Component to search lists
 class ListSearch extends Component {
 	state = {
 		searchterm: "",
@@ -11,6 +12,7 @@ class ListSearch extends Component {
 		this.setState({ [event.target.name]: event.target.value });
 	}
 
+	//Search when state changes
 	componentDidUpdate(prevProps, prevState) {
 		if (prevState.searchterm !== this.state.searchterm) {
 			this.handleSubmit();

@@ -2,6 +2,7 @@ import React from "react";
 import {backendFetch} from "../../api";
 import {Users} from "../basic-components/users";
 
+//Lists Setting Components (set Permissions)
 export class ListSettings extends React.Component {
 
   //state = {};

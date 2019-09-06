@@ -121,27 +121,32 @@ function BucketListDetails({bucketList, onUpdateBucketList, history}) {
     let [upVoted, setupVoted] = useState(upvotedAlready);
 
     function upvotedAlready() {
-        for (var i = 0; i < bucketList.userUpvote.length; i++) {
-            if (bucketList.userUpvote[i].userName === Authentication.getUser().sub) {
-                return true
+        if (bucketList && Authentication.getUser()) {
+            for (var i = 0; i < bucketList.userUpvote.length; i++) {
+                if (bucketList.userUpvote[i].userName === Authentication.getUser().sub) {
+                    return true
+                }
             }
+            return false;
         }
-        return false;
     }
 
     function downVotedAlready() {
-        for (var i = 0; i < bucketList.userDownvote.length; i++) {
-            if (bucketList.userDownvote[i].userName === Authentication.getUser().sub) {
-                return true
+        if (bucketList && Authentication.getUser()) {
+            for (var i = 0; i < bucketList.userDownvote.length; i++) {
+                if (bucketList.userDownvote[i].userName === Authentication.getUser().sub) {
+                    return true
+                }
             }
+            return false;
         }
-        return false;
     }
 
     const buttonBar =
         <>
             <span className="btn-small">{counter} Votes</span>
-            <Button waves="light" small className="ml05" disabled={upVoted} onClick={upvoteList}><Icon>arrow_upward</Icon></Button>
+            <Button waves="light" small className="ml05" disabled={upVoted}
+                    onClick={upvoteList}><Icon>arrow_upward</Icon></Button>
             <Button waves="light" small className="cancelBtn ml05" disabled={downVoted}
                     onClick={downvoteList}><Icon>arrow_downward</Icon></Button>
             <Link to={cloneLocation}><Button waves="light" small className="ml05 light-blue"><Icon
@@ -190,7 +195,8 @@ BucketListDetails.propTypes = {
 function BucketListDefaultView({bucketList, url, path, onUpdateBucketList, history, refresh}) {
 
     let renderEntries = useCallback(() => <BucketListEntries bucketList={bucketList}/>, [bucketList.id]);
-    let renderComments = useCallback(() => <BucketListComments refresh={refresh} bucketList={bucketList}/>, [bucketList, refresh]);
+    let renderComments = useCallback(() => <BucketListComments refresh={refresh}
+                                                               bucketList={bucketList}/>, [bucketList, refresh]);
     let renderSettings = useCallback(() => <ListSettings bucketList={bucketList}/>, [bucketList]);
 
 

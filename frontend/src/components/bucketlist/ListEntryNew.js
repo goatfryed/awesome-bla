@@ -2,6 +2,7 @@ import React from "react";
 import {backendFetch} from "../../api";
 import {Button, Icon, Textarea} from "react-materialize";
 
+//Create a new listentry
 export class ListEntryNew extends React.Component {
     constructor(props) {
         super(props);

@@ -90,7 +90,7 @@ public class BucketList implements Commentable {
         }
         countVotes();
     }
-
+    //calculates votecout
     public void countVotes() {
         this.voteCount = this.userUpvote.size() - this.userDownvote.size();
     }

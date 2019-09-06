@@ -156,7 +156,7 @@ public class BucketListController{
         return ResponseEntity.ok(bucketList.isPrivateList());
     }
 
-
+    //Bucketlisten hinzufügen Endpunkt
     @PostMapping("/add")
     @ResponseStatus(HttpStatus.CREATED)
     public void addList(@RequestBody BucketList newBucketList) {
@@ -166,7 +166,7 @@ public class BucketListController{
         newBucketList.setVoteCount(0);
         bucketListRepository.save(newBucketList);
     }
-
+    //Bucketlist Upvoten/Downvoten
     @PostMapping("/{bucketList}/upvote")
     @ResponseStatus(HttpStatus.CREATED)
     public void upvoteList(@PathVariable BucketList bucketList) {
@@ -187,6 +187,7 @@ public class BucketListController{
         bucketListRepository.save(bucketList);
     }
 
+    //Zählt den aktuellen Votecount anhand der Down/Upvotes
     @GetMapping("/{bucketList}/votecount")
     public int getVoteCount(@PathVariable BucketList bucketList) {
         guardUnknownBucketList(bucketList);
@@ -194,6 +195,7 @@ public class BucketListController{
         return bucketList.getVoteCount();
     }
 
+    //Sucht Bucketlisten nach Titel
     @GetMapping("/search/{searchterm}")
     public List<BucketList> searchBucketList(@PathVariable("searchterm") String searchterm) {//
         if(userContext.hasUser()){
@@ -226,6 +228,8 @@ public class BucketListController{
         return updatedBucketList;
     }
 
+
+    //löscht Bucketliste
     @DeleteMapping("/{bucketList}/delete")
     @ResponseStatus(HttpStatus.ACCEPTED)
     public void delete(@PathVariable BucketList bucketList) {
