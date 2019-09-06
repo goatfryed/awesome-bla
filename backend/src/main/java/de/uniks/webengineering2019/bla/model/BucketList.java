@@ -4,12 +4,15 @@ import java.util.Date;
 import java.util.List;
 import java.util.Set;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import lombok.*;
+import org.springframework.context.annotation.Lazy;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
 
 @Setter
 @Getter
@@ -42,7 +45,11 @@ public class BucketList implements Commentable {
     private Set<User> accessedUsers;
 
     @Transient
+    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private boolean ownList;
+    @Transient
+    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
+    private boolean shared;
 
     @ManyToOne
     @JoinColumn(name="owner_id",nullable = false)
@@ -83,7 +90,7 @@ public class BucketList implements Commentable {
         }
         countVotes();
     }
-
+    //calculates votecout
     public void countVotes() {
         this.voteCount = this.userUpvote.size() - this.userDownvote.size();
     }
@@ -97,5 +104,11 @@ public class BucketList implements Commentable {
     public List<Comment> getComments()
     {
         return comments;
+    }
+
+    @Override
+    @JsonIgnore
+    public Long getCommentableRootListId() {
+        return this.getId();
     }
 }

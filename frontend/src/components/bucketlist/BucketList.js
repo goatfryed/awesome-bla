@@ -9,13 +9,14 @@ import {NavTabs} from "./NavTabs";
 import {Button, Icon} from "react-materialize";
 import {BucketListEntries} from "./BucketListEntries";
 import {ListSettings} from "./ListSettings";
+import Authentication from "../../authentication/Authentication";
 
 function DefaultListHeader({bucketList}) {
-    const {description, title} = bucketList;
+    const {description, title, created, owner} = bucketList;
     return <>
-        <h5>{title}</h5>
+        <h2>{title} from {owner.userName}</h2>
         <hr/>
-        <p><strong>{description}</strong></p>
+        <p><strong>{description}</strong> • created {moment(created).fromNow()}</p>
     </>;
 }
 
@@ -34,10 +35,10 @@ function EditableListHeader({bucketList, changedBucketListRef}) {
 
     return <>
         <input value={title} onChange={e => setTitle(e.target.value)}/>
-        <hr />
+        <hr/>
         <textarea value={description} onChange={e => setDescription(e.target.value)}
-              rows={5}
-              style={{resize: "vertical"}}
+                  rows={5}
+                  style={{resize: "vertical"}}
         />
     </>
 }
@@ -62,21 +63,26 @@ function BucketListDetails({bucketList, onUpdateBucketList, history}) {
     let changedBucketList = useRef(null);
 
     let [counter, setCounter] = useState(bucketList.voteCount)
-    function upvoteList() {
-        backendFetch.post("/bucketlists/" + bucketList.id + "/upvote/", {});
-        updateVoteCount();
+
+    let user = Authentication.getUser();
+
+    function upvoteList(event) {
+        event.preventDefault();
+        backendFetch.post("/bucketlists/" + bucketList.id + "/upvote/", {}).then(updateVoteCount);
+        setdownVoted(false);
+        setupVoted(true);
     }
 
-    function downvoteList() {
-        backendFetch.post("/bucketlists/" + bucketList.id + "/downvote/", {});
-        updateVoteCount();
+    function downvoteList(event) {
+        event.preventDefault();
+        backendFetch.post("/bucketlists/" + bucketList.id + "/downvote/", {}).then(updateVoteCount);
+        setdownVoted(true);
+        setupVoted(false);
     }
 
-    function updateVoteCount(){
-       setTimeout( async function() {
-            let newCounter = await backendFetch.get("/bucketlists/" + bucketList.id + "/votecount");
-            setCounter(newCounter);
-        },100)
+    async function updateVoteCount() {
+        let newCounter = await backendFetch.get("/bucketlists/" + bucketList.id + "/votecount");
+        setCounter(newCounter);
     }
 
     function deleteList() {
@@ -113,26 +119,72 @@ function BucketListDetails({bucketList, onUpdateBucketList, history}) {
         [editing, onUpdateBucketList, bucketList]
     );
 
-    return <form className="row" onSubmit={onSubmit}>
-        <div className="col s10 offset-s1">
-            <div>
-                {editing ? <EditableListHeader
-                    key={bucketList.id} bucketList={bucketList}
-                    changedBucketListRef={changedBucketList}
-                /> : <DefaultListHeader bucketList={bucketList} />}
-                <small>{counter} · <a onClick={upvoteList} href="#like">Like</a> | <a onClick={downvoteList} href="#dislike">Dislike</a>
-                    · <span>{moment(bucketList.created).fromNow()}</span>
-                    · <Link className="button" to={cloneLocation}>Copy</Link>
-                </small>
+    let [downVoted, setdownVoted] = useState(downVotedAlready);
+    let [upVoted, setupVoted] = useState(upvotedAlready);
+
+    function upvotedAlready() {
+        if (bucketList && Authentication.getUser()) {
+            for (var i = 0; i < bucketList.userUpvote.length; i++) {
+                if (bucketList.userUpvote[i].userName === Authentication.getUser().sub) {
+                    return true
+                }
+            }
+            return false;
+        }
+    }
+
+    function downVotedAlready() {
+        if (bucketList && Authentication.getUser()) {
+            for (var i = 0; i < bucketList.userDownvote.length; i++) {
+                if (bucketList.userDownvote[i].userName === Authentication.getUser().sub) {
+                    return true
+                }
+            }
+            return false;
+        }
+    }
+
+    const buttonBar =
+        <>
+            <span className="btn-small">{counter} Votes</span>
+            <Button waves="light" small className="ml05" disabled={upVoted}
+                    onClick={upvoteList}><Icon>arrow_upward</Icon></Button>
+            <Button waves="light" small className="cancelBtn ml05" disabled={downVoted}
+                    onClick={downvoteList}><Icon>arrow_downward</Icon></Button>
+            <Link to={cloneLocation}><Button waves="light" small className="ml05 light-blue"><Icon
+                left>content_copy</Icon>Copy</Button></Link>
+        </>
+    ;
+
+    return <>
+        <form className="row" onSubmit={onSubmit}>
+            <div className="col s2 noPadding">
+                <img className="mt2rem" src="/list.svg" alt="ListIcon"/>
             </div>
+            <div className="col s8 m9">
+                <div>
+                    {editing ? <EditableListHeader
+                        key={bucketList.id} bucketList={bucketList}
+                        changedBucketListRef={changedBucketList}
+                    /> : <DefaultListHeader bucketList={bucketList}/>}
+                    <div id="desktop_buttonBar">
+                        {user != null ? buttonBar : null}
+                    </div>
+                </div>
+            </div>
+            <div className="col s2 m1 noPadding">
+                <Button className="mt2rem fullWidth" type="submit" disabled={!bucketList.ownList}
+                        waves="light"><Icon>{editIconType}</Icon></Button>
+                <Button disabled={!bucketList.ownList} onClick={deleteList} type="button" className="red mt05 fullWidth"
+                        waves="light"><Icon>delete</Icon></Button>
+            </div>
+        </form>
+
+        <div id="mobile_buttonBar">
+            {buttonBar}
         </div>
-        <div className="col s1 valign-wrapper">
-            <ul>
-                <li><Button type="submit" disabled={!bucketList.ownList} waves="light"><Icon>{editIconType}</Icon></Button></li>
-                <li style={{marginTop: "5px"}}><Button onClick={deleteList} type="button" className="red" waves="light"><Icon>delete</Icon></Button></li>
-            </ul>
-        </div>
-    </form>;
+    </>
+        ;
 }
 
 BucketListDetails.propTypes = {
@@ -142,12 +194,12 @@ BucketListDetails.propTypes = {
     editUrl: PropTypes.string,
 };
 
-function BucketListDefaultView({bucketList, url, path, onUpdateBucketList, history}) {
+function BucketListDefaultView({bucketList, url, path, onUpdateBucketList, history, refresh}) {
 
-    let renderEntries= useCallback(() => <BucketListEntries id={bucketList.id}/>, [bucketList.id]);
-    let renderComments= useCallback(() => <BucketListComments bucketList={bucketList} />, [bucketList]);
-    let renderSettings= useCallback(() => <ListSettings bucketList={bucketList}/>, [bucketList]);
-
+    let renderEntries = useCallback(() => <BucketListEntries bucketList={bucketList}/>, [bucketList]);
+    let renderComments = useCallback(() => <BucketListComments refresh={refresh}
+                                                               bucketList={bucketList}/>, [bucketList, refresh]);
+    let renderSettings = useCallback(() => <ListSettings bucketList={bucketList}/>, [bucketList]);
 
 
     return <>
@@ -186,39 +238,30 @@ function BucketListDefaultView({bucketList, url, path, onUpdateBucketList, histo
                 {
                     url: url + "/comments/",
                     title: "Comments",
-                },
-                {
-                    url: url + "/newlistentry",
-                    title: "New list entry",
-                    navLinkProps: {target: "_self"},
                 }
             ]}/>
         </div>
-        <div className="row">
-            <div className="col s12">
-                <Switch>
-                    <Route strict path={path + "entries/"}
-                           render={renderEntries}/>
-                    <Route strict path={path + "comments/"}
-                           render={renderComments}/>
-                    <Route path={path + "settings"}
-                           render={renderSettings}/>
-                    <Redirect to={url + "/entries/"}/>
-                </Switch>
-            </div>
+        <div>
+            <Switch>
+                <Route strict path={path + "entries/"}
+                       render={renderEntries}/>
+                <Route strict path={path + "comments/"}
+                       render={renderComments}/>
+                <Route path={path + "settings"}
+                       render={renderSettings}/>
+                <Redirect to={url + "/entries/"}/>
+            </Switch>
         </div>
     </>;
 }
 
 BucketListDefaultView.propTypes = {
-    bucketList: PropTypes.any,
-    counter: PropTypes.number,
-    onLike: PropTypes.func,
+    bucketList: PropTypes.object.isRequired,
+    onUpdateBucketList: PropTypes.func.isRequired,
+    refresh: PropTypes.func.isRequired,
     url: PropTypes.any,
     path: PropTypes.any,
-    render: PropTypes.func,
-    render1: PropTypes.func,
-    render2: PropTypes.func
+    history: PropTypes.object,
 };
 
 export function BucketList({match, history}) {
@@ -226,10 +269,12 @@ export function BucketList({match, history}) {
     const [bucketList, setBucketList] = React.useState(null);
 
     let loadBucketList = useCallback(
-        function() {
-            backendFetch("/bucketlists/" + id + "/")
+        function () {
+            backendFetch.get("/bucketlists/" + id + "/")
                 .then(data => setBucketList(data))
-                .catch( () => setBucketList(null))
+                .catch(() => {
+                    setBucketList(null)
+                })
             ;
         },
         [id]
@@ -239,9 +284,9 @@ export function BucketList({match, history}) {
         async update => {
             let jsonChange = JSON.stringify(update);
             let data = await backendFetch.put(
-            "/bucketlists/" + id + "/",{
-                body: jsonChange
-            });
+                "/bucketlists/" + id + "/", {
+                    body: jsonChange
+                });
             setBucketList(data);
         },
         [id]
@@ -260,32 +305,31 @@ export function BucketList({match, history}) {
     }
 
 
-
-    return <div className="container">
+    return <div>
         <BucketListDefaultView
             bucketList={bucketList}
             url={match.url}
             path={match.path}
-            update={loadBucketList}
+            refresh={loadBucketList}
             onUpdateBucketList={updateBucketList}
             history={history}
         />
     </div>
 }
 
-function BucketListComments({bucketList, update}) {
+function BucketListComments({bucketList, refresh}) {
 
     async function addCommentToBucketList(comment) {
         await backendFetch.post(
             "/bucketlists/" + bucketList.id + "/comments/",
             {body: JSON.stringify(comment)}
         );
-        update();
+        refresh();
     }
 
     return <CommentsBlock
         onRootCommentCreation={addCommentToBucketList}
-        onReplyCreated={update}
+        onReplyCreated={refresh}
         comments={bucketList.comments}
     />
 }

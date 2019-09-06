@@ -11,12 +11,13 @@ export class allUsers extends React.Component {
     render() {
         return (
             <div>
-                <Users text={"Bucketlisten anzeigen"} onKlick={this.showBucketLists}></Users>
+                <Users text={"Bucketlisten anzeigen"} onKlick={this.showBucketLists}/>
             </div>
         );
     }
 
-    showBucketLists(){
-        console.log("Show Bucketliststs")
+    showBucketLists(user){
+        //console.log("Show Bucketliststs");
+        this.props.history.push("/home/user/"+user.id);
     }
 }

@@ -3,74 +3,226 @@
 @import "../node_modules/materialize-css/sass/materialize.scss";
 
 body {
-    font-family: "Raleway", sans-serif;
+  font-family: "Raleway", sans-serif;
 }
-.navbar-btn{
-  .btn {
-    padding: 0 10px;
-  }
-}
+
 .app-navbar {
-    .navbar-icons {
-        line-height: inherit;
-        height:100%;
-        margin-right: 10px;
+  .navbar-icons {
+    line-height: inherit;
+    height: 100%;
+    margin-right: 10px;
+  }
+
+  .brand-logo {
+    .navbar-logo {
+      max-height: 50px;
+      margin-right: 7px;
+      margin-left: 15px;
+      position: relative;
+      top: 50%;
+      transform: translateY(-50%);
     }
-    
-    .brand-logo {
-        .navbar-logo {
-            max-height: 50px;
-            margin-right: 7px;
-            margin-left: 7px;
-            position: relative;
-            top: 50%;
-            transform: translateY(-50%);
-        }
-        .logo-text {
-            margin-right: 7px;
-        }
-        @media screen and (min-width: 992px) {
-            float: left;
-            position: relative;
-        }
-        @media screen and (max-width: 600px) {
-            .navbar-logo {
-                max-height: 40px;
-                margin-left: 0;
-            }
-            .logo-text {
-                font-size: 0.9rem;
-                margin-right: 0;
-            }
-        }
-        
-        display: inline-flex;
-        font-size: 1.2rem;
-        height: inherit;
+
+    .logo-text {
+      margin-right: 7px;
     }
-    ul {
-        width: 100%;
-        //Login Items float right
-        li:nth-last-child(-n + 5) {
-            float: right;
-        }
+
+    @media screen and (min-width: 992px) {
+      float: left;
+      position: relative;
     }
-    max-width: 1280px;
-    margin: 0 auto;
+    @media screen and (max-width: 600px) {
+      .navbar-logo {
+        max-height: 40px;
+        margin-left: 0;
+      }
+      .logo-text {
+        font-size: 0.9rem;
+        margin-right: 0;
+      }
+    }
+
+    display: inline-flex;
+    font-size: 1.2rem;
+    height: inherit;
+  }
+
+  ul {
+    width: 100%;
+    //Login Items float right
+    li:nth-last-child(-n + 5) {
+      float: right;
+    }
+  }
 }
 
 nav,
 #mobile-nav {
-    .activeLink {
-        color: black;
-    }
-    .debugInput {
-        width: unset !important;
-        margin-right: 10px !important;
-    }
+  .activeLink {
+    color: black;
+  }
+
+  .debugInput {
+    width: unset !important;
+    margin-right: 10px !important;
+  }
 }
 
+.loginBtn {
+  font-weight: 700;
+}
+
+//headings
+h2 {
+  font-size: 2rem;
+  line-height: 1;
+  margin: 2rem 0 1rem;
+}
+
+//Tabs
+.tabs .tab a:hover, .tabs .tab a.active {
+  color: color("light-blue", "base");
+  font-weight: 600;
+}
+
+.tabs .tab a {
+  color: color("light-blue", "base");
+}
+
+.tabs .indicator {
+  background-color: color("light-blue", "base");
+}
+
+
+//Buttons
+.submitBtn {
+  margin-right: 1rem;
+}
+
+.cancelBtn {
+  background-color: red;
+
+  &:hover {
+    background-color: lighten(red, 20%);
+  }
+}
+
+//BucketListDetails Page
+.checkboxEntry {
+  top: 4px;
+}
+
+//users
+.allowAccessBtn {
+  transform: translateY(-20%);
+}
+
+//Mobile Friendly
+@media screen and (max-width: 600px) {
+  .btn-small, .btn {
+    padding: 0 12px;
+
+  }
+  i.left {
+    margin-right: 5px;
+  }
+  #mobile_buttonBar {
+    display: flex !important;
+  }
+  #desktop_buttonBar {
+    display: none;
+  }
+  .entryButtons {
+    float: none !important;
+    display: flex;
+    align-items: stretch;
+    margin-top: 5px;
+
+    .btn-small {
+      flex: 1 1 33.3333%;
+      white-space: nowrap;
+      flex-grow: 1;
+      flex-basis: 0;
+
+      &:first-child {
+        margin-left: 0;
+      }
+    }
+  }
+  .tabs .tab a {
+    padding: 0 2px;
+    font-size: 12px;
+  }
+  #mainContainer{
+    width: 100%;
+  }
+}
+
+@media screen and (max-width: 500px) {
+
+  h2 {
+    font-size: 18px;
+  }
+  .collection .collection-item {
+    padding: 10px 10px;
+  }
+}
+
+#mobile_buttonBar {
+  align-items: stretch;
+  display: none;
+  margin-top: -20px;
+
+  .btn-small {
+    flex: 1 1 25%;
+    white-space: nowrap;
+    flex-grow: 1;
+    flex-basis: 0;
+  }
+}
+
+.entryButtons {
+  float: right;
+}
+
+
 //Generic Classes
+.fullWidth {
+  width: 100%;
+}
+
+.noPadding {
+  padding: 0 !important;
+}
+
+.floatRight {
+  float: right;
+}
+
 .ml05 {
-    margin-left: 5px;
+  margin-left: 5px;
+}
+
+.mt05 {
+  margin-top: 5px;
+}
+
+.mt2rem {
+  margin-top: 2rem;
+}
+
+//background
+body {
+  background: url("/background.jpg");
+}
+html, body, #root, #mainContainer{
+  min-height: 100vh;
+
+}
+#mainContainer {
+  background: white;
+  box-shadow: 0 0 12px #00000094;
+}
+#contentWrapper {
+  padding: 0 20px;
 }

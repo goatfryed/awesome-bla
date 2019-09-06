@@ -20,10 +20,11 @@ export function Unauthorized401 () {
     >
         <div className="row center-align">
             <div className="row">
-                <h5>You were not supposed to do that! Stop it!</h5>
+                <h5>You don't have permission to do that! Go somewhere else!</h5>
             </div>
             <div className="row">
                 <iframe
+                    title="I'm afraid you can't do that, Dave"
                     style={{
                         margin: "0 auto"
                     }}

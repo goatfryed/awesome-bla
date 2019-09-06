@@ -39,7 +39,7 @@ public class BLAApplication implements CommandLineRunner{
 		for(String arg:args){
 			if(arg.equals("paging_test")){
 				LOG.info("Profile Page Testing is active test lists will be created");
-				User user = userRepository.findByUserNameIgnoreCaseContaining("Test User 1").get(0);
+				/*User user = userRepository.findByUserNameIgnoreCaseContaining("Test User 1",0).getContent().get(0);
 				for(long i=0;i<40;i++){
 					BucketList bucketList = BucketList.builder()
 							.creationDate(new Date())
@@ -52,7 +52,7 @@ public class BLAApplication implements CommandLineRunner{
 							.id(i)
 							.owner(user).build();
 					bucketListRepository.save(bucketList);
-				}
+				}*/
 			}
 		}
 	}

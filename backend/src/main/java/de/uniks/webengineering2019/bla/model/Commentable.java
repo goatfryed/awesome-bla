@@ -29,4 +29,7 @@ import java.util.List;
 public interface Commentable {
 
     List<Comment> getComments();
+
+    //this is needet to know root bucketlist of comment, to deny acces when not priveleged to write comment to this list
+    Long getCommentableRootListId();
 }

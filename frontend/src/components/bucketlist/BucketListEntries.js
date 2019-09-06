@@ -1,16 +1,17 @@
 import {keyBy} from "lodash/collection";
 import moment from "moment";
 import * as PropTypes from "prop-types";
-import React, {useEffect, useState, useCallback, useReducer, useMemo} from "react";
-import {Route, Switch, withRouter} from "react-router";
+import React, {useCallback, useEffect, useMemo, useReducer, useState} from "react";
+import {Redirect, Route, Switch, withRouter} from "react-router";
 import {Link} from "react-router-dom";
 
 import BucketListEntryDetails from "./BucketListEntryDetails";
 import {CommentsBlock} from "./Comments";
 import {backendFetch} from "../../api";
 import {Button, Icon} from "react-materialize";
+import Authentication from "../../authentication/Authentication";
 
-function EntryListView({entries, refresh, onSelect, pagePath, onDelete}) {
+function EntryListView({bucketList, entries, refresh, onSelect, pagePath, onDelete}) {
 
     if (entries === null) {
         return <span>Loading</span>
@@ -21,6 +22,7 @@ function EntryListView({entries, refresh, onSelect, pagePath, onDelete}) {
     return <div className="column">
         <ul className="collection">
             {entries.map(entry => <BucketListEntry
+                    bucketList={bucketList}
                     key={entry.id} pagePath={pagePath}
                     entry={entry}
                     refresh={refresh}
@@ -39,7 +41,32 @@ EntryListView.propTypes = {
 
 export const BucketListEntries = withRouter(BucketListEntriesBase);
 
-function BucketListEntriesBase({id, match}) {
+function GuardedBucketListEntryDetails({entryId, refresh, entries, pagePath, isLoading}) {
+
+    let selectedEntry = isLoading ? null : (entries[entryId] || null);
+
+    if (!isLoading && selectedEntry === null) {
+        return <Redirect to={"/404"} />
+    }
+
+    return <BucketListEntryDetails
+        isLoading={isLoading}
+        selectedEntry={selectedEntry}
+        refresh={refresh}
+        pagePath={pagePath}
+    />;
+}
+
+GuardedBucketListEntryDetails.propTypes = {
+    entryId: PropTypes.number.isRequired,
+    pagePath: PropTypes.string.isRequired,
+    refresh: PropTypes.func.isRequired,
+    entries: PropTypes.any,
+    isLoading: PropTypes.bool,
+};
+
+function BucketListEntriesBase({bucketList, match}) {
+    let id = bucketList.id;
     let pagePath = "/bucketlists/"+id+"/entries";
 
     let [entries, setEntries] = useState(null);
@@ -71,6 +98,7 @@ function BucketListEntriesBase({id, match}) {
     return <Switch>
         <Route exact strict path={match.path}>
             <EntryListView
+                bucketList={bucketList}
                 pagePath={pagePath}
                 entries={entries}
                 refresh={refresh}
@@ -79,9 +107,10 @@ function BucketListEntriesBase({id, match}) {
         </Route>
         <Route path={match.path + ":entryId"}
             render={
-                ({match}) => <BucketListEntryDetails
+                ({match}) => <GuardedBucketListEntryDetails
+                    entryId={match.params.entryId}
                     isLoading={entries === null}
-                    selectedEntry={entries && entries[match.params.entryId]}
+                    entries={entries}
                     refresh={refresh}
                     pagePath={pagePath}
                 />
@@ -92,7 +121,7 @@ function BucketListEntriesBase({id, match}) {
 
 const BucketListEntry = withRouter(BucketListEntryView);
 
-function BucketListEntryView({entry, pagePath, refresh, history,  match, onDelete}) {
+function BucketListEntryView({bucketList, entry, pagePath, refresh,  match, onDelete}) {
 
     let entryBackendUrl = pagePath + "/" + entry.id + "/";
     let [showComments, toggleComments] = useReducer(isChecked => !isChecked, false);
@@ -135,17 +164,20 @@ function BucketListEntryView({entry, pagePath, refresh, history,  match, onDelet
         <div>
             <label>
             <input
-                type="checkbox"
+                type="checkbox"b
                 checked={!!entry.completed}
                 onChange={toggleCompleted}
-            /><span/></label>
+                disabled={!bucketList.ownList}
+            /><span className="checkboxEntry"/></label>
             &nbsp;<Link to={match.url + entry.id + "/"}>{entry.title}</Link>
             <small>
-                {" · "+ moment(entry.created).fromNow() + " · "}
-                 <Button className="btn-small" onClick={() => toggleComments(!showComments)}><Icon>comment</Icon></Button>
-                 <Link className="btn btn-small" to={cloneLocation}><Icon>import_export</Icon></Link>
-                 <Button className="btn-small red" onClick={() => onDelete(entry)}><Icon>delete</Icon></Button>
+                {" · "+ moment(entry.created).fromNow()}
             </small>
+            <div className="entryButtons">
+                 <Button small className="ml05" onClick={() => toggleComments(!showComments)}><Icon>comment</Icon></Button>
+                 {Authentication.isAuthenticated() && <Link title="Import entry to own list" className="btn btn-small ml05" to={cloneLocation}><Icon>import_export</Icon></Link>}
+                 {bucketList.ownList && <Button small className="red ml05" onClick={() => onDelete(entry)}><Icon>delete</Icon></Button>}
+            </div>
         </div>
         {showComments && <ExtendedEntry entry={entry} pagePath={pagePath}/>}
     </li>;

@@ -1,9 +1,14 @@
 package de.uniks.webengineering2019.bla.model;
 
 import com.fasterxml.jackson.annotation.*;
+import de.uniks.webengineering2019.bla.repositories.BucketListRepository;
+import jdk.nashorn.internal.ir.annotations.Ignore;
 import lombok.*;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -51,5 +56,17 @@ public class Comment implements Commentable {
             comments = new ArrayList<>();
         }
         return comments;
+    }
+
+
+    @JsonIgnore
+    @JsonProperty("root_id")
+    private Long root_id;
+
+    @Override
+    @JsonIgnore
+    public Long getCommentableRootListId() {
+        //return null;
+        return root_id;
     }
 }

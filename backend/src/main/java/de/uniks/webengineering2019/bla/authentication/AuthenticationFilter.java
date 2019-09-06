@@ -66,7 +66,7 @@ public class AuthenticationFilter implements Filter {
         boolean valid = parseToken(httpReq);
 
         // In our case we do not permit any HTTP requests which are POST.
-        if (httpReq.getMethod().equals("POST")) {
+        if (!httpReq.getMethod().equals("GET")) {
             if (!valid) {
                 LOG.warn("Unauthorized request to {}", ((HttpServletRequest) req).getRequestURI());
                 httpResp.setStatus(HttpStatus.UNAUTHORIZED.value());
@@ -84,7 +84,14 @@ public class AuthenticationFilter implements Filter {
             Claims c = claims.get();
 
             User user = new User();
-            user.setId(Long.parseLong((String)c.get("id")));
+            Object id = c.get("id");
+            long properId;
+            if (!(id instanceof Number)) {
+                properId = Long.parseLong(id.toString());
+            } else {
+                properId = ((Number) id).longValue();
+            }
+            user.setId(properId);
             user.setUserName(c.getSubject());
             user.setFullName((String)c.get("name"));
 

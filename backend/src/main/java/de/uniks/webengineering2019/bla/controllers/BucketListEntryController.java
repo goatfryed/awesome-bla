@@ -2,11 +2,14 @@ package de.uniks.webengineering2019.bla.controllers;
 
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import de.uniks.webengineering2019.bla.api_errors.InsuficientPermissionException;
 import de.uniks.webengineering2019.bla.api_errors.ResourceNotFoundException;
+import de.uniks.webengineering2019.bla.authentication.UserContext;
 import de.uniks.webengineering2019.bla.comments.CommentCreationService;
 import de.uniks.webengineering2019.bla.model.BucketList;
 import de.uniks.webengineering2019.bla.model.BucketListEntry;
 import de.uniks.webengineering2019.bla.model.Comment;
+import de.uniks.webengineering2019.bla.model.User;
 import de.uniks.webengineering2019.bla.repositories.BucketListEntryRepository;
 import de.uniks.webengineering2019.bla.repositories.BucketListRepository;
 import org.slf4j.Logger;
@@ -36,27 +39,27 @@ public class BucketListEntryController {
     private final CommentCreationService commentCreationService;
     @NonNull
     private final ObjectMapper objectMapper;
+    @NonNull
+    private final UserContext userContext;
 
     public BucketListEntryController(
             @NonNull BucketListEntryRepository entryRepository,
             @NonNull BucketListRepository bucketListRepository,
             @NonNull CommentCreationService commentCreationService,
-            @NonNull ObjectMapper objectMapper
+            @NonNull ObjectMapper objectMapper,
+            @NonNull UserContext userContext
     ) {
         this.entryRepository = entryRepository;
         this.bucketListRepository = bucketListRepository;
         this.commentCreationService = commentCreationService;
         this.objectMapper = objectMapper;
-    }
-
-    @GetMapping("/api/bucketlists/entries")
-    public List<BucketListEntry> listAll() {
-        return entryRepository.findAll();
+        this.userContext = userContext;
     }
 
     @GetMapping("/")
     public List<BucketListEntry> list(@PathVariable BucketList bucketList)
     {
+        guardUserCanView(bucketList);
         bucketList.getEntries().forEach(p -> p.getComments().clear());
 
         return new ArrayList<>(bucketList.getEntries());
@@ -65,6 +68,8 @@ public class BucketListEntryController {
     @GetMapping("/{entry}/")
     public BucketListEntry comments(@PathVariable BucketListEntry entry)
     {
+        guardUnknownEntry(entry);
+        guardUserCanView(entry.getBucketList());
         return entry;
     }
 
@@ -72,9 +77,9 @@ public class BucketListEntryController {
     @ResponseStatus(HttpStatus.CREATED)
     public void addComment(@RequestBody Comment comment, @PathVariable BucketListEntry entry)
     {
-        if (entry == null) {
-            throw new ResourceNotFoundException("requested entry unknown");
-        }
+        guardUnknownEntry(entry);
+        // every user that sees a list can create a new comment
+        guardUserCanView(entry.getBucketList());
         commentCreationService.addComment(comment, entry);
     }
 
@@ -86,6 +91,8 @@ public class BucketListEntryController {
         if (!updatedBucketList.isPresent()) {
             throw new ResourceNotFoundException("requested bucketlist does not exist");
         }
+
+        guardUserCanModify(updatedBucketList.get());
 
         final BucketList bucketList = updatedBucketList.get();
         // save entry into list
@@ -100,6 +107,9 @@ public class BucketListEntryController {
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deleteEntry(@PathVariable BucketList bucketList, @PathVariable BucketListEntry entry)
     {
+        guardUnknownBucketList(bucketList);
+        guardUnknownEntry(entry);
+        guardUserCanModify(entry.getBucketList());//check if user or admin
         bucketList.getEntries().remove(entry);
         entryRepository.delete(entry);
     }
@@ -111,10 +121,9 @@ public class BucketListEntryController {
             @PathVariable BucketListEntry entry,
             ObjectMapper mapper
     ) throws IOException {
-        if (entry == null) {
-            throw new ResourceNotFoundException("requested entry unknown");
-        }
+        guardUnknownEntry(entry);
 
+        guardUserCanModify(entry.getBucketList());
         mapper.readerForUpdating(entry).readValue(updateJson);
         entryRepository.save(entry);
     }
@@ -124,12 +133,10 @@ public class BucketListEntryController {
         @PathVariable("bucketList") BucketList targetList,
         @PathVariable("entry") BucketListEntry entryToDuplicate
     ) {
-        if (targetList == null) {
-            throw new ResourceNotFoundException("requested bucketlist unknown");
-        }
-        if (entryToDuplicate == null) {
-            throw new ResourceNotFoundException("requested entry unknown");
-        }
+        guardUnknownBucketList(targetList);
+        guardUnknownEntry(entryToDuplicate);
+        guardUserCanView(entryToDuplicate.getBucketList());
+        guardUserCanModify(targetList);
 
         final BucketListEntry newEntry = copyEntryToList(targetList, entryToDuplicate);
 
@@ -149,12 +156,10 @@ public class BucketListEntryController {
             @PathVariable("bucketList") BucketList targetList,
             @PathVariable("sourceList") BucketList sourceList
     ) {
-        if (targetList == null) {
-            throw new ResourceNotFoundException("target bucketlist unknown");
-        }
-        if (sourceList == null) {
-            throw new ResourceNotFoundException("source bucketlist unknown");
-        }
+        guardUnknownEntity(targetList,"target bucketlist unknown");
+        guardUnknownEntity(sourceList, "source bucketlist unknown");
+        guardUserCanView(sourceList);
+        guardUserCanModify(targetList);
 
         for (BucketListEntry entry : sourceList.getEntries()) {
             final BucketListEntry newEntry = copyEntryToList(targetList, entry);
@@ -192,5 +197,42 @@ public class BucketListEntryController {
         targetList.addEntry(newEntry);
 
         return newEntry;
+    }
+
+    /**
+     * @throws InsuficientPermissionException if user is not permitted for deleting or creating or changing an entry
+     */
+    void guardUserCanModify(BucketList bucketList){
+        User user = userContext.getUserOrThrow();
+        if (!user.getId().equals(bucketList.getOwner().getId()))
+        {
+            throw new InsuficientPermissionException("You can't access this list");
+        }
+    }
+
+    /**
+     * @throws InsuficientPermissionException if the bucket list is not visible for the current user
+     */
+    void guardUserCanView(BucketList bucketList) {
+        if (!bucketList.isPrivateList()) {
+            return;
+        }
+        User user = userContext.getUserOrThrow();
+
+        if (!user.equals(bucketList.getOwner()) && !bucketList.getAccessedUsers().contains(user)) {
+            throw new InsuficientPermissionException("You can't access this list");
+        }
+    }
+
+    private void guardUnknownBucketList(@PathVariable BucketList bucketList) {
+        guardUnknownEntity(bucketList == null, "the requested bucket list does not exist");
+    }
+
+    private void guardUnknownEntry(@PathVariable BucketListEntry entry) {
+        guardUnknownEntity(entry, "the requested entry does not exist");
+    }
+
+    private void guardUnknownEntity(Object entity, String errorMessage) {
+        if (entity == null) throw new ResourceNotFoundException(errorMessage);
     }
 }

@@ -1,4 +1,4 @@
-import React, {PureComponent, useEffect,useCallback} from "react";
+import React, {PureComponent, useCallback} from "react";
 import PropTypes from "prop-types";
 import {backendFetch} from "../../api";
 import moment from "moment";
@@ -65,7 +65,7 @@ export default class BucketListEntryDetails extends PureComponent {
                 body: JSON.stringify(update)
             })
             .then(() => {
-                this.setState({loading: false})
+                this.setState({loading: false});
                 this.props.refresh();
             })
             .catch(error => {
@@ -89,9 +89,9 @@ export default class BucketListEntryDetails extends PureComponent {
                 field => {
                     let FieldRenderer = BucketListEntryDetails.fieldRenderes[field] || DefaultFieldRenderer;
                     return <FieldRenderer key={field}
-                        value={this.state[field]}
-                        onChange={value => this.setState({[field]: value})}
-                        fieldLabel={field}
+                                          value={this.state[field]}
+                                          onChange={value => this.setState({[field]: value})}
+                                          fieldLabel={field}
                     />
                 }
             )}
@@ -113,13 +113,12 @@ const RendererPropTypes = {
 };
 
 function DefaultFieldRenderer({onChange, value, fieldLabel}) {
-    return <div className="row">
-        <div className="col s12">
-            <label style={{"text-transform": "capitalize"}}>{fieldLabel}</label>
-            <input className="input" value={value} onChange={e => onChange(e.target.value)}/>
-        </div>
+    return <div>
+        <label style={{"text-transform": "capitalize"}}>{fieldLabel}</label>
+        <input className="input" value={value} onChange={e => onChange(e.target.value)}/>
     </div>
 }
+
 DefaultFieldRenderer.propTypes = RendererPropTypes;
 
 function DateTimeFieldRenderer({onChange, value}) {
@@ -139,14 +138,12 @@ function DateTimeFieldRenderer({onChange, value}) {
     console.log(value);
 
 
-    return <div className="row">
-        <div className="col">
-            <label>Due date</label>
-            <input type="datetime-local" value={!!value ? moment(value).format(moment.HTML5_FMT.DATETIME_LOCAL) : ""}
-                onChange={updateDateTime}
-            />
-        </div>
-    </div>
+    return <>
+        <label>Due date</label>
+        <input type="datetime-local" value={!!value ? moment(value).format(moment.HTML5_FMT.DATETIME_LOCAL) : ""}
+               onChange={updateDateTime}
+        />
+    </>
 }
 
 DateTimeFieldRenderer.propTypes = {
