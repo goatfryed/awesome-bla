@@ -66,8 +66,7 @@ export function About() {
                     This project was made as a microservice oriented web application with Spring Boot in the backend
                     and react + materializecss in the frontend. There are a lot of open source libraries involved in bringing
                     such a project to live, so take your time and check out the project dependencies, if you're interested.<br/>
-                    Special thanks to <a href="https://www.pexels.com/photo/man-standing-on-top-of-mountain-2695232/">Jaime Reimer</a>
-                    for providing free to use images.
+                    Special thanks to <a href="https://www.pexels.com/photo/man-standing-on-top-of-mountain-2695232/">Jaime Reimer</a> for providing free to use images.
                 </p>
             </div>
         </div>
