@@ -1,4 +1,4 @@
-import React, { PureComponent, useCallback } from 'react';
+import React, { PureComponent, useCallback, useMemo } from 'react';
 import {Route, Switch} from "react-router";
 import { Link, Redirect } from "react-router-dom";
 import { backendFetch } from "../../api";
@@ -7,26 +7,40 @@ import Authentication from "../../authentication/Authentication";
 import PropTypes from "prop-types";
 import {Button} from "react-materialize"
 
+const publicListsLink = {
+	url: "/home/public",
+	title: "All",
+};
+const personalListsLink = {
+	url: "/home/personal",
+	title: "Personal",
+};
+const createListsLink = {
+	url: "/newlist",
+	title: "New List",
+};
+
 export function BucketListBoard({match}) {
+
+	let authenticated = Authentication.isAuthenticated();
+	let links = useMemo(
+		() => (
+			authenticated ? [
+				publicListsLink,
+				personalListsLink,
+				createListsLink,
+			] : [
+				publicListsLink,
+			]
+
+		),
+		[authenticated]
+	);
+
 	return (
 		<div>
 			<h5>Bucket Lists</h5>
-			<NavTabs
-				links={[
-					{
-						url: "/home/public",
-						title: "All",
-					},
-					{
-						url: "/home/personal",
-						title: "Personal",
-					},
-					{
-						url: "/newlist",
-						title: "New List",
-					},
-				]}
-			/>
+			<NavTabs links={links} />
 			<Switch>
 				<Route path={match.path + "/public"} exact strict
 					   component={BucketListView}
