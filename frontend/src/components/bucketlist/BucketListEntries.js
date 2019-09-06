@@ -1,8 +1,8 @@
 import {keyBy} from "lodash/collection";
 import moment from "moment";
 import * as PropTypes from "prop-types";
-import React, {useEffect, useState, useCallback, useReducer, useMemo} from "react";
-import {Route, Switch, withRouter} from "react-router";
+import React, {useCallback, useEffect, useMemo, useReducer, useState} from "react";
+import {Redirect, Route, Switch, withRouter} from "react-router";
 import {Link} from "react-router-dom";
 
 import BucketListEntryDetails from "./BucketListEntryDetails";
@@ -38,6 +38,30 @@ EntryListView.propTypes = {
 };
 
 export const BucketListEntries = withRouter(BucketListEntriesBase);
+
+function GuardedBucketListEntryDetails({entryId, refresh, entries, pagePath, isLoading}) {
+
+    let selectedEntry = isLoading ? null : (entries[entryId] || null);
+
+    if (!isLoading && selectedEntry === null) {
+        return <Redirect to={"/404"} />
+    }
+
+    return <BucketListEntryDetails
+        isLoading={isLoading}
+        selectedEntry={selectedEntry}
+        refresh={refresh}
+        pagePath={pagePath}
+    />;
+}
+
+GuardedBucketListEntryDetails.propTypes = {
+    entryId: PropTypes.number.isRequired,
+    pagePath: PropTypes.string.isRequired,
+    refresh: PropTypes.func.isRequired,
+    entries: PropTypes.any,
+    isLoading: PropTypes.bool,
+};
 
 function BucketListEntriesBase({id, match}) {
     let pagePath = "/bucketlists/"+id+"/entries";
@@ -79,9 +103,10 @@ function BucketListEntriesBase({id, match}) {
         </Route>
         <Route path={match.path + ":entryId"}
             render={
-                ({match}) => <BucketListEntryDetails
+                ({match}) => <GuardedBucketListEntryDetails
+                    entryId={match.params.entryId}
                     isLoading={entries === null}
-                    selectedEntry={entries && entries[match.params.entryId]}
+                    entries={entries}
                     refresh={refresh}
                     pagePath={pagePath}
                 />
@@ -92,7 +117,7 @@ function BucketListEntriesBase({id, match}) {
 
 const BucketListEntry = withRouter(BucketListEntryView);
 
-function BucketListEntryView({entry, pagePath, refresh, history,  match, onDelete}) {
+function BucketListEntryView({entry, pagePath, refresh,  match, onDelete}) {
 
     let entryBackendUrl = pagePath + "/" + entry.id + "/";
     let [showComments, toggleComments] = useReducer(isChecked => !isChecked, false);
