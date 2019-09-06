@@ -23,7 +23,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @CrossOrigin
 @RequestMapping("/bucketlists/{bucketList}/entries")
@@ -57,18 +56,10 @@ public class BucketListEntryController {
         this.userContext = userContext;
     }
 
-    //throws 401 back if user is not permitted for deleting or creating or changing an entry
-    void checkAcces(BucketList bucketList){
-        User user = userContext.getUserOrThrow();
-        if (!user.getId().equals(bucketList.getOwner().getId()))
-        {
-            throw new InsuficientPermissionException("You can't access this list");
-        }
-    }
-
     @GetMapping("/")
     public List<BucketListEntry> list(@PathVariable BucketList bucketList)
     {
+        guardUserCanView(bucketList);
         bucketList.getEntries().forEach(p -> p.getComments().clear());
 
         return new ArrayList<>(bucketList.getEntries());
@@ -78,7 +69,7 @@ public class BucketListEntryController {
     public BucketListEntry comments(@PathVariable BucketListEntry entry)
     {
         guardUnknownEntry(entry);
-        checkAcces(entry.getBucketList());
+        guardUserCanView(entry.getBucketList());
         return entry;
     }
 
@@ -87,7 +78,8 @@ public class BucketListEntryController {
     public void addComment(@RequestBody Comment comment, @PathVariable BucketListEntry entry)
     {
         guardUnknownEntry(entry);
-        checkAcces(entry.getBucketList());
+        // every user that sees a list can create a new comment
+        guardUserCanView(entry.getBucketList());
         commentCreationService.addComment(comment, entry);
     }
 
@@ -100,7 +92,7 @@ public class BucketListEntryController {
             throw new ResourceNotFoundException("requested bucketlist does not exist");
         }
 
-        checkAcces(updatedBucketList.get());
+        guardUserCanModify(updatedBucketList.get());
 
         final BucketList bucketList = updatedBucketList.get();
         // save entry into list
@@ -117,21 +109,9 @@ public class BucketListEntryController {
     {
         guardUnknownBucketList(bucketList);
         guardUnknownEntry(entry);
-        checkAcces(entry.getBucketList());//check if user or admin
+        guardUserCanModify(entry.getBucketList());//check if user or admin
         bucketList.getEntries().remove(entry);
         entryRepository.delete(entry);
-    }
-
-    private void guardUnknownBucketList(@PathVariable BucketList bucketList) {
-        guardUnknownEntity(bucketList == null, "the requested bucket list does not exist");
-    }
-
-    private void guardUnknownEntry(@PathVariable BucketListEntry entry) {
-        guardUnknownEntity(entry, "the requested entry does not exist");
-    }
-
-    private void guardUnknownEntity(Object entity, String errorMessage) {
-        if (entity == null) throw new ResourceNotFoundException(errorMessage);
     }
 
     @PutMapping("/{entry}/")
@@ -143,7 +123,7 @@ public class BucketListEntryController {
     ) throws IOException {
         guardUnknownEntry(entry);
 
-        checkAcces(entry.getBucketList());
+        guardUserCanModify(entry.getBucketList());
         mapper.readerForUpdating(entry).readValue(updateJson);
         entryRepository.save(entry);
     }
@@ -155,6 +135,8 @@ public class BucketListEntryController {
     ) {
         guardUnknownBucketList(targetList);
         guardUnknownEntry(entryToDuplicate);
+        guardUserCanView(entryToDuplicate.getBucketList());
+        guardUserCanModify(targetList);
 
         final BucketListEntry newEntry = copyEntryToList(targetList, entryToDuplicate);
 
@@ -176,6 +158,8 @@ public class BucketListEntryController {
     ) {
         guardUnknownEntity(targetList,"target bucketlist unknown");
         guardUnknownEntity(sourceList, "source bucketlist unknown");
+        guardUserCanView(sourceList);
+        guardUserCanModify(targetList);
 
         for (BucketListEntry entry : sourceList.getEntries()) {
             final BucketListEntry newEntry = copyEntryToList(targetList, entry);
@@ -213,5 +197,42 @@ public class BucketListEntryController {
         targetList.addEntry(newEntry);
 
         return newEntry;
+    }
+
+    /**
+     * @throws InsuficientPermissionException if user is not permitted for deleting or creating or changing an entry
+     */
+    void guardUserCanModify(BucketList bucketList){
+        User user = userContext.getUserOrThrow();
+        if (!user.getId().equals(bucketList.getOwner().getId()))
+        {
+            throw new InsuficientPermissionException("You can't access this list");
+        }
+    }
+
+    /**
+     * @throws InsuficientPermissionException if the bucket list is not visible for the current user
+     */
+    void guardUserCanView(BucketList bucketList) {
+        if (!bucketList.isPrivateList()) {
+            return;
+        }
+        User user = userContext.getUserOrThrow();
+
+        if (!user.equals(bucketList.getOwner()) && !bucketList.getAccessedUsers().contains(user)) {
+            throw new InsuficientPermissionException("You can't access this list");
+        }
+    }
+
+    private void guardUnknownBucketList(@PathVariable BucketList bucketList) {
+        guardUnknownEntity(bucketList == null, "the requested bucket list does not exist");
+    }
+
+    private void guardUnknownEntry(@PathVariable BucketListEntry entry) {
+        guardUnknownEntity(entry, "the requested entry does not exist");
+    }
+
+    private void guardUnknownEntity(Object entity, String errorMessage) {
+        if (entity == null) throw new ResourceNotFoundException(errorMessage);
     }
 }
