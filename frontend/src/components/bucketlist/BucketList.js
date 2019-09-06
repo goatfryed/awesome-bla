@@ -141,14 +141,14 @@ function BucketListDetails({bucketList, onUpdateBucketList, history}) {
     const buttonBar =
         <>
             <span className="btn-small">{counter} Votes</span>
-            <Button waves="light" small className="ml05" disabled={upVoted}
-                    onClick={upvoteList}><Icon>arrow_upward</Icon></Button>
+            <Button waves="light" small className="ml05" disabled={upVoted} onClick={upvoteList}><Icon>arrow_upward</Icon></Button>
             <Button waves="light" small className="cancelBtn ml05" disabled={downVoted}
                     onClick={downvoteList}><Icon>arrow_downward</Icon></Button>
             <Link to={cloneLocation}><Button waves="light" small className="ml05 light-blue"><Icon
                 left>content_copy</Icon>Copy</Button></Link>
         </>
     ;
+
     return <>
         <form className="row" onSubmit={onSubmit}>
             <div className="col s2 noPadding">
@@ -189,9 +189,8 @@ BucketListDetails.propTypes = {
 
 function BucketListDefaultView({bucketList, url, path, onUpdateBucketList, history, refresh}) {
 
-    let renderEntries = useCallback(() => <BucketListEntries id={bucketList.id}/>, [bucketList.id]);
-    let renderComments = useCallback(() => <BucketListComments refresh={refresh}
-                                                               bucketList={bucketList}/>, [bucketList]);
+    let renderEntries = useCallback(() => <BucketListEntries bucketList={bucketList}/>, [bucketList.id]);
+    let renderComments = useCallback(() => <BucketListComments refresh={refresh} bucketList={bucketList}/>, [bucketList, refresh]);
     let renderSettings = useCallback(() => <ListSettings bucketList={bucketList}/>, [bucketList]);
 
 
@@ -249,14 +248,12 @@ function BucketListDefaultView({bucketList, url, path, onUpdateBucketList, histo
 }
 
 BucketListDefaultView.propTypes = {
-    bucketList: PropTypes.any,
-    counter: PropTypes.number,
-    onLike: PropTypes.func,
+    bucketList: PropTypes.object.isRequired,
+    onUpdateBucketList: PropTypes.func.isRequired,
+    refresh: PropTypes.func.isRequired,
     url: PropTypes.any,
     path: PropTypes.any,
-    render: PropTypes.func,
-    render1: PropTypes.func,
-    render2: PropTypes.func
+    history: PropTypes.object,
 };
 
 export function BucketList({match, history}) {

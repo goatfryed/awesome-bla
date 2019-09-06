@@ -1,40 +1,62 @@
-import React, { PureComponent, useCallback } from 'react';
+import React, { PureComponent, useCallback, useMemo } from 'react';
 import {Route, Switch} from "react-router";
 import { Link, Redirect } from "react-router-dom";
 import { backendFetch } from "../../api";
 import {NavTabs} from "./NavTabs";
 import Authentication from "../../authentication/Authentication";
 import PropTypes from "prop-types";
+import {Button} from "react-materialize"
+
+const publicListsLink = {
+	url: "/home/public",
+	title: "All",
+};
+const personalListsLink = {
+	url: "/home/personal",
+	title: "Personal",
+};
+const createListsLink = {
+	url: "/newlist",
+	title: "New List",
+};
 
 export function BucketListBoard({match}) {
+
+	let authenticated = Authentication.isAuthenticated();
+	let links = useMemo(
+		() => (
+			authenticated ? [
+				publicListsLink,
+				personalListsLink,
+				createListsLink,
+			] : [
+				publicListsLink,
+			]
+
+		),
+		[authenticated]
+	);
+
 	return (
 		<div>
 			<h5>Bucket Lists</h5>
-			<NavTabs
-				links={[
-					{
-						url: "/home/public",
-						title: "All",
-					},
-					{
-						url: "/home/personal",
-						title: "Personal",
-					},
-					{
-						url: "/newlist",
-						title: "New List",
-					},
-				]}
-			/>
+			<NavTabs links={links} />
 			<Switch>
 				<Route path={match.path + "/public"} exact strict
 					   component={BucketListView}
 				/>
 				{
-				    // key forces mount of a new bucket list view. didn't want to rewrite the component (yet)
+					// key forces mount of a new bucket list view. didn't want to rewrite the component (yet)
 					Authentication.isAuthenticated() &&
 					<Route path={match.path + "/personal"} exact strict
-						   render={() => <BucketListView key="personal" owner={{userName: Authentication.getUser().sub}}/>}
+						   render={() => <BucketListView key="personal"
+														 owner={{userName: Authentication.getUser().sub}}/>}
+					/>
+				}
+				{
+					// key forces mount of a new bucket list view. didn't want to rewrite the component (yet)
+					<Route path={match.path + "/user/:id"} exact strict
+					render={(props) => <BucketListView key="personal" specUser={props.match.params.id}/>}
 					/>
 				}
 				<Redirect to={match.path + "/public"} />
@@ -65,6 +87,9 @@ export class BucketListView extends PureComponent {
 		if (this.props.owner) {
 			query.append("userName", this.props.owner.userName);
 		}
+		if (this.props.specUser) {
+			query.append("specUser", this.props.specUser);
+		}
 		backendFetch.get('/bucketlists/?' + query.toString()).then(response => {
 			if(response.content.length > 0){
 				this.setState({loadedPages: this.state.loadedPages+1});
@@ -85,7 +110,7 @@ export class BucketListView extends PureComponent {
 
 	render() {
 		const moreSides = ()=>{
-			return this.state.lastingElements == null ? '':this.state.lastingElements<=0?<div>Kine Weiteren Listen verfügbar</div>:<div>{this.state.lastingElements} weiter Listen <button type="submit" onClick={this.loadMore.bind(this)}>Laden</button></div>
+			return this.state.lastingElements == null ? '':this.state.lastingElements<=0?<div>Kine Weiteren Listen verfügbar</div>:<div>{this.state.lastingElements} weiter Listen <Button type="submit" onClick={this.loadMore.bind(this)}>Laden</Button></div>
 		};
 
 		return <>
@@ -96,6 +121,7 @@ export class BucketListView extends PureComponent {
 }
 BucketListView.propTypes = {
 	owner: PropTypes.object,
+	specUser: PropTypes.object,
 };
 
 function BucketListIcon({bucketList}) {

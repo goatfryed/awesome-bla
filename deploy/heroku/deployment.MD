@@ -1,8 +1,12 @@
 # Deployment
-
+To do a full deployment, you can use the shortcut [full-deploy.sh](full-deploy.sh).
+Note, that in order to do any heroku deployment, you must be logged to heroku-cli
+and also logged in to the heroku container repository  in your current session.
+* ``heroku login``
+* ``heroku container:login``
 
 ## backend
-Run [backend.sh](backend.sh) to build, push and release the backend at https://awesome-bla-api.herokuapp.com/.
+Run [deploy-backend.sh](deploy-backend.sh) to build, push and release the backend at https://awesome-bla-api.herokuapp.com/.
 
 #### thoughts
 While heroku has in theory really good support for java applications in general and spring boot applications exspecially,
@@ -19,7 +23,7 @@ the database url.
 Also, jdbc database urls can't contain username and password, so this must be provided separately.
 
 #### memory consumption
-Run [frontend.sh](frontend.sh) to build, push and release the frontend at https://awesome-bla.herokuapp.com/.
+Run [deploy-frontend.sh](deploy-frontend.sh) to build, push and release the frontend at https://awesome-bla.herokuapp.com/.
 
 The dyno has strict memory restrictions that the jvm needs to know about. Therefore, the container command passes the
 $JAVA_OPTS env var to the jvm were we can configure custom java options.
