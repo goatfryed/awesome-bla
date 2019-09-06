@@ -181,7 +181,7 @@ function BucketListDetails({bucketList, onUpdateBucketList, history}) {
         </form>
 
         <div id="mobile_buttonBar">
-            {buttonBar}
+            {user != null ? buttonBar : null}
         </div>
     </>
         ;
