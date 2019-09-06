@@ -83,6 +83,7 @@ public class BucketListEntryController {
     @GetMapping("/")
     public List<BucketListEntry> list(@PathVariable BucketList bucketList)
     {
+        guardUserCanView(bucketList);
         bucketList.getEntries().forEach(p -> p.getComments().clear());
 
         return new ArrayList<>(bucketList.getEntries());
@@ -92,7 +93,7 @@ public class BucketListEntryController {
     public BucketListEntry comments(@PathVariable BucketListEntry entry)
     {
         guardUnknownEntry(entry);
-        checkUserCanModify(entry.getBucketList());
+        guardUserCanView(entry.getBucketList());
         return entry;
     }
 
@@ -101,7 +102,8 @@ public class BucketListEntryController {
     public void addComment(@RequestBody Comment comment, @PathVariable BucketListEntry entry)
     {
         guardUnknownEntry(entry);
-        checkUserCanModify(entry.getBucketList());
+        // every user that sees a list can create a new comment
+        guardUserCanView(entry.getBucketList());
         commentCreationService.addComment(comment, entry);
     }
 
@@ -169,6 +171,8 @@ public class BucketListEntryController {
     ) {
         guardUnknownBucketList(targetList);
         guardUnknownEntry(entryToDuplicate);
+        guardUserCanView(entryToDuplicate.getBucketList());
+        checkUserCanModify(targetList);
 
         final BucketListEntry newEntry = copyEntryToList(targetList, entryToDuplicate);
 
@@ -190,6 +194,8 @@ public class BucketListEntryController {
     ) {
         guardUnknownEntity(targetList,"target bucketlist unknown");
         guardUnknownEntity(sourceList, "source bucketlist unknown");
+        guardUserCanView(sourceList);
+        checkUserCanModify(targetList);
 
         for (BucketListEntry entry : sourceList.getEntries()) {
             final BucketListEntry newEntry = copyEntryToList(targetList, entry);
