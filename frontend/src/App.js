@@ -25,6 +25,15 @@ import * as PropTypes from "prop-types";
 import ListSearch from "./components/bucketlist/SearchLists";
 import {Login} from "./authentication/Login";
 
+function About() {
+    return <div className="valign-wrapper" style={{minHeight: "70vh"}}>
+        <div className="row">
+            <div className="col offset-l3 l6">
+                <h2 className="title center-align">Awesome Bucket List!</h2>
+            </div>
+        </div>
+    </div>
+}
 
 function App() {
     return <Router>
@@ -33,6 +42,7 @@ function App() {
                 <AppNavbar/>
                 <div id="contentWrapper">
                     <Switch>
+                        <Route path="/about" component={About} />
                         <Route path="/login" component={Login}/>
                         <Route path="/callback" component={AuthenticationCallback}/>
                         <Route strict exact path="/import/" component={ImportTargetSelection}/>
