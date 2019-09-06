@@ -14,7 +14,8 @@ export function About() {
                 <br/>
                 <div>
                     Awesome Bucket List was made as an lecture project by students of <a
-                    href="https://www.uni-kassel.de/uni/">university kassel</a>
+                    href="https://www.uni-kassel.de/uni/">university kassel</a> for web engineering SS2019.
+                    See the <a href="https://github.com/micromata/webengineering-2019">lecture project</a> for more about the lecture.
                 </div>
                 <br/>
                 <div>
