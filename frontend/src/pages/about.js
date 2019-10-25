@@ -44,18 +44,18 @@ export function About() {
                 <div>
                     <h5>Contact</h5>
                     <p>
-                        Source code at <a href="https://gitlab.com/MichaelPrasil/awesome-bucket-list/">
-                            <img alt="gitlab" src="https://about.gitlab.com/images/press/press-kit-icon.svg"
+                        Source code at <a href="https://github.com/goatfryed/awesome-bla">
+                            <img alt="github" src="https://github.githubassets.com/images/modules/logos_page/Octocat.png"
                                  style={{height: "1.5ex", width: "1em"}}
                             />
-                            MichealPrasil/awesome-bucket-list
+                            goatfryed/awesome-bla
                         </a>
                     </p>
                     <p>
                         To get in contact, please file an issue or write to one of us.
                         <ul className="browser-default">
                             <li><a href="https://gitlab.com/tost11">Lukas {"<toast11>"} Hagenhauer</a></li>
-                            <li><a href="https://gitlab.com/goatfryed">Omar {"<goatfryed>"} Sood</a></li>
+                            <li><a href="https://github.com/goatfryed">Omar {"<goatfryed>"} Sood</a></li>
                             <li><a href="https://gitlab.com/Maggi64">Maximilian {"<Maggi64>"} Dewald</a></li>
                             <li><a href="https://gitlab.com/MichaelPrasil">Michael {"<MichaelPrasil>"} Prasil</a></li>
                         </ul>

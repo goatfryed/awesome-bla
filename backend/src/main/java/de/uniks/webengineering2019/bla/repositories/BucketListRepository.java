@@ -18,7 +18,7 @@ public interface BucketListRepository extends CrudRepository<BucketList, Long>{
     //Set<BucketList> findByOwnerAndTitleContainsIgnoreCaseOrderByCreationDateDescIdDesc(User owner, String title);
 
 
-    @Query(value = "SELECT b.* FROM bucket_list AS b LEFT JOIN bucket_list_accessed_users AS al ON b.id = al.bucket_list_id WHERE lower(b.title) LIKE ?2 AND ( b.private_list = FALSE OR b.owner_id = ?1 OR al.accessed_users_id = ?1 ) ORDER BY b.creation_date desc, b.id desc;",nativeQuery = true)
+    @Query(value = "SELECT b.* FROM bucket_list AS b LEFT JOIN bucket_list_accessed_users AS al ON b.id = al.bucket_list_id WHERE lower(b.title) LIKE ?2 AND ( b.private_list = FALSE OR b.owner_id = ?1 OR al.accessed_users_id = ?1 ) GROUP BY b.id ORDER BY b.id desc;",nativeQuery = true)
     List<BucketList> findByNameAndPrivelege(long userId,String searchTerm);
     List<BucketList> findByPrivateListAndTitleContainingIgnoreCaseOrderByCreationDateDescIdDesc(boolean privateList,String searchTerm);
 
@@ -28,11 +28,11 @@ public interface BucketListRepository extends CrudRepository<BucketList, Long>{
     @Query("select b from BucketList b join b.owner o where o.userName = ?2 and (b.privateList = false or b.owner = ?1 or ?1 member of b.accessedUsers) order by  b.creationDate desc, b.id desc")
     Page<BucketList> findForUserByOwnerUserName(User user, String userName, Pageable pageable);
 
-    @Query(value = "SELECT b.id FROM bucket_list AS b LEFT JOIN bucket_list_accessed_users AS al ON b.id = al.bucket_list_id WHERE b.id = ?1 AND ( b.private_list = FALSE OR b.owner_id = ?2 OR al.accessed_users_id = ?2 ) ORDER BY  b.creation_date desc, b.id desc;",nativeQuery = true)
-    Long existsBucketListByIdAnd(Long bucketlistId,Long userId);
+    @Query(value = "SELECT count(b.id) > 0 as exists FROM bucket_list AS b LEFT JOIN bucket_list_accessed_users AS al ON b.id = al.bucket_list_id WHERE b.id = ?1 AND ( b.private_list = FALSE OR b.owner_id = ?2 OR al.accessed_users_id = ?2 )",nativeQuery = true)
+    Boolean existsBucketListByIdWithAccessPermission(Long bucketlistId, Long userId);
 
     Page<BucketList> findByOwnerIdAndPrivateList(long userId,boolean privateList,Pageable pageable);
 
-    @Query(value = "SELECT b FROM bucket_list AS b LEFT JOIN bucket_list_accessed_users AS al ON b.id = al.bucket_list_id WHERE b.ower_id = ?1 AND ( b.private_list = FALSE OR b.owner_id = ?2 OR al.accessed_users_id = ?2 ) ORDER BY  b.creation_date desc, b.id desc;",nativeQuery = true)
+    @Query(value = "SELECT b FROM bucket_list AS b LEFT JOIN bucket_list_accessed_users AS al ON b.id = al.bucket_list_id WHERE b.owner_id = ?1 AND ( b.private_list = FALSE OR b.owner_id = ?2 OR al.accessed_users_id = ?2 ) GROUP BY b.id ORDER BY b.id desc;",nativeQuery = true)
     Page<BucketList> findByownerIdandPriveleged(long ownerId,long userId,Pageable pageable);
 }
