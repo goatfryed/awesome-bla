@@ -31,8 +31,8 @@ public class CommentCreationService {
     public void addComment(Comment comment, Commentable parent) {
         //BucketList bucketList = bucketListRepository.findById(parent.getCommentableRootListId()).get();
         final User user = userContext.getUserOrThrow();
-        if(!bucketListRepository.existsBucketListByIdAnd(parent.getCommentableRootListId(),user.getId()).equals(parent.getCommentableRootListId())){//safe for fake request so check accces
-            throw new UnauthenticatedRequestException("the request requires a fully authenticated user, but was made anonymous");
+        if(!bucketListRepository.existsBucketListByIdWithAccessPermission(parent.getCommentableRootListId(),user.getId())){//safe for fake request so check accces
+            throw new UnauthenticatedRequestException("You can't access this bucket list");
         }
         comment.setUser(user);
         parent.getComments().add(comment);
